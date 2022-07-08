@@ -1,3 +1,5 @@
+import ru from 'vuetify/src/locale/ru'
+
 let API_URI = process.env.NUXT_API_URL
 if (process.env.NODE_ENV === 'production') {
   API_URI = '/'
@@ -99,6 +101,7 @@ export default {
     './plugins/trackers',
     './plugins/vue-async-computed.js',
     { src: './plugins/polyfills.js', ssr: false },
+    './plugins/v-mask.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -111,6 +114,7 @@ export default {
     // https://go.nuxtjs.dev/stylelint
     '@nuxtjs/stylelint-module',
     '@nuxtjs/svg',
+    '@nuxtjs/vuetify',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -148,6 +152,26 @@ export default {
       // Add native Sentry config here
       // https://docs.sentry.io/platforms/javascript/guides/vue/configuration/options/
       environment: process.env.NODE_ENV,
+    },
+  },
+
+  // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
+  vuetify: {
+    lang: {
+      locales: { ru },
+      current: 'ru',
+    },
+    customVariables: ['~/assets/scss/variables.scss'],
+    treeShake: true,
+    theme: {
+      themes: {
+        light: {
+          error: '#E36464',
+          primary: '#0079BF',
+          success: '#38A326',
+        },
+        dark: false,
+      },
     },
   },
 

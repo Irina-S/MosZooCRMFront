@@ -8,7 +8,13 @@ $layout-height-mobile: 664;
 $layout-width-tablet: 768;
 $layout-height-tablet: 1024;
 
-$dw: math.div(100vw, $layout-width-desktop);
-$dh: math.div(100vh, $layout-width-desktop);
-$mw: math.div(100vw, $layout-width-mobile);
-$mh: math.div(100vh, $layout-height-mobile);
+$dw: div(100vw, $layout-width-desktop);
+$dh: div(100vh, $layout-width-desktop);
+$mw: div(100vw, $layout-width-mobile);
+$mh: div(100vh, $layout-height-mobile);
+
+$text-color:#181818;
+$text-color-light:#99A2AD;
+$text-color-link:#188BCE;
+
+$button-color-primary:#0079BF;

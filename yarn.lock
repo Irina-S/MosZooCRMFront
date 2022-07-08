@@ -1913,6 +1913,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nuxtjs/vuetify@npm:^1.12.3":
+  version: 1.12.3
+  resolution: "@nuxtjs/vuetify@npm:1.12.3"
+  dependencies:
+    deepmerge: ^4.2.2
+    sass: ~1.32.13
+    sass-loader: ^10.2.0
+    vuetify: ^2.6
+    vuetify-loader: ^1.7.3
+  checksum: bfadb3641330e29c76bc278768cf6dbe371360508cc94801c209c5d37dc360ed29bc2265da3db14f3d2940a9171db09f488edd1413c9a41c05f13bc2ecb8a651
+  languageName: node
+  linkType: hard
+
 "@nuxtjs/youch@npm:^4.2.3":
   version: 4.2.3
   resolution: "@nuxtjs/youch@npm:4.2.3"
@@ -3001,7 +3014,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn-walk@npm:^8.0.0":
+"acorn-walk@npm:^8.0.0, acorn-walk@npm:^8.2.0":
   version: 8.2.0
   resolution: "acorn-walk@npm:8.2.0"
   checksum: 1715e76c01dd7b2d4ca472f9c58968516a4899378a63ad5b6c2d668bba8da21a71976c14ec5f5b75f887b6317c4ae0b897ab141c831d741dc76024d8745f1ad1
@@ -3032,6 +3045,15 @@ __metadata:
   bin:
     acorn: bin/acorn
   checksum: 2e4c1dbed3da327684863debf31d341bf8882c6893c506653872c00977eee45675feb9129255d6c74c88424d2b20d889ca6de5b39776e5e3cccfc756b3ca1da8
+  languageName: node
+  linkType: hard
+
+"acorn@npm:^8.4.1":
+  version: 8.7.1
+  resolution: "acorn@npm:8.7.1"
+  bin:
+    acorn: bin/acorn
+  checksum: aca0aabf98826717920ac2583fdcad0a6fbe4e583fdb6e843af2594e907455aeafe30b1e14f1757cd83ce1776773cf8296ffc3a4acf13f0bd3dfebcf1db6ae80
   languageName: node
   linkType: hard
 
@@ -3483,6 +3505,7 @@ __metadata:
     "@nuxtjs/style-resources": ^1.2.1
     "@nuxtjs/stylelint-module": ^4.0.0
     "@nuxtjs/svg": ^0.3.0
+    "@nuxtjs/vuetify": ^1.12.3
     bootstrap-vue: ^2.21.2
     core-js: ^3.15.1
     cross-env: ^7.0.3
@@ -3505,6 +3528,7 @@ __metadata:
     stylelint-config-standard: ^22.0.0
     stylelint-scss: ^3.21.0
     v-hotkey: ^0.9.0
+    v-mask: ^2.3.0
     vee-validate: ^3.4.13
     vue-async-computed: ^3.9.0
   languageName: unknown
@@ -4096,6 +4120,13 @@ __metadata:
   dependencies:
     caller-callsite: ^2.0.0
   checksum: 3e12ccd0c71ec10a057aac69e3ec175b721ca858c640df021ef0d25999e22f7c1d864934b596b7d47038e9b56b7ec315add042abbd15caac882998b50102fb12
+  languageName: node
+  linkType: hard
+
+"callsite@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "callsite@npm:1.0.0"
+  checksum: 569686d622a288a4f0a827466c2f967b6d7a98f2ee1e6ada9dcf5a6802267a5e2a995d40f07113b5f95c7b2b2d5cbff4fdde590195f2a8bed24b829d048688f8
   languageName: node
   linkType: hard
 
@@ -5226,6 +5257,15 @@ __metadata:
   dependencies:
     ms: ^2.1.1
   checksum: b3d8c5940799914d30314b7c3304a43305fd0715581a919dacb8b3176d024a782062368405b47491516d2091d6462d4d11f2f4974a405048094f8bfebfa3071c
+  languageName: node
+  linkType: hard
+
+"decache@npm:^4.6.0":
+  version: 4.6.1
+  resolution: "decache@npm:4.6.1"
+  dependencies:
+    callsite: ^1.0.0
+  checksum: 3e8cf879ecad1ebc1a0fed782d008ea4f331c2a3688de3b3f18fca03e51b3aa829be90ee0b7c6e1ebc0b0a0f4e911529efdfb3cef28d69b9605131b7c69daea9
   languageName: node
   linkType: hard
 
@@ -12513,6 +12553,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sass-loader@npm:^10.2.0":
+  version: 10.3.1
+  resolution: "sass-loader@npm:10.3.1"
+  dependencies:
+    klona: ^2.0.4
+    loader-utils: ^2.0.0
+    neo-async: ^2.6.2
+    schema-utils: ^3.0.0
+    semver: ^7.3.2
+  peerDependencies:
+    fibers: ">= 3.1.0"
+    node-sass: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
+    sass: ^1.3.0
+    webpack: ^4.36.0 || ^5.0.0
+  peerDependenciesMeta:
+    fibers:
+      optional: true
+    node-sass:
+      optional: true
+    sass:
+      optional: true
+  checksum: ab73a41a8aae1a8b4ae607b3ab661e23e12629ea2d05904727625b201e238083e37d7686f613ddd459a1f243a1146b93cd10c9a339a4f6d11871e70c914965c4
+  languageName: node
+  linkType: hard
+
 "sass-resources-loader@npm:^2.2.4":
   version: 2.2.4
   resolution: "sass-resources-loader@npm:2.2.4"
@@ -12533,6 +12598,17 @@ __metadata:
   bin:
     sass: sass.js
   checksum: 9af80105dabd32752c60b4557115832982cf1019c02c952db6a26c61a3e18dc95044c896685e6e9a6d6dd6643fc411ecf2ea4a8a431a8a08a7510a45d5a492ae
+  languageName: node
+  linkType: hard
+
+"sass@npm:~1.32.13":
+  version: 1.32.13
+  resolution: "sass@npm:1.32.13"
+  dependencies:
+    chokidar: ">=3.0.0 <4.0.0"
+  bin:
+    sass: sass.js
+  checksum: 51b798280bd96c8e8d580592bcd40947075e9e55109bbc5e21037427ac2a78e58d3c3cf4b8b33ac9d592758376597d15cd28ddde1cda2885d19791d6321989d4
   languageName: node
   linkType: hard
 
@@ -14503,6 +14579,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"v-mask@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "v-mask@npm:2.3.0"
+  checksum: 3bbc132489e759b3767a4ec9e04547ef125ad97d43757a48c50700458bf3e1caf2fda08179f8a694be1f48947f5bb93b111d15df48b1ac52dbf8403a501e4c00
+  languageName: node
+  linkType: hard
+
 "v8-compile-cache@npm:^2.0.3, v8-compile-cache@npm:^2.3.0":
   version: 2.3.0
   resolution: "v8-compile-cache@npm:2.3.0"
@@ -14750,6 +14833,42 @@ __metadata:
   version: 2.6.14
   resolution: "vue@npm:2.6.14"
   checksum: 23524a1bdca094d62cb3491a46317eed75184b5d61d28fa846ea5d2b241c1cc7084fc67ee259d47a50a6d0bbc33ecaceb7bb52bff81312fe7da07263f3419942
+  languageName: node
+  linkType: hard
+
+"vuetify-loader@npm:^1.7.3":
+  version: 1.9.0
+  resolution: "vuetify-loader@npm:1.9.0"
+  dependencies:
+    acorn: ^8.4.1
+    acorn-walk: ^8.2.0
+    decache: ^4.6.0
+    file-loader: ^6.2.0
+    loader-utils: ^2.0.0
+  peerDependencies:
+    gm: ^1.23.0
+    pug: ^2.0.0
+    sharp: ^0.21.0
+    vue: ^2.7.2
+    vuetify: ^1.3.0 || ^2.0.0
+    webpack: ^4.0.0 || ^5.0.0
+  peerDependenciesMeta:
+    gm:
+      optional: true
+    pug:
+      optional: true
+    sharp:
+      optional: true
+  checksum: 816d0ddbd05208cef724fe27b4108ba4ec9f2186edc2c9b2d54b90c4ab2a15d7d0a282ed225e7cd9dbde6d680202c03e6a0a06b85fa6df71c9cc40034c059984
+  languageName: node
+  linkType: hard
+
+"vuetify@npm:^2.6":
+  version: 2.6.7
+  resolution: "vuetify@npm:2.6.7"
+  peerDependencies:
+    vue: ^2.6.4
+  checksum: 1514c31738dd15970ee7fc9824b2ee6e83da581bd5a99f912561c820ec14f922cc3ca914afa102d4a56bbfc16f78722cfe69d1e5c3ab75f46a32bb3b6623745a
   languageName: node
   linkType: hard
 

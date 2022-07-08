@@ -1,6 +1,6 @@
 @import 'vars';
 
-@import 'bootstrap';
+// @import 'bootstrap';
 @import 'dynamic-properties';
 @import 'fonts';
 @import 'modal';
@@ -12,4 +12,46 @@
   --dh: calc(100vh / #{$layout-height-desktop});
   --mw: calc(100vw / #{$layout-width-mobile});
   --mh: calc(100vh / #{$layout-height-mobile});
+}
+
+*{
+  color:$text-color;
+}
+
+a{
+  color:$text-color-link !important
+}
+
+.text{
+  &--light{
+    color:$text-color-light !important;
+  }
+
+  &--default{
+    color:$text-color !important;
+  }
+
+  &--normal{
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+
+  &--enlarged{
+    font-size: 1.14rem;
+    line-height: 1.3;
+  }
+}
+
+.custom-field{
+  &.v-text-field--outlined{
+    fieldset{
+    border-color:$text-color-light !important;
+  }
+
+    &.v-input--is-focused{
+      fieldset{
+      border-color: $text-color !important;
+      }
+    }  
+  } 
 }

@@ -1,1 +1,10 @@
 // шрифты
+
+@font-face {font-family: "ALS Story Regular";
+    src: url("../fonts/ALSStoryRegular/eb2978c0a5df64e0391324192f005a65.eot"); /* IE9 */
+    src: url("../fonts/ALSStoryRegular/eb2978c0a5df64e0391324192f005a65.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("../fonts/ALSStoryRegular/eb2978c0a5df64e0391324192f005a65.woff2") format("woff2"), /* chrome、firefox */
+    url("../fonts/ALSStoryRegular/eb2978c0a5df64e0391324192f005a65.woff") format("woff"), /* chrome、firefox */
+    url("../fonts/ALSStoryRegular/eb2978c0a5df64e0391324192f005a65.ttf") format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+    url("../fonts/ALSStoryRegular/eb2978c0a5df64e0391324192f005a65.svg#ALS Story Regular") format("svg"); /* iOS 4.1- */
+  }
