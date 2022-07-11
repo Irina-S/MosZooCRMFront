@@ -1,9 +1,10 @@
 <template>
   <!-- <validation-provider v-slot="{ errors }" rules="size:2048"> -->
   <v-file-input
-    :value="files"
     ref="file-input"
+    :value="files"
     :clearable="false"
+    :accept="accept"
     counter
     show-size
     small-chips
@@ -34,6 +35,12 @@
 <script>
 export default {
   name: 'CustomFileInput',
+  props: {
+    accept: {
+      type: String,
+      default: '*',
+    },
+  },
   data() {
     return {
       files: [],
@@ -43,6 +50,7 @@ export default {
     onFileDelete(index) {
       this.files.splice(index, 1)
       this.$refs['file-input'].$emit('change', this.files)
+      this.$emit('input', this.files)
     },
     onChange(files) {
       files.forEach((file) => {
@@ -50,6 +58,7 @@ export default {
           this.files.push(file)
         }
       })
+      this.$emit('input', this.files)
     },
   },
 }

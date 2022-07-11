@@ -1,34 +1,47 @@
 <template>
   <div>
-    <v-form class="confirm-form px-10 py-10" @submit.prevent="onSubmit">
-      <h1 class="confirm-form__title text-center mb-6">
-        Подтверждение номера телефона
-      </h1>
-      <div class="text--enlarged text-center mb-7">
-        Код подтверждения отправлен вам по sms на номер {{ phone }}. Введите его
-        в поле ниже, чтобы завершить отправку заявки:
-      </div>
-      <v-text-field
-        v-model="form.code"
-        v-mask="'#####'"
-        outlined
-        persistent-hint
-        hint="Код состоит из 5 цифр и действителен в течении 90 сек "
-        class="custom-field confirm-form__code mx-auto mb-8"
-      ></v-text-field>
-      <div class="d-flex justify-center mb-6">
-        <CustomButton type="submit" class="mr-8">Отправить</CustomButton>
-        <CustomButton @click="$emit('go-back')">Отменить</CustomButton>
-      </div>
-      <div class="text-center text--enlarged text--light mb-4">
-        Повторная отправка кода подтверждения
-      </div>
-      <div class="d-flex justify-center">
-        <a href="#" class="text--enlarged" @click.prevent="$emit('go-back')"
-          >Изменить номер телефона</a
-        >
-      </div>
-    </v-form>
+    <validation-observer v-slot="{ handleSubmit, valid, invalid }" ref="form">
+      <v-form
+        class="confirm-form px-10 py-10"
+        @submit.prevent="handleSubmit(onSubmit)"
+      >
+        <h1 class="confirm-form__title text-center mb-6">
+          Подтверждение номера телефона
+        </h1>
+        <div class="text--enlarged text-center mb-7">
+          Код подтверждения отправлен вам по sms на номер {{ phone }}. Введите
+          его в поле ниже, чтобы завершить отправку заявки:
+        </div>
+        <validation-provider rules="required|length:5">
+          <v-text-field
+            v-model="form.code"
+            v-mask="'#####'"
+            outlined
+            persistent-hint
+            hint="Код состоит из 5 цифр и действителен в течении 90 сек "
+            class="custom-field confirm-form__code mx-auto mb-8"
+          ></v-text-field>
+        </validation-provider>
+        <div class="d-flex justify-center mb-6">
+          <CustomButton
+            :disabled="invalid"
+            :active="valid"
+            type="submit"
+            class="mr-8"
+            >Отправить</CustomButton
+          >
+          <CustomButton @click="$emit('go-back')">Отменить</CustomButton>
+        </div>
+        <div class="text-center text--enlarged text--light mb-4">
+          Повторная отправка кода подтверждения
+        </div>
+        <div class="d-flex justify-center">
+          <a href="#" class="text--enlarged" @click.prevent="$emit('go-back')"
+            >Изменить номер телефона</a
+          >
+        </div>
+      </v-form>
+    </validation-observer>
   </div>
 </template>
 

@@ -102,6 +102,7 @@ export default {
     './plugins/vue-async-computed.js',
     { src: './plugins/polyfills.js', ssr: false },
     './plugins/v-mask.js',
+    './plugins/vee-validate.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
