@@ -31,14 +31,18 @@ a{
     color:$text-color !important;
   }
 
+  &--small{
+    font-size:0.875rem
+  }
+
   &--normal{
     font-size: 1rem;
     line-height: 1.3;
   }
 
   &--enlarged{
-    font-size: 1.14rem;
-    line-height: 1.3;
+    font-size: 1.13rem;
+    line-height: 1.4;
   }
 }
 

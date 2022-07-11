@@ -32,11 +32,11 @@
           >
           <CustomButton @click="$emit('go-back')">Отменить</CustomButton>
         </div>
-        <div class="text-center text--enlarged text--light mb-4">
+        <div class="text-center text--light mb-4">
           Повторная отправка кода подтверждения
         </div>
         <div class="d-flex justify-center">
-          <a href="#" class="text--enlarged" @click.prevent="$emit('go-back')"
+          <a href="#" @click.prevent="$emit('go-back')"
             >Изменить номер телефона</a
           >
         </div>

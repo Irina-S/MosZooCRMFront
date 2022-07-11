@@ -128,13 +128,12 @@
                 class="d-inline-flex mt-0 mb-4"
               >
                 <template #label>
-                  <div class="text--normal ml-2" v-html="checkbox.label"></div>
+                  <div class="text--small ml-2" v-html="checkbox.label"></div>
                 </template>
               </v-checkbox>
             </validation-provider>
           </div>
         </template>
-
         <div class="text--light mb-4">
           При положительном рассмотрении вашей заявки, вам придет уведомление о
           необходимости предоставить следующие документы:<br />
@@ -150,7 +149,7 @@
           “Пони клуб”)
         </div>
         <div class="request-form__code mx-auto d-flex flex-column mb-6">
-          <div class="mb-2">Введите код с картинки</div>
+          <div class="text--small mb-2">Введите код с картинки</div>
           <img src="@/assets/images/codemock.png" alt="код" />
           <validation-provider rules="required">
             <input
@@ -352,17 +351,20 @@ export default {
     font-family: 'ALS Story', sans-serif;
     font-style: normal;
     font-weight: 800;
-    font-size: 1.7rem;
+    font-size: 1.5rem;
     line-height: 1;
   }
 
   &__subtitle {
-    font-size: 1.14rem;
     line-height: 1.18;
   }
 
   &__group {
     margin-bottom: 2px;
+  }
+
+  &__label {
+    font-size: 0.875rem;
   }
 
   &__date {
@@ -372,7 +374,7 @@ export default {
       }
 
       .v-icon {
-        color: $text-color;
+        color: $text-color !important;
       }
     }
   }
@@ -386,7 +388,7 @@ export default {
   }
 
   &__file-hint {
-    font-size: 0.8rem;
+    font-size: 0.69rem;
     line-height: 1.18;
   }
 
@@ -396,6 +398,7 @@ export default {
     &-input {
       border: 0.5px solid #99a2ad;
       border-radius: 3px;
+      max-width: 100%;
     }
   }
 }
