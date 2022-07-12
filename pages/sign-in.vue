@@ -57,7 +57,7 @@
       <v-checkbox
         v-model="remember"
         label="Запомнить меня на этом устройстве"
-        color="success"
+        color="primary"
         hide-details
         class="align-self-start mb-10"
       />
@@ -66,7 +66,7 @@
         depressed
         large
         type="submit"
-        color="success"
+        color="primary"
         class="align-self-start"
       >
         Войти

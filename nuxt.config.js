@@ -168,7 +168,7 @@ export default {
       themes: {
         light: {
           error: '#E36464',
-          primary: '#0079BF',
+          primary: '#006299',
           success: '#38A326',
         },
         dark: false,
