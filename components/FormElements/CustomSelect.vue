@@ -1,5 +1,9 @@
 <template>
-  <div class="custom-select px-2 pt-2">
+  <div
+    class="custom-select px-2 pt-2"
+    :class="fixed ? 'position--fixed' : ''"
+    :style="{ top, left, maxWidth }"
+  >
     <v-combobox
       v-bind="$attrs"
       :attach="`#custom-select__options${_uid}`"
@@ -7,15 +11,15 @@
       outlined
       dense
       hide-details
-      v-on="$listeners"
       class="mb-2"
+      v-on="$listeners"
     >
-      <slot v-for="slot in Object.keys($slots)" :name="slot" :slot="slot" />
+      <slot v-for="slot in Object.keys($slots)" :slot="slot" :name="slot" />
     </v-combobox>
     <div
       ref="options"
-      class="custom-select__options"
       :id="`custom-select__options${_uid}`"
+      class="custom-select__options"
     ></div>
   </div>
 </template>
@@ -23,15 +27,34 @@
 <script>
 export default {
   name: 'CustomSelect',
+  props: {
+    fixed: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  data() {
+    return {
+      top: 0,
+      left: 0,
+      maxWidth: '100%',
+    }
+  },
+  mounted() {
+    // console.dir(this.$el)
+    const { x, y, width } = this.$el.parentElement.getBoundingClientRect()
+    // console.log(this.$el.parentElement)
+    // console.log(this.$el.parentElement.getBoundingClientRect())
+    this.top = `${y}px`
+    this.left = `${x}px`
+    this.maxWidth = `${width * 0.98}px`
+  },
   methods: {},
 }
 </script>
 
 <style lang="scss" scoped>
 .custom-select {
-  // position: relative;
-  // max-height: 32px !important;
-  // overflow: visible !important;
   max-width: 100%;
   background: #fff;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
@@ -64,11 +87,15 @@ export default {
     fieldset {
       border: 1px solid #99a2ad !important;
       border-radius: 10px !important;
+      background: #fff;
+    }
+
+    .v-list {
+      background: none;
     }
 
     .v-menu__content {
       position: static;
-      // top: 32px !important;
       max-width: 100%;
       box-shadow: none !important;
 

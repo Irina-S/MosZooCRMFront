@@ -79,17 +79,17 @@
 export default {
   name: 'SignInPage',
   layout: 'auth',
-  head() {
-    return {
-      title: 'Вход',
-    }
-  },
   data() {
     return {
       email: null,
       password: null,
       showPassword: false,
       remember: false,
+    }
+  },
+  head() {
+    return {
+      title: 'Вход',
     }
   },
   methods: {

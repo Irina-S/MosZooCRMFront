@@ -20,7 +20,7 @@
         }}</CustomChip>
       </template>
       <template #[`item.date`]="{ item }">
-        <span class="font-weight-medium">{{ item.date }}</span>
+        <span class="font-weight-medium mr-1">{{ item.date }}</span>
         <span class="font-weight-medium text--light">{{ item.time }}</span>
       </template>
       <template #[`item.responsible`]="{ item }">
@@ -30,22 +30,20 @@
           item-value="name"
           item-text="name"
           placeholer="Выберите"
-          class="position--absolute"
-          :style="{
-            top: 0,
-            left: 0,
-            maxWidth: 'calc(100% - 20px)',
-            width: 'calc(100% - 20px)',
-          }"
+          fixed
+          @keydown.esc="item.isResponsibleEditing = false"
           @change="setResponsible(item, $event)"
         >
           <template #no-data>
             <div class="font-weight-regular text-center">Нет результатов</div>
           </template>
         </CustomSelect>
-        <nuxt-link v-else-if="item.responsible" to="/">{{
-          item.responsible
-        }}</nuxt-link>
+        <a
+          v-else-if="item.responsible"
+          class="text-decoration-underline"
+          @click.prevent="item.isResponsibleEditing = true"
+          >{{ item.responsible }}</a
+        >
         <v-btn v-else outlined x-small @click="item.isResponsibleEditing = true"
           >Назначить</v-btn
         >
@@ -69,6 +67,7 @@
         <span
           v-else
           class="full-width font-weight-medium"
+          style="min-height: 26px"
           @click="item.isCommentEditing = true"
           >{{ item.comment }}</span
         >
@@ -102,11 +101,6 @@ import { StatusColor } from '@/constants/Status'
 export default {
   name: 'RequestList',
   components: { CustomChip, CustomSelect },
-  head() {
-    return {
-      title: 'Список заявок',
-    }
-  },
   data() {
     return {
       StatusColor,
@@ -313,6 +307,11 @@ export default {
         },
       ],
       page: 1,
+    }
+  },
+  head() {
+    return {
+      title: 'Список заявок',
     }
   },
   methods: {

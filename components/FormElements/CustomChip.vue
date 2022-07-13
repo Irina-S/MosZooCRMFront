@@ -20,11 +20,13 @@ export default {}
 
   &.v-size--default {
     border-radius: 10px !important;
+    font-size: 1rem !important;
   }
 
   &.v-size--small {
     border-radius: 4px !important;
     height: 18px !important;
+    font-size: 0.75rem !important;
     padding: 2px 4px !important;
   }
 }

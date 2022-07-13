@@ -11,7 +11,7 @@ $btn-font-weight:400;
 $btn-sizes:
     (
       'x-small': 18,
-      'small': 28,
+      'small': 32,
       'default': 44,
       'large': 44,
       'x-large': 52
@@ -20,7 +20,7 @@ $btn-sizes:
 $btn-font-sizes:
     (
         'x-small': .75rem,
-        'small': .75rem,
+        'small': 1rem,
         'default': .875rem,
         'large': .875rem,
         'x-large': 1rem
@@ -31,3 +31,27 @@ $data-table-regular-header-font-size:0.75rem;
 $data-table-regular-header-height:22px;
 $data-table-regular-row-font-size:0.75rem;
 $data-table-regular-row-height:32px;
+
+$icon-sizes: 
+  (
+    'x-small': (
+      'font-size': 10,
+      'height': 16
+    ),
+    'small': (
+      'font-size': 12,
+      'height': 18
+    ),
+    'default': (
+      'font-size': 12,
+      'height': 26
+    ),
+    'large': (
+      'font-size': 16,
+      'height': 54
+    ),
+    'x-large': (
+      'font-size': 18,
+      'height': 66
+    )
+  );

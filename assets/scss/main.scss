@@ -36,7 +36,7 @@
 }
 
 a{
-  color:$text-color-link !important
+  color:$text-color-link
 }
 
 .full-width{
@@ -70,13 +70,25 @@ a{
 
 .comment-field{
   &.v-input{
-      font-size:0.75rem !important;
+      font-size:1rem !important;
+
+      &.v-input--dense{
+        font-size:0.75rem !important;
+      }
   }
 
   .v-input__slot{
-    min-height: 26px !important;
+    min-height: 32px !important;
     padding: 0 8px !important;
+  }   
+
+  &.v-input--dense{
+    .v-input__slot{
+      min-height: 26px !important;
+    }    
   }
+
+
 
   fieldset{
     background: #fff !important;
@@ -121,6 +133,19 @@ a{
   }
 }
 
+.v-chip{
+&.theme--light.v-chip:not(.v-chip--active) {
+  background: #EFF1F2;
+}  
+}
+
+.v-input--checkbox{
+  .v-input--selection-controls__input{
+    color:$text-color-light;
+  }  
+}
+
+
 // требует явно заданного width
 .truncate-text {
   width: 350px;
@@ -136,5 +161,15 @@ a{
 
   &--absolute{
     position: absolute;
+  }
+
+  &--fixed{
+    position: fixed;
+  }
+}
+
+.bg{
+  &--gray{
+    background: $light-gray !important;
   }
 }
