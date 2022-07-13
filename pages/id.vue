@@ -1,13 +1,13 @@
 <template>
-  <div>
+  <div class="position--relative">
     <h1 class="font-weight-bold text--enlarged mb-3">Заявка № {{ id }}</h1>
     <div class="request-info mb-4">
       <div class="text--light">Тип кружка</div>
       <div class="font-weight-medium">{{ request.type }}</div>
       <div class="text--light">Статус</div>
       <div>
-        <CustomChip :color="StatusColor[request.status.type]">{{
-          request.status.text
+        <CustomChip :color="StatusColor[status.type]">{{
+          status.text
         }}</CustomChip>
       </div>
       <div class="text--light">Дата</div>
@@ -17,33 +17,38 @@
       </div>
       <div class="text--light">Ответственный</div>
       <div class="font-weight-medium position--relative">
-        <CustomSelect
-          v-if="isResponsibleEditing"
-          :items="employees"
-          item-value="name"
-          item-text="name"
-          placeholer="Выберите"
-          class="position--absolute bg--gray"
-          :style="{
-            top: 0,
-            left: 0,
-          }"
-          @keydown.esc="isResponsibleEditing = false"
-          @change="setResponsible"
-        >
-          <template #no-data>
-            <div class="font-weight-regular text-center">Нет результатов</div>
-          </template>
-        </CustomSelect>
-        <a
-          v-else-if="request.responsible"
-          class="text-decoration-underline"
-          @click.prevent="isResponsibleEditing = true"
-          >{{ request.responsible }}</a
-        >
-        <v-btn v-else outlined small @click="isResponsibleEditing = true"
-          >Назначить</v-btn
-        >
+        <template v-if="$route.query.employee === 'responsible'">
+          <div class="font-weight-medium">Мария Христорождественская</div>
+        </template>
+        <template v-else>
+          <CustomSelect
+            v-if="isResponsibleEditing"
+            :items="employees"
+            item-value="name"
+            item-text="name"
+            placeholer="Выберите"
+            class="position--absolute bg--gray"
+            :style="{
+              top: 0,
+              left: 0,
+            }"
+            @keydown.esc="isResponsibleEditing = false"
+            @change="setResponsible"
+          >
+            <template #no-data>
+              <div class="font-weight-regular text-center">Нет результатов</div>
+            </template>
+          </CustomSelect>
+          <a
+            v-else-if="request.responsible"
+            class="text-decoration-underline"
+            @click.prevent="isResponsibleEditing = true"
+            >{{ request.responsible }}</a
+          >
+          <v-btn v-else outlined small @click="isResponsibleEditing = true"
+            >Назначить</v-btn
+          >
+        </template>
       </div>
       <div class="text--light">Комментарий</div>
       <div>
@@ -135,13 +140,58 @@
         >При закрытии все изменения будут сохранены</span
       >
     </div>
+    <div
+      v-if="
+        $route.query.employee === 'responsible' &&
+        ['accepted', 'documents_request', 'invitation'].includes(
+          $route.query.type
+        )
+      "
+      class="request-actions position--absolute bg--gray pt-4 px-3 pb-6"
+    >
+      <div class="mb-4">Выберите вариант решения по заявке</div>
+      <div
+        v-if="$route.query.type === 'accepted'"
+        class="d-flex justify-space-between align-start"
+      >
+        <v-btn outlined color="indigo" small class="mr-6">
+          Запрос документов
+        </v-btn>
+        <v-btn outlined color="error" small class="mr-12">
+          Отклонена (гр. укомплектована)
+        </v-btn>
+        <v-btn outlined color="#99A2AD" small> Дубликат </v-btn>
+      </div>
+      <div
+        v-else-if="$route.query.type === 'documents_request'"
+        class="d-flex justify-space-between align-start"
+      >
+        <v-btn outlined color="#CD32A2" small class="mr-6">
+          Приглашение на в/и
+        </v-btn>
+        <v-btn outlined color="error" small class="mr-auto">
+          Отклонена (отсутствуют док.)
+        </v-btn>
+      </div>
+      <div
+        v-else-if="$route.query.type === 'invitation'"
+        class="d-flex justify-space-between align-start"
+      >
+        <v-btn outlined color="success" small class="mr-6">
+          Одобрена (по итогам в/и)
+        </v-btn>
+        <v-btn outlined color="error" small class="mr-auto">
+          Отклонена (по итогам в/и)
+        </v-btn>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import CustomChip from '@/components/FormElements/CustomChip'
 import CustomSelect from '@/components/FormElements/CustomSelect'
-import { StatusColor } from '@/constants/Status'
+import { StatusColor, StatusText } from '@/constants/Status'
 
 export default {
   name: 'SingleRequestPage',
@@ -149,6 +199,7 @@ export default {
   data() {
     return {
       StatusColor,
+      StatusText,
       id: 122,
       request: {
         type: 'Пони-клуб',
@@ -186,6 +237,18 @@ export default {
       title: 'Заявка',
     }
   },
+  computed: {
+    status() {
+      return {
+        text: this.$route.query.type
+          ? StatusText[this.$route.query.type.toUpperCase()]
+          : 'Новая',
+        type: this.$route.query.type
+          ? this.$route.query.type.toUpperCase()
+          : 'NEW',
+      }
+    },
+  },
   methods: {
     setResponsible(value) {
       this.request.responsible = value.name
@@ -206,5 +269,11 @@ export default {
     grid-column-start: 1;
     grid-column-end: 3;
   }
+}
+
+.request-actions {
+  right: 0;
+  top: 0;
+  min-width: 600px;
 }
 </style>

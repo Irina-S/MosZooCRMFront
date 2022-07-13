@@ -24,29 +24,38 @@
         <span class="font-weight-medium text--light">{{ item.time }}</span>
       </template>
       <template #[`item.responsible`]="{ item }">
-        <CustomSelect
-          v-if="item.isResponsibleEditing"
-          :items="employees"
-          item-value="name"
-          item-text="name"
-          placeholer="Выберите"
-          fixed
-          @keydown.esc="item.isResponsibleEditing = false"
-          @change="setResponsible(item, $event)"
-        >
-          <template #no-data>
-            <div class="font-weight-regular text-center">Нет результатов</div>
-          </template>
-        </CustomSelect>
-        <a
-          v-else-if="item.responsible"
-          class="text-decoration-underline"
-          @click.prevent="item.isResponsibleEditing = true"
-          >{{ item.responsible }}</a
-        >
-        <v-btn v-else outlined x-small @click="item.isResponsibleEditing = true"
-          >Назначить</v-btn
-        >
+        <template v-if="$route.query.employee === 'responsible'">
+          <div class="font-weight-medium">Мария Христорождественская</div>
+        </template>
+        <template v-else>
+          <CustomSelect
+            v-if="item.isResponsibleEditing"
+            :items="employees"
+            item-value="name"
+            item-text="name"
+            placeholer="Выберите"
+            fixed
+            @keydown.esc="item.isResponsibleEditing = false"
+            @change="setResponsible(item, $event)"
+          >
+            <template #no-data>
+              <div class="font-weight-regular text-center">Нет результатов</div>
+            </template>
+          </CustomSelect>
+          <a
+            v-else-if="item.responsible"
+            class="text-decoration-underline"
+            @click.prevent="item.isResponsibleEditing = true"
+            >{{ item.responsible }}</a
+          >
+          <v-btn
+            v-else
+            outlined
+            x-small
+            @click="item.isResponsibleEditing = true"
+            >Назначить</v-btn
+          >
+        </template>
       </template>
       <template #[`item.requester`]="{ item }">
         <span class="font-weight-medium truncate-text" style="width: 95%">
