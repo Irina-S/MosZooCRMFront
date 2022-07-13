@@ -15,7 +15,7 @@
 }
 
 *{
-  color:$text-color;
+  color:$text-color default;
   scrollbar-width: 5px;
   scrollbar-color: #99A2AD #fff;
 }
@@ -36,7 +36,7 @@
 }
 
 a{
-  color:$text-color-link
+  color:$text-color-link;
 }
 
 .full-width{
@@ -110,7 +110,7 @@ a{
       border-color: $text-color !important;
       }
     }  
-  } 
+  }
 }
 
 .v-avatar{
@@ -143,6 +143,18 @@ a{
   .v-input--selection-controls__input{
     color:$text-color-light;
   }  
+}
+
+.v-text-field{
+  &__details{
+    padding: 0 !important;
+  }
+}
+
+.v-messages{
+  &__message{
+    text-align: right;
+  } 
 }
 
 

@@ -115,6 +115,11 @@
             <CustomFileInput
               v-model="form.files"
               accept="image/png,image/jpeg,image/bmp,application/pdf"
+              :error-messages="
+                isPhoneChange
+                  ? 'Измените номер телефона и нажмите кнопку Отправить заявку'
+                  : ''
+              "
             />
           </validation-provider>
         </div>
@@ -177,6 +182,20 @@ export default {
   name: 'RequestForm',
   components: { CustomFileInput, CustomButton },
   layout: 'request',
+  props: {
+    isPhoneChange: {
+      type: Boolean,
+      default: false,
+    },
+    formData: {
+      type: Object,
+      defult: () => {},
+    },
+    checkboxesData: {
+      type: Object,
+      defult: () => {},
+    },
+  },
   data() {
     return {
       sectionTypes: [
@@ -196,144 +215,164 @@ export default {
           text: 'Краски мира',
         },
       ],
-      checkboxes: {
-        kubz: [
-          {
-            name: 'agreeProcessing',
-            label: `Я даю <a href="#">Согласие на обработку и распространение персональных данных</a>`,
-            value: false,
-          },
-          {
-            name: 'agreePolicy',
-            label: `Я ознакомлен с <a href="#"> Политикой обработки персональных данных</a>`,
-            value: false,
-          },
-          {
-            name: 'agreeKubzRules',
-            label: `Я ознакомлен и согласен с <a href="#">Правилами и положениями КДФ "КЮБЗ"</a>`,
-            value: false,
-          },
-          {
-            name: 'agreeCulture',
-            label: `Я ознакомлен с <a href="#">Положением о культурно-досуговом формировании КДФ «КЮБЗ»</a>`,
-            value: false,
-          },
-          {
-            name: 'agreeInnerRules',
-            label: `Я ознакомлен и согласен с <a href="#">Правилами внутреннего распорядка КДФ «КЮБЗ»</a>`,
-            value: false,
-          },
-          {
-            name: 'agreeSafetyRules',
-            label: `Я ознакомлен и согласен с <a href="#">Правилами техники безопасности участника КДФ «КЮБЗ» при экспедициях и в полевых условиях</a>`,
-            value: false,
-          },
-          {
-            name: 'agreeInnerRules2',
-            label: `Я ознакомлен и согласен с <a href="#">Правилами техники безопасности участника КДФ «КЮБЗ»</a>`,
-            value: false,
-          },
-          {
-            name: 'agreeRegulation',
-            label: `Я ознакомлен с <a href="#">Уставом КДФ «КЮБЗ»</a>`,
-            value: false,
-          },
-        ],
-        poni: [
-          {
-            name: 'agreeProcessing',
-            label: `Я даю <a href="#">Согласие на обработку и распространение персональных данных</a>`,
-            value: false,
-          },
-          {
-            name: 'agreePolicy',
-            label: `Я ознакомлен с <a href="#"> Политикой обработки персональных данных</a>`,
-            value: false,
-          },
-          {
-            name: 'agreePoniRules',
-            label: `Я ознакомлен и согласен с <a href="#">Правилами и положениями КДФ "Пони-клуб"</a>`,
-            value: false,
-          },
-          {
-            name: 'agreePoniCulture',
-            label: `Я ознакомлен с <a href="#">Положением о культурно-досуговом формировании КДФ «Пони клуб»</a>`,
-            value: false,
-          },
-          {
-            name: 'agreePoniInnerRules',
-            label: `Я ознакомлен и согласен с <a href="#">Правилами внутреннего распорядка КДФ «Пони клуб»</a>`,
-            value: false,
-          },
-          {
-            name: 'agreePoniSafetyRules',
-            label: `Я ознакомлен и согласен с <a href="#">Правилами техники безопасности участника КДФ «Пони клуб» </a>`,
-            value: false,
-          },
-          {
-            name: 'agreeTest',
-            label: `Я ознакомлен и согласен с <a href="#">Вступительными испытаниями КДФ «Пони клуб»</a>`,
-            value: false,
-          },
-        ],
-        colors: [
-          {
-            name: 'agreeProcessing',
-            label: `Я даю <a href="#">Согласие на обработку и распространение персональных данных</a>`,
-            value: false,
-          },
-          {
-            name: 'agreePolicy',
-            label: `Я ознакомлен с <a href="#"> Политикой обработки персональных данных</a>`,
-            value: false,
-          },
-          {
-            name: 'agreeColorsRules',
-            label: `Я ознакомлен и согласен с <a href="#">Правилами и положениями КДФ "Краски мира"</a>`,
-            value: false,
-          },
-          {
-            name: 'agreeColorsCulture',
-            label: `Я ознакомлен с <a href="#">Положением о культурно-досуговом формировании КДФ «Краски мира»</a>`,
-            value: false,
-          },
-          {
-            name: 'agreeColorsInnerRules',
-            label: `Я ознакомлен и согласен с <a href="#">Правилами внутреннего распорядка КДФ «Краски мира»</a>`,
-            value: false,
-          },
-          {
-            name: 'agreeColorsSafetyRules',
-            label: `Я ознакомлен и согласен с <a href="#">Правилами техники безопасности участника КДФ «Краски мира» при экспедиции в полевых условиях</a>`,
-            value: false,
-          },
-          {
-            name: 'agreeColorsSafetyRules2',
-            label: `Я ознакомлен и согласен с <a href="#">Правилами техники безопасности участника КДФ «Краски мира» </a>`,
-            value: false,
-          },
-          {
-            name: 'agreeColorsRegulation',
-            label: `Я ознакомлен и согласен с <a href="#">Уставом КДФ «Краски мира»</a>`,
-            value: false,
-          },
-        ],
-      },
-      form: {
-        type: null,
-        requesterName: null,
-        childName: null,
-        childBirthDate: null,
-        maintainerName: null,
-        email: null,
-        phone: null,
-        files: [],
-        code: null,
-      },
+      // checkboxes: {
+      //   kubz: [
+      //     {
+      //       name: 'agreeProcessing',
+      //       label: `Я даю <a href="#">Согласие на обработку и распространение персональных данных</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreePolicy',
+      //       label: `Я ознакомлен с <a href="#"> Политикой обработки персональных данных</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreeKubzRules',
+      //       label: `Я ознакомлен и согласен с <a href="#">Правилами и положениями КДФ "КЮБЗ"</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreeCulture',
+      //       label: `Я ознакомлен с <a href="#">Положением о культурно-досуговом формировании КДФ «КЮБЗ»</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreeInnerRules',
+      //       label: `Я ознакомлен и согласен с <a href="#">Правилами внутреннего распорядка КДФ «КЮБЗ»</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreeSafetyRules',
+      //       label: `Я ознакомлен и согласен с <a href="#">Правилами техники безопасности участника КДФ «КЮБЗ» при экспедициях и в полевых условиях</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreeInnerRules2',
+      //       label: `Я ознакомлен и согласен с <a href="#">Правилами техники безопасности участника КДФ «КЮБЗ»</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreeRegulation',
+      //       label: `Я ознакомлен с <a href="#">Уставом КДФ «КЮБЗ»</a>`,
+      //       value: false,
+      //     },
+      //   ],
+      //   poni: [
+      //     {
+      //       name: 'agreeProcessing',
+      //       label: `Я даю <a href="#">Согласие на обработку и распространение персональных данных</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreePolicy',
+      //       label: `Я ознакомлен с <a href="#"> Политикой обработки персональных данных</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreePoniRules',
+      //       label: `Я ознакомлен и согласен с <a href="#">Правилами и положениями КДФ "Пони-клуб"</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreePoniCulture',
+      //       label: `Я ознакомлен с <a href="#">Положением о культурно-досуговом формировании КДФ «Пони клуб»</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreePoniInnerRules',
+      //       label: `Я ознакомлен и согласен с <a href="#">Правилами внутреннего распорядка КДФ «Пони клуб»</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreePoniSafetyRules',
+      //       label: `Я ознакомлен и согласен с <a href="#">Правилами техники безопасности участника КДФ «Пони клуб» </a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreeTest',
+      //       label: `Я ознакомлен и согласен с <a href="#">Вступительными испытаниями КДФ «Пони клуб»</a>`,
+      //       value: false,
+      //     },
+      //   ],
+      //   colors: [
+      //     {
+      //       name: 'agreeProcessing',
+      //       label: `Я даю <a href="#">Согласие на обработку и распространение персональных данных</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreePolicy',
+      //       label: `Я ознакомлен с <a href="#"> Политикой обработки персональных данных</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreeColorsRules',
+      //       label: `Я ознакомлен и согласен с <a href="#">Правилами и положениями КДФ "Краски мира"</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreeColorsCulture',
+      //       label: `Я ознакомлен с <a href="#">Положением о культурно-досуговом формировании КДФ «Краски мира»</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreeColorsInnerRules',
+      //       label: `Я ознакомлен и согласен с <a href="#">Правилами внутреннего распорядка КДФ «Краски мира»</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreeColorsSafetyRules',
+      //       label: `Я ознакомлен и согласен с <a href="#">Правилами техники безопасности участника КДФ «Краски мира» при экспедиции в полевых условиях</a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreeColorsSafetyRules2',
+      //       label: `Я ознакомлен и согласен с <a href="#">Правилами техники безопасности участника КДФ «Краски мира» </a>`,
+      //       value: false,
+      //     },
+      //     {
+      //       name: 'agreeColorsRegulation',
+      //       label: `Я ознакомлен и согласен с <a href="#">Уставом КДФ «Краски мира»</a>`,
+      //       value: false,
+      //     },
+      //   ],
+      // },
+      // form: {
+      //   type: null,
+      //   requesterName: null,
+      //   childName: null,
+      //   childBirthDate: null,
+      //   maintainerName: null,
+      //   email: null,
+      //   phone: null,
+      //   files: [],
+      //   code: null,
+      // },
     }
   },
+  computed: {
+    form: {
+      get() {
+        return this.formData
+      },
+      set(value) {
+        this.$emit('update:formData', value)
+      },
+    },
+    checkboxes: {
+      get() {
+        return this.checkboxesData
+      },
+      set(value) {
+        this.$emit('update:checkboxesData', value)
+      },
+    },
+  },
   mounted() {
-    this.form.type = this.sectionTypes[0]
+    if (!this.form.type) {
+      this.form.type = this.sectionTypes[0]
+    }
   },
   methods: {
     onSubmit() {

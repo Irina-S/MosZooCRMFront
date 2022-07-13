@@ -8,7 +8,7 @@
         <h1 class="confirm-form__title text-center mb-6">
           Подтверждение номера телефона
         </h1>
-        <div class="text--enlarged text-center mb-7">
+        <div class="text-center mb-7">
           Код подтверждения отправлен вам по sms на номер {{ phone }}. Введите
           его в поле ниже, чтобы завершить отправку заявки:
         </div>
@@ -36,7 +36,7 @@
           Повторная отправка кода подтверждения
         </div>
         <div class="d-flex justify-center">
-          <a href="#" @click.prevent="$emit('go-back')"
+          <a href="#" @click.prevent="$emit('change-phone')"
             >Изменить номер телефона</a
           >
         </div>

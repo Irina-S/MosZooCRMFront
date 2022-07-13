@@ -5,14 +5,14 @@
     :value="files"
     :clearable="false"
     :accept="accept"
-    counter
-    show-size
     small-chips
     multiple
     outlined
     single-line
     placeholder="Выберите файлы или перетащите файлы сюда"
     class="custom-file-input"
+    :success="!$attrs['error-messages']"
+    :error-messages="$attrs['error-messages']"
     @change="onChange"
   >
     <template #selection="{ index, text }">
@@ -87,9 +87,9 @@ export default {
       }
     }
 
-    .v-text-field__details {
-      display: none;
-    }
+    // .v-text-field__details {
+    //   display: none;
+    // }
 
     .v-input__prepend-outer,
     .v-input__append-inner {
