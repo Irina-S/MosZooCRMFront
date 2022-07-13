@@ -79,6 +79,11 @@
 export default {
   name: 'SignInPage',
   layout: 'auth',
+  head() {
+    return {
+      title: 'Вход',
+    }
+  },
   data() {
     return {
       email: null,

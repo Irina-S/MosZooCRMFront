@@ -30,6 +30,11 @@ export default {
   name: 'RequestPage',
   layout: 'request',
   components: { RequestForm, TelConfirm, TelConfirmed },
+  head() {
+    return {
+      title: 'Подать заявку',
+    }
+  },
   steps: {
     form: 'form',
     confirm: 'confirm',

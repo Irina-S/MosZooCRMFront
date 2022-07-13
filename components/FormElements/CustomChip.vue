@@ -1,5 +1,5 @@
 <template>
-  <v-chip v-bind="$attrs" v-on="$listeners" class="custom-chip"
+  <v-chip class="custom-chip" v-bind="$attrs" v-on="$listeners"
     ><slot></slot
   ></v-chip>
 </template>
@@ -10,14 +10,22 @@ export default {}
 
 <style lang="scss" scoped>
 .custom-chip {
-  background: #ccd4df !important;
+  &.theme--light.v-chip:not(.v-chip--active) {
+    background: #ccd4df;
+  }
 
   &:hover::before {
     display: none !important;
   }
 
   &.v-size--default {
-    border-radius: 10px;
+    border-radius: 10px !important;
+  }
+
+  &.v-size--small {
+    border-radius: 4px !important;
+    height: 18px !important;
+    padding: 2px 4px !important;
   }
 }
 </style>

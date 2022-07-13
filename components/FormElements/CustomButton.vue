@@ -1,12 +1,12 @@
 <template>
   <button
     v-bind="$attrs"
-    v-on="$listeners"
     class="custom-button px-3 py-4"
     :class="{
       'custom-button--active': active,
       'custom-button--disabled': $attrs.disabled,
     }"
+    v-on="$listeners"
   >
     <slot></slot>
   </button>

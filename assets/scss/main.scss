@@ -16,10 +16,32 @@
 
 *{
   color:$text-color;
+  scrollbar-width: 5px;
+  scrollbar-color: #99A2AD #fff;
+}
+
+*::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #fff;
+  border-radius: 11px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #99A2AD;
+  border-radius: 11px;
 }
 
 a{
   color:$text-color-link !important
+}
+
+.full-width{
+  display: block;
+  width: 100%;
 }
 
 .text{
@@ -46,6 +68,25 @@ a{
   }
 }
 
+.comment-field{
+  &.v-input{
+      font-size:0.75rem !important;
+  }
+
+  .v-input__slot{
+    min-height: 26px !important;
+    padding: 0 8px !important;
+  }
+
+  fieldset{
+    background: #fff !important;
+  }
+
+  input{
+    padding: 0 !important;
+  }
+}
+
 .custom-field{
   &.v-text-field--outlined{
     fieldset{
@@ -58,4 +99,42 @@ a{
       }
     }  
   } 
+}
+
+.v-avatar{
+  color:#fff
+}
+
+.v-pagination{
+  &__item{
+    width: 44px !important;
+    height: 44px !important;
+    background: $button-color-default !important;
+    box-shadow: none !important;
+  }
+
+  &__navigation{
+    width: 44px !important;
+    height: 44px !important;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+}
+
+// требует явно заданного width
+.truncate-text {
+  width: 350px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.position{
+  &--relative{
+    position: relative;
+  }
+
+  &--absolute{
+    position: absolute;
+  }
 }
