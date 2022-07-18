@@ -440,5 +440,11 @@ export default {
       max-width: 100%;
     }
   }
+
+  ::v-deep {
+    .v-messages__messages {
+      text-align: right;
+    }
+  }
 }
 </style>
