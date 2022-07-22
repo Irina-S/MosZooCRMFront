@@ -52,13 +52,16 @@
       </div>
       <div class="text--light">Комментарий</div>
       <div>
-        <v-text-field
+        <v-textarea
           v-model="request.comment"
           placeholder="Текст комментария..."
+          no-resize
+          rows="3"
           outlined
           hide-details
-          class="comment-field"
-        ></v-text-field>
+          class="comment-field comment-textarea mb-2"
+        ></v-textarea>
+        <v-btn outlined small color="primary"> Сохранить </v-btn>
       </div>
       <div class="text--light">ФИО заявителя</div>
       <div class="font-weight-medium">{{ request.requesterName }}</div>
@@ -92,7 +95,7 @@
           class="d-inline-flex mt-0 pa-0"
         >
           <template #label>
-            <div class="text--small ml-2 pt-1">
+            <div class="text--small text--default ml-2 pt-1">
               Согласие на обработку и распространение персональных данных
             </div>
           </template>
@@ -106,7 +109,7 @@
           class="d-inline-flex mt-0 pa-0"
         >
           <template #label>
-            <div class="text--small ml-2 pt-1">
+            <div class="text--small text--default ml-2 pt-1">
               Ознакомлен с политикой обработки персональных данных
             </div>
           </template>
@@ -120,7 +123,7 @@
           class="d-inline-flex mt-0 pa-0"
         >
           <template #label>
-            <div class="text--small ml-2 pt-1">
+            <div class="text--small text--default ml-2 pt-1">
               Я ознакомлен и согласен с правилами и положениями КДФ «Пони –
               Клуб»
             </div>
@@ -132,7 +135,7 @@
       <div class="text--light">Браузер</div>
       <div class="font-weight-medium">{{ request.browser }}</div>
     </div>
-    <div class="d-flex align-center">
+    <div class="d-flex align-center mb-4">
       <v-btn to="/" depressed color="primary" small class="mr-6">
         Закрыть
       </v-btn>
@@ -142,10 +145,11 @@
     </div>
     <div
       v-if="
-        $route.query.employee === 'responsible' &&
-        ['accepted', 'documents_request', 'invitation'].includes(
-          $route.query.type
-        )
+        !$route.query.employee ||
+        ($route.query.employee === 'responsible' &&
+          ['accepted', 'documents_request', 'invitation'].includes(
+            $route.query.type
+          ))
       "
       class="request-actions position--absolute bg--gray pt-4 px-3 pb-6"
     >
@@ -182,6 +186,41 @@
         </v-btn>
         <v-btn outlined color="error" small class="mr-auto">
           Отклонена (по итогам в/и)
+        </v-btn>
+      </div>
+      <div
+        v-else-if="!$route.query.employee"
+        class="d-flex align-start flex-wrap"
+      >
+        <v-btn outlined color="#DBD06E" small class="mr-3 mb-3">
+          Принята
+        </v-btn>
+        <v-btn outlined color="indigo" small class="mr-3 mb-3">
+          Запрос документов
+        </v-btn>
+        <v-btn outlined color="error" small class="mr-3 mb-3">
+          Отклонена (гр. укомплектована)
+        </v-btn>
+        <v-btn outlined color="#817070" small class="mr-3 mb-3">
+          Аннулировано
+        </v-btn>
+        <v-btn outlined color="error" small class="mr-3 mb-3">
+          Отклонена (отсутствуют док.)
+        </v-btn>
+        <v-btn outlined color="#CD32A2" small class="mr-3 mb-3">
+          Приглашение на в/и
+        </v-btn>
+        <v-btn outlined color="#C87E0F" small class="mr-3 mb-3">
+          Неявка на в/и
+        </v-btn>
+        <v-btn outlined color="success" small class="mr-3 mb-3">
+          Одобрена (по итогам в/и)
+        </v-btn>
+        <v-btn outlined color="error" small class="mr-3 mb-3">
+          Отклонена (по итогам в/и)
+        </v-btn>
+        <v-btn outlined color="#51607A" small class="mr-3 mb-3">
+          Отработана
         </v-btn>
       </div>
     </div>
@@ -274,6 +313,10 @@ export default {
 .request-actions {
   right: 0;
   top: 0;
-  min-width: 600px;
+  max-width: 640px;
+}
+
+.comment-textarea {
+  max-width: 322px;
 }
 </style>

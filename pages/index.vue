@@ -5,6 +5,7 @@
       :headers="requestTableHeaders"
       :items="requestTableData"
       :items-per-page="10"
+      :header-props="{ sortIcon: 'mdi-filter-variant' }"
       hide-default-footer
       class="request-table mb-6"
     >
@@ -57,9 +58,9 @@
           >
         </template>
       </template>
-      <template #[`item.requester`]="{ item }">
+      <template #[`item.applicant`]="{ item }">
         <span class="font-weight-medium truncate-text" style="width: 95%">
-          {{ item.requester }}</span
+          {{ item.applicant }}</span
         >
       </template>
       <template #[`item.comment`]="{ item }">
@@ -122,7 +123,7 @@ export default {
         {
           text: 'Номер',
           value: 'id',
-          sortable: false,
+          sortable: true,
           class: 'text-no-wrap',
         },
         {
@@ -146,14 +147,14 @@ export default {
         {
           text: 'Ответственный',
           value: 'responsible',
-          sortable: false,
+          sortable: true,
           class: 'text-no-wrap',
           cellClass: 'position--relative',
         },
         {
           text: 'ФИО заявителя',
-          value: 'requester',
-          sortable: false,
+          value: 'applicant',
+          sortable: true,
           class: 'text-no-wrap',
         },
         {
@@ -175,7 +176,7 @@ export default {
           date: '17.06.2022',
           time: '09:00:07',
           responsible: null,
-          requester: 'Константинопольский Константин Константинович',
+          applicant: 'Константинопольский Константин Константинович',
           comment: '',
           isCommentEditing: false,
           isResponsibleEditing: false,
@@ -190,7 +191,7 @@ export default {
           date: '17.06.2022',
           time: '08:45:09',
           responsible: null,
-          requester: 'Константинопольский Константин Константинович',
+          applicant: 'Константинопольский Константин Константинович',
           comment: '',
           isCommentEditing: false,
           isResponsibleEditing: false,
@@ -205,7 +206,7 @@ export default {
           date: '16.06.2022',
           time: '12:44:02',
           responsible: 'Светлана Петрановская',
-          requester: 'Смирнов Петр Анатольевич',
+          applicant: 'Смирнов Петр Анатольевич',
           comment: 'Текст комментария к заявке может быть дл...',
           isCommentEditing: false,
           isResponsibleEditing: false,
@@ -220,7 +221,7 @@ export default {
           date: '16.06.2022',
           time: '12:09:07',
           responsible: 'Мария Христорождественская ',
-          requester: 'Григориев Василий Васильевич',
+          applicant: 'Григориев Василий Васильевич',
           comment: '',
           isCommentEditing: false,
           isResponsibleEditing: false,
@@ -235,7 +236,7 @@ export default {
           date: '16.06.2022',
           time: '12:09:07',
           responsible: 'Виктория Викторова',
-          requester: 'Федоров Роман Евгеньевич',
+          applicant: 'Федоров Роман Евгеньевич',
           comment: 'Текст комментария к заявке может быть дл...',
           isCommentEditing: false,
           isResponsibleEditing: false,
@@ -250,7 +251,7 @@ export default {
           date: '16.06.2022',
           time: '09:03:01',
           responsible: 'Мария Христорождественская ',
-          requester: 'Григориев Виктор Викторович',
+          applicant: 'Григориев Виктор Викторович',
           comment: '',
           isCommentEditing: false,
           isResponsibleEditing: false,
@@ -265,7 +266,7 @@ export default {
           date: '15.06.2022',
           time: '09:03:01',
           responsible: null,
-          requester: 'Котов Дмитрий Витальевич',
+          applicant: 'Котов Дмитрий Витальевич',
           comment: '',
           isCommentEditing: false,
           isResponsibleEditing: false,
@@ -280,7 +281,7 @@ export default {
           date: '15.06.2022',
           time: '09:03:01',
           responsible: null,
-          requester: 'Котов Дмитрий Витальевич',
+          applicant: 'Котов Дмитрий Витальевич',
           comment: '',
           isCommentEditing: false,
           isResponsibleEditing: false,
@@ -295,7 +296,7 @@ export default {
           date: '15.06.2022',
           time: '09:03:01',
           responsible: 'Мария Христорождественская ',
-          requester: 'Котов Дмитрий Витальевич',
+          applicant: 'Котов Дмитрий Витальевич',
           comment: '',
           isCommentEditing: false,
           isResponsibleEditing: false,
@@ -310,7 +311,7 @@ export default {
           date: '15.06.2022',
           time: '09:03:01',
           responsible: 'Мария Христорождественская ',
-          requester: 'Котов Дмитрий Витальевич',
+          applicant: 'Котов Дмитрий Витальевич',
           comment: '',
           isCommentEditing: false,
           isResponsibleEditing: false,
@@ -377,6 +378,12 @@ export default {
       padding: 3px 20px 3px 12px !important;
       white-space: nowrap !important;
       border-bottom: none !important;
+    }
+
+    .v-data-table-header__icon {
+      opacity: 1 !important;
+      margin-left: 4px;
+      color: $text-color-light !important;
     }
   }
 }

@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar class="header flex-grow-0 px-10 mb-3">
       <img src="~/assets/images/atom-logo.png" alt="лого" />
-      <v-avatar color="primary" size="40">А</v-avatar>
+      <v-avatar color="primary" size="40" class="avatar">А</v-avatar>
     </v-app-bar>
     <div class="flex-grow-1 px-10">
       <Nuxt />
@@ -33,5 +33,10 @@ export default {
       justify-content: space-between;
     }
   }
+}
+
+.avatar {
+  box-shadow: 0 4px 4px rgba(191, 184, 206, 0.5),
+    2px 2px 15px rgba(191, 184, 206, 0.5);
 }
 </style>
