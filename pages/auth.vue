@@ -10,54 +10,48 @@
       </h4>
 
       <div class="mb-6">
-        <!-- <validation-provider
-          v-slot="{ errors, valid }"
-          rules="required|email"
-          mode="passive"
-        > -->
-        <v-text-field
-          v-model="email"
-          label="Введите e-mail"
-          :error-messages="errors"
-          :success="valid"
-          persistent-hint
-          hint="E-mail*"
-          single-line
-          outlined
-          class="auth-form__field"
-        ></v-text-field>
-        <!-- </validation-provider> -->
+        <validation-provider v-slot="{ errors }" name="email" mode="passive">
+          <v-text-field
+            v-model="form.email"
+            label="Введите e-mail"
+            :error-messages="errors"
+            persistent-hint
+            hint="E-mail*"
+            single-line
+            outlined
+            class="auth-form__field"
+          ></v-text-field>
+        </validation-provider>
       </div>
 
       <div class="mb-8">
-        <!-- <validation-provider
-          v-slot="{ errors, valid }"
+        <validation-provider
+          v-slot="{ errors }"
+          name="password"
           vid="password"
-          rules="required"
           mode="passive"
-        > -->
-        <v-text-field
-          v-model="password"
-          label="Введите пароль"
-          :error-messages="errors"
-          :success="valid"
-          persistent-hint
-          hint="Пароль*"
-          single-line
-          outlined
-          class="auth-form__field"
-          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-          :type="showPassword ? 'text' : 'password'"
-          @click:append="showPassword = !showPassword"
-        ></v-text-field>
-        <!-- </validation-provider> -->
+        >
+          <v-text-field
+            v-model="form.password"
+            label="Введите пароль"
+            :error-messages="errors"
+            persistent-hint
+            hint="Пароль*"
+            single-line
+            outlined
+            class="auth-form__field"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="showPassword ? 'text' : 'password'"
+            @click:append="showPassword = !showPassword"
+          ></v-text-field>
+        </validation-provider>
         <NuxtLink to="/" class="d-inline-block mt-4 text-decoration-none"
           >Забыли пароль?</NuxtLink
         >
       </div>
 
       <v-checkbox
-        v-model="remember"
+        v-model="form.remember_me"
         label="Запомнить меня на этом устройстве"
         color="primary"
         hide-details
@@ -83,10 +77,13 @@ export default {
   layout: 'auth',
   data() {
     return {
-      email: null,
-      password: null,
+      form: {
+        email: null,
+        password: null,
+        remember_me: false,
+      },
+
       showPassword: false,
-      remember: false,
     }
   },
   head() {
@@ -95,13 +92,18 @@ export default {
     }
   },
   methods: {
-    onSubmit() {
-      console.log('submit')
-
-      // TO DO: реализовать вывод сообщения о неверном пароле после синхронизации с api(если потребуется)
-      // this.$refs.form.setErrors({
-      //   password: ['Неверный пароль']
-      // });
+    async onSubmit() {
+      try {
+        await this.$auth.loginWith('local', {
+          data: this.form,
+        })
+        this.$router.push('/')
+      } catch (err) {
+        if (err.response?.status === 422) {
+          this.$refs.form.setErrors(err.response.data.errors)
+        }
+        this.$modal.show('error', { err })
+      }
     },
   },
 }

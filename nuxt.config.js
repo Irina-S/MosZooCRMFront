@@ -42,7 +42,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'atom7',
+    title: 'Загрузка...',
     htmlAttrs: {
       lang: 'ru',
     },
@@ -185,10 +185,16 @@ export default {
   },
 
   router: {
-    middleware: ['init-store' /*, 'auth' */],
+    middleware: ['init-store', 'auth'],
   },
 
   auth: {
+    redirect: {
+      login: '/auth',
+      logout: '/',
+      callback: '/auth',
+      home: false,
+    },
     strategies: {
       local: {
         token: {
@@ -200,12 +206,13 @@ export default {
         },
         endpoints: {
           login: {
-            url: '/api/auth',
+            url: '/api/v1/auth-by-password',
             method: 'post',
           },
-          logout: '/api/logout',
+          // logout: '/api/logout',
           user: {
-            url: '/api/user',
+            url: '/api/v1/user/me',
+            method: 'get',
           },
         },
       },

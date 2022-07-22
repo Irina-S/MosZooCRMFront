@@ -10,9 +10,5 @@ export default ($sendRequest) => {
     return $sendRequest('post', '/api/v1/confirm', params)
   }
 
-  request.authByPassword = (params) => {
-    return $sendRequest('post', '/api/v1/auth-by-password', params)
-  }
-
   return request
 }

@@ -32,6 +32,7 @@ import TelConfirmed from '@/components/TelConfirmed'
 
 export default {
   name: 'RequestPage',
+  auth: false,
   components: { RequestForm, TelConfirm, TelConfirmed },
   mixins: [prepareParams],
   layout: 'request',

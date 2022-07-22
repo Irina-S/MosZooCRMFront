@@ -103,6 +103,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import CustomChip from '@/components/FormElements/CustomChip'
 import CustomSelect from '@/components/FormElements/CustomSelect'
 import { StatusColor } from '@/constants/Status'
@@ -322,6 +323,12 @@ export default {
     return {
       title: 'Список заявок',
     }
+  },
+  computed: {
+    ...mapGetters('user', ['role']),
+  },
+  mounted() {
+    console.log(`ROLE:${this.role}`)
   },
   methods: {
     setResponsible(request, value) {
