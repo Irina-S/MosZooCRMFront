@@ -51,7 +51,9 @@
           @click:append="showPassword = !showPassword"
         ></v-text-field>
         <!-- </validation-provider> -->
-        <NuxtLink to="/" class="d-inline-block mt-4">Забыли пароль?</NuxtLink>
+        <NuxtLink to="/" class="d-inline-block mt-4 text-decoration-none"
+          >Забыли пароль?</NuxtLink
+        >
       </div>
 
       <v-checkbox
@@ -59,7 +61,7 @@
         label="Запомнить меня на этом устройстве"
         color="primary"
         hide-details
-        class="align-self-start mb-10"
+        class="auth-form__checkbox align-self-start mb-10 text--light"
       />
 
       <v-btn
@@ -125,10 +127,19 @@ export default {
 
       .v-messages {
         font-size: 18px !important;
+        color: $text-color;
 
         &__message {
           line-height: 1 !important;
         }
+      }
+    }
+  }
+
+  &__checkbox {
+    ::v-deep {
+      .v-label {
+        color: $text-color;
       }
     }
   }
