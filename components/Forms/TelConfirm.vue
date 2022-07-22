@@ -69,7 +69,7 @@
 import prepareParams from '@/mixins/prepareParams'
 import CustomButton from '@/components/FormElements/CustomButton'
 
-const SMS_TIMEOUT = 60000
+const SMS_TIMEOUT = 90000
 
 export default {
   components: { CustomButton },
