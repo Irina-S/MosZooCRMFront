@@ -2,7 +2,7 @@
   <div>
     <div class="confirmation pa-8">
       <div class="d-flex justify-end">
-        <v-icon class="text--default">mdi-close</v-icon>
+        <v-icon class="text--default" @click="$emit('close')">mdi-close</v-icon>
       </div>
       <h1 class="confirmation__title text-center my-8">
         Номер телефона успешно подтвержден

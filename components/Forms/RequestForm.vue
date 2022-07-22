@@ -2,6 +2,7 @@
   <div>
     <validation-observer v-slot="{ handleSubmit, valid, invalid }" ref="form">
       <v-form
+        ref="form"
         class="request-form pa-8"
         @submit.prevent="handleSubmit(onSubmit)"
       >
@@ -19,22 +20,29 @@
         </h4>
         <div class="request-form__group">
           <div class="request-form__label mb-2">Название секции/клуба</div>
-          <validation-provider rules="required">
+          <validation-provider v-slot="{ errors }" name="type" rules="required">
             <v-select
               v-model="form.type"
               :items="sectionTypes"
+              :error-messages="errors"
+              item-text="name"
+              item-value="id"
               persistent-hint
               outlined
-              return-object
               class="custom-field"
             ></v-select>
           </validation-provider>
         </div>
         <div class="request-form__group">
           <div class="request-form__label mb-2">ФИО заявителя</div>
-          <validation-provider rules="required">
+          <validation-provider
+            v-slot="{ errors }"
+            name="applicant_name"
+            rules="required"
+          >
             <v-text-field
-              v-model="form.requesterName"
+              v-model="form.applicant_name"
+              :error-messages="errors"
               placeholder="Введите полное имя"
               outlined
               class="custom-field"
@@ -43,9 +51,14 @@
         </div>
         <div class="request-form__group">
           <div class="request-form__label mb-2">ФИО ребенка</div>
-          <validation-provider rules="required">
+          <validation-provider
+            v-slot="{ errors }"
+            name="child_name"
+            rules="required"
+          >
             <v-text-field
-              v-model="form.childName"
+              v-model="form.child_name"
+              :error-messages="errors"
               placeholder="Введите полное имя"
               outlined
               class="custom-field"
@@ -54,10 +67,15 @@
         </div>
         <div class="request-form__group">
           <div class="request-form__label mb-2">Дата рождения ребенка</div>
-          <validation-provider rules="required">
+          <validation-provider
+            v-slot="{ errors }"
+            name="child_birthday"
+            rules="required"
+          >
             <v-text-field
-              v-model="form.childBirthDate"
+              v-model="form.child_birthday"
               v-mask="'##.##.####'"
+              :error-messages="errors"
               placeholder="дд.мм.гггг"
               prepend-inner-icon="mdi-calendar-month-outline"
               outlined
@@ -66,11 +84,16 @@
             </v-text-field>
           </validation-provider>
         </div>
-        <div v-if="form.type === sectionTypes[0]" class="request-form__group">
+        <div class="request-form__group">
           <div class="request-form__label mb-2">ФИО сопровождающего</div>
-          <validation-provider rules="required">
+          <validation-provider
+            v-slot="{ errors }"
+            name="accompanynig_person"
+            rules="required"
+          >
             <v-text-field
-              v-model="form.maintainerName"
+              v-model="form.accompanynig_person"
+              :error-messages="errors"
               placeholder="Введите полное имя"
               outlined
               class="custom-field"
@@ -79,9 +102,14 @@
         </div>
         <div class="request-form__group">
           <div class="request-form__label mb-2">Электронная почта</div>
-          <validation-provider rules="required">
+          <validation-provider
+            v-slot="{ errors }"
+            name="email"
+            rules="required"
+          >
             <v-text-field
               v-model="form.email"
+              :error-messages="errors"
               placeholder="Введите адрес"
               outlined
               class="custom-field"
@@ -90,10 +118,19 @@
         </div>
         <div class="request-form__group">
           <div class="request-form__label mb-2">Телефон</div>
-          <validation-provider rules="required">
+          <validation-provider
+            v-slot="{ errors }"
+            name="phone"
+            rules="required"
+          >
             <v-text-field
               v-model="form.phone"
               v-mask="'+7 (###) ### ## ##'"
+              :error-messages="
+                isPhoneChange
+                  ? 'Измените номер телефона и нажмите кнопку Отправить заявку'
+                  : errors
+              "
               placeholder="(000) 000 00 00"
               outlined
               class="custom-field request-form__phone"
@@ -115,19 +152,57 @@
             <CustomFileInput
               v-model="form.files"
               accept="image/png,image/jpeg,image/bmp,application/pdf"
-              :error-messages="
-                isPhoneChange
-                  ? 'Измените номер телефона и нажмите кнопку Отправить заявку'
-                  : ''
-              "
             />
           </validation-provider>
         </div>
         <template v-if="form.type">
-          <div v-for="(checkbox, idx) in checkboxes[form.type.type]" :key="idx">
-            <validation-provider rules="required|is_true">
+          <div>
+            <validation-provider rules="required|is_truthy">
               <v-checkbox
-                v-model="checkbox.value"
+                v-model="form.agreement_processing_personal_data"
+                :true-value="1"
+                :false-value="0"
+                color="success"
+                hide-details
+                class="d-inline-flex mt-0 mb-4"
+              >
+                <template #label>
+                  <div class="text--small ml-2">
+                    Я даю
+                    <a href="#"
+                      >Согласие на обработку и распространение персональных
+                      данных</a
+                    >
+                  </div>
+                </template>
+              </v-checkbox>
+            </validation-provider>
+          </div>
+          <div>
+            <validation-provider rules="required|is_truthy">
+              <v-checkbox
+                v-model="form.have_read_personal_data_processing_policy"
+                :true-value="1"
+                :false-value="0"
+                color="success"
+                hide-details
+                class="d-inline-flex mt-0 mb-4"
+              >
+                <template #label>
+                  <div class="text--small ml-2">
+                    Я ознакомлен с
+                    <a href="#"> Политикой обработки персональных данных</a>
+                  </div>
+                </template>
+              </v-checkbox>
+            </validation-provider>
+          </div>
+          <div v-for="(checkbox, idx) in checkboxes[form.type]" :key="idx">
+            <validation-provider rules="required|is_truthy">
+              <v-checkbox
+                v-model="form[checkbox.model]"
+                :true-value="1"
+                :false-value="0"
                 color="success"
                 hide-details
                 class="d-inline-flex mt-0 mb-4"
@@ -153,7 +228,7 @@
           противопоказаний для занятий конным спортом по форме Т73 (для КДФ
           “Пони клуб”)
         </div>
-        <div class="request-form__code mx-auto d-flex flex-column mb-6">
+        <!-- <div class="request-form__code mx-auto d-flex flex-column mb-6">
           <div class="text--small mb-2">Введите код с картинки</div>
           <img src="@/assets/images/codemock.png" alt="код" />
           <validation-provider rules="required">
@@ -163,7 +238,7 @@
               class="request-form__code-input px-2 mt-3"
             />
           </validation-provider>
-        </div>
+        </div> -->
         <div class="d-flex justify-center">
           <CustomButton :disabled="invalid" :active="valid" type="submit"
             >Отправить заявку</CustomButton
@@ -175,12 +250,14 @@
 </template>
 
 <script>
+import prepareParams from '@/mixins/prepareParams'
 import CustomFileInput from '@/components/FormElements/CustomFileInput'
 import CustomButton from '@/components/FormElements/CustomButton'
 
 export default {
   name: 'RequestForm',
   components: { CustomFileInput, CustomButton },
+  mixins: [prepareParams],
   layout: 'request',
   props: {
     isPhoneChange: {
@@ -189,166 +266,16 @@ export default {
     },
     formData: {
       type: Object,
-      defult: () => {},
+      default: () => {},
     },
     checkboxesData: {
       type: Object,
-      defult: () => {},
+      default: () => {},
     },
   },
   data() {
     return {
-      sectionTypes: [
-        {
-          value: 1,
-          type: 'kubz',
-          text: 'КЮБЗ',
-        },
-        {
-          value: 2,
-          type: 'poni',
-          text: 'Пони-клуб',
-        },
-        {
-          value: 3,
-          type: 'colors',
-          text: 'Краски мира',
-        },
-      ],
-      // checkboxes: {
-      //   kubz: [
-      //     {
-      //       name: 'agreeProcessing',
-      //       label: `Я даю <a href="#">Согласие на обработку и распространение персональных данных</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreePolicy',
-      //       label: `Я ознакомлен с <a href="#"> Политикой обработки персональных данных</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreeKubzRules',
-      //       label: `Я ознакомлен и согласен с <a href="#">Правилами и положениями КДФ "КЮБЗ"</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreeCulture',
-      //       label: `Я ознакомлен с <a href="#">Положением о культурно-досуговом формировании КДФ «КЮБЗ»</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreeInnerRules',
-      //       label: `Я ознакомлен и согласен с <a href="#">Правилами внутреннего распорядка КДФ «КЮБЗ»</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreeSafetyRules',
-      //       label: `Я ознакомлен и согласен с <a href="#">Правилами техники безопасности участника КДФ «КЮБЗ» при экспедициях и в полевых условиях</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreeInnerRules2',
-      //       label: `Я ознакомлен и согласен с <a href="#">Правилами техники безопасности участника КДФ «КЮБЗ»</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreeRegulation',
-      //       label: `Я ознакомлен с <a href="#">Уставом КДФ «КЮБЗ»</a>`,
-      //       value: false,
-      //     },
-      //   ],
-      //   poni: [
-      //     {
-      //       name: 'agreeProcessing',
-      //       label: `Я даю <a href="#">Согласие на обработку и распространение персональных данных</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreePolicy',
-      //       label: `Я ознакомлен с <a href="#"> Политикой обработки персональных данных</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreePoniRules',
-      //       label: `Я ознакомлен и согласен с <a href="#">Правилами и положениями КДФ "Пони-клуб"</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreePoniCulture',
-      //       label: `Я ознакомлен с <a href="#">Положением о культурно-досуговом формировании КДФ «Пони клуб»</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreePoniInnerRules',
-      //       label: `Я ознакомлен и согласен с <a href="#">Правилами внутреннего распорядка КДФ «Пони клуб»</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreePoniSafetyRules',
-      //       label: `Я ознакомлен и согласен с <a href="#">Правилами техники безопасности участника КДФ «Пони клуб» </a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreeTest',
-      //       label: `Я ознакомлен и согласен с <a href="#">Вступительными испытаниями КДФ «Пони клуб»</a>`,
-      //       value: false,
-      //     },
-      //   ],
-      //   colors: [
-      //     {
-      //       name: 'agreeProcessing',
-      //       label: `Я даю <a href="#">Согласие на обработку и распространение персональных данных</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreePolicy',
-      //       label: `Я ознакомлен с <a href="#"> Политикой обработки персональных данных</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreeColorsRules',
-      //       label: `Я ознакомлен и согласен с <a href="#">Правилами и положениями КДФ "Краски мира"</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreeColorsCulture',
-      //       label: `Я ознакомлен с <a href="#">Положением о культурно-досуговом формировании КДФ «Краски мира»</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreeColorsInnerRules',
-      //       label: `Я ознакомлен и согласен с <a href="#">Правилами внутреннего распорядка КДФ «Краски мира»</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreeColorsSafetyRules',
-      //       label: `Я ознакомлен и согласен с <a href="#">Правилами техники безопасности участника КДФ «Краски мира» при экспедиции в полевых условиях</a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreeColorsSafetyRules2',
-      //       label: `Я ознакомлен и согласен с <a href="#">Правилами техники безопасности участника КДФ «Краски мира» </a>`,
-      //       value: false,
-      //     },
-      //     {
-      //       name: 'agreeColorsRegulation',
-      //       label: `Я ознакомлен и согласен с <a href="#">Уставом КДФ «Краски мира»</a>`,
-      //       value: false,
-      //     },
-      //   ],
-      // },
-      // form: {
-      //   type: null,
-      //   requesterName: null,
-      //   childName: null,
-      //   childBirthDate: null,
-      //   maintainerName: null,
-      //   email: null,
-      //   phone: null,
-      //   files: [],
-      //   code: null,
-      // },
+      sectionTypes: [],
     }
   },
   computed: {
@@ -357,7 +284,7 @@ export default {
         return this.formData
       },
       set(value) {
-        this.$emit('update:formData', value)
+        this.$emit('update:form-data', value)
       },
     },
     checkboxes: {
@@ -365,18 +292,32 @@ export default {
         return this.checkboxesData
       },
       set(value) {
-        this.$emit('update:checkboxesData', value)
+        this.$emit('update:checkboxes-data', value)
       },
     },
   },
-  mounted() {
+  async mounted() {
+    const { data } = await this.$api.manuals.getApplicationsTypes()
+    this.sectionTypes = data
     if (!this.form.type) {
-      this.form.type = this.sectionTypes[0]
+      this.form.type = this.sectionTypes[0].id
     }
   },
   methods: {
-    onSubmit() {
-      this.$emit('submitted', this.form.phone)
+    async onSubmit() {
+      try {
+        await this.$api.applications.validate({
+          ...this.form,
+          child_birthday: this.prepareDate(this.form.child_birthday),
+          phone: this.preparePhone(this.form.phone),
+        })
+        this.$emit('validated')
+      } catch (err) {
+        if (err.response?.status === 422) {
+          this.$refs.form.setErrors(err.response.data.errors)
+        }
+        this.$modal.show('error', { err })
+      }
     },
   },
 }
@@ -422,6 +363,7 @@ export default {
     ::v-deep {
       .v-input__prepend-inner {
         margin-top: 19px;
+        color: $text-color !important;
       }
     }
   }
@@ -442,7 +384,7 @@ export default {
   }
 
   ::v-deep {
-    .v-messages__messages {
+    .v-messages__message {
       text-align: right;
     }
   }

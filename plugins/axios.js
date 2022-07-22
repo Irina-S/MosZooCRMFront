@@ -6,6 +6,10 @@ export default function ({ $axios }) {
     }
   })
 
+  // eslint-disable-next-line
+  $axios.defaults.headers.common['Accept'] = 'application/json'
+  $axios.defaults.headers.common['Content-Type'] = 'application/json'
+
   // вычисляем базовый урл для своле
   let url
   if ($axios.defaults.baseURL === '/') {

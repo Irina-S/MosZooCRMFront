@@ -6,8 +6,8 @@ import { required, length } from 'vee-validate/dist/rules'
 Vue.component('ValidationProvider', ValidationProvider)
 Vue.component('ValidationObserver', ValidationObserver)
 
-extend('required', required)
-extend('length', length)
+extend('required', { ...required, message: ' ' })
+extend('length', { ...length, message: ' ' })
 
 extend('min_file_count', {
   params: ['number'],
@@ -16,8 +16,8 @@ extend('min_file_count', {
   },
 })
 
-extend('is_true', {
+extend('is_truthy', {
   validate(value) {
-    return value === true
+    return !!value
   },
 })

@@ -2,20 +2,35 @@
   <div>
     <validation-observer v-slot="{ handleSubmit, valid, invalid }" ref="form">
       <v-form
-        class="confirm-form px-10 py-10"
-        @submit.prevent="handleSubmit(onSubmit)"
+        ref="form"
+        class="confirm-form px-5 py-10"
+        @submit.prevent="handleSubmit(confirm)"
       >
         <h1 class="confirm-form__title text-center mb-6">
           Подтверждение номера телефона
         </h1>
-        <div class="text-center mb-7">
-          Код подтверждения отправлен вам по sms на номер {{ phone }}. Введите
-          его в поле ниже, чтобы завершить отправку заявки:
+        <div
+          class="text-center mb-7"
+          :class="showMainErrorMessge ? 'error--text' : ''"
+        >
+          <template v-if="showMainErrorMessge">
+            Код подтверждения был введен не верно. <br />
+            Введите корректный код в поле ниже, чтобы завершить отправку заявки:
+          </template>
+          <template v-else>
+            Код подтверждения отправлен вам по sms на номер {{ phone }}.<br />
+            Введите его в поле ниже, чтобы завершить отправку заявки:
+          </template>
         </div>
-        <validation-provider rules="required|length:5">
+        <validation-provider
+          v-slot="{ errors }"
+          name="code"
+          rules="required|length:4"
+        >
           <v-text-field
             v-model="form.code"
             v-mask="'#####'"
+            :error-messages="errors"
             outlined
             persistent-hint
             hint="Код состоит из 5 цифр и действителен в течении 90 сек "
@@ -32,8 +47,13 @@
           >
           <CustomButton @click="$emit('go-back')">Отменить</CustomButton>
         </div>
-        <div class="text-center text--light mb-4">
-          Повторная отправка кода подтверждения
+        <div class="d-flex justify-center mb-4">
+          <a v-if="canResendCode" href="#" @click.prevent="auth">
+            Повторная отправка кода подтверждения
+          </a>
+          <span v-else class="text--light"
+            >Повторная отправка кода подтверждения</span
+          >
         </div>
         <div class="d-flex justify-center">
           <a href="#" @click.prevent="$emit('change-phone')"
@@ -46,25 +66,76 @@
 </template>
 
 <script>
+import prepareParams from '@/mixins/prepareParams'
 import CustomButton from '@/components/FormElements/CustomButton'
+
+const SMS_TIMEOUT = 60000
+
 export default {
   components: { CustomButton },
+  mixins: [prepareParams],
   props: {
     phone: {
       type: String,
       default: null,
     },
+    childName: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
+      canResendCode: false,
+      smsTimerId: null,
+      showMainErrorMessge: false,
       form: {
         code: null,
+        session_id: null,
       },
     }
   },
+  async mounted() {
+    await this.auth()
+  },
   methods: {
-    onSubmit() {
-      this.$emit('confirmed')
+    async auth() {
+      this.showMainErrorMessge = false
+      this.$refs.form.reset()
+      try {
+        const { data } = await this.$api.auth.authBySms({
+          phone: this.preparePhone(this.phone),
+          child_name: this.childName,
+        })
+        this.form.session_id = data.session_id
+        this.canResendCode = false
+        this.smsTimerId = setTimeout(() => {
+          this.canResendCode = true
+        }, SMS_TIMEOUT)
+      } catch (err) {
+        if (err.response?.status === 422 && err.response.data.errors.phone) {
+          this.$refs.form.setErrors({ code: err.response.data.errors.phone })
+          clearTimeout(this.smsTimerId)
+          return
+        }
+        this.$modal.show('error', { err })
+      }
+    },
+    async confirm() {
+      try {
+        this.form.phone = this.preparePhone(this.phone)
+        const { token } = await this.$api.auth.confirm(this.form)
+        this.$auth.strategy.token.set(token)
+        console.log(token)
+        this.$emit('confirmed')
+      } catch (err) {
+        if (err.response?.status === 422) {
+          this.showMainErrorMessge = true
+          this.$refs.form.setErrors(err.response.data.errors)
+          return
+        }
+        this.$modal.show('error', { err })
+      }
     },
   },
 }
@@ -84,15 +155,19 @@ export default {
   }
 
   &__code {
-    max-width: 353px;
-
     ::v-deep {
       .v-text-field__details {
         padding: 0;
       }
 
+      .v-input__slot {
+        max-width: 353px;
+        margin: 0 auto 8px;
+      }
+
       .v-messages__message {
         text-align: center;
+        line-height: 1.4;
       }
 
       input {
