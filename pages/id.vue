@@ -1,227 +1,285 @@
 <template>
-  <div class="position--relative">
-    <h1 class="font-weight-bold text--enlarged mb-3">Заявка № {{ id }}</h1>
-    <div class="request-info mb-4">
-      <div class="text--light">Тип кружка</div>
-      <div class="font-weight-medium">{{ request.type }}</div>
-      <div class="text--light">Статус</div>
-      <div>
-        <CustomChip :color="StatusColor[status.type]">{{
-          status.text
-        }}</CustomChip>
-      </div>
-      <div class="text--light">Дата</div>
-      <div class="font-weight-medium">
-        <span>{{ request.date }}</span>
-        <span class="text--light">{{ request.time }}</span>
-      </div>
-      <div class="text--light">Ответственный</div>
-      <div class="font-weight-medium position--relative">
-        <template v-if="$route.query.employee === 'responsible'">
-          <div class="font-weight-medium">Мария Христорождественская</div>
-        </template>
-        <template v-else>
-          <CustomSelect
-            v-if="isResponsibleEditing"
-            :items="employees"
-            item-value="name"
-            item-text="name"
-            placeholer="Выберите"
-            class="position--absolute bg--gray"
-            :style="{
-              top: 0,
-              left: 0,
+  <div>
+    <v-stepper value="0" alt-labels flat class="status-timeline mb-5">
+      <v-stepper-header>
+        <v-stepper-step step="1">
+          <span class="font-weight-bold mb-1">Принята</span>
+          <span class="text--x-small">13.03.2021 09:00:05</span></v-stepper-step
+        >
+
+        <v-stepper-step step="2">
+          <span class="font-weight-bold mb-1">Проверка заявки</span>
+        </v-stepper-step>
+
+        <v-stepper-step step="3">
+          <span class="font-weight-bold mb-1">Проверка документов</span>
+        </v-stepper-step>
+
+        <v-stepper-step step="4">
+          <span class="font-weight-bold mb-1">Прохождение в/и</span>
+        </v-stepper-step>
+
+        <v-stepper-step step="5">
+          <span class="font-weight-bold mb-1">Решение принято</span>
+        </v-stepper-step>
+
+        <v-stepper-step step="6">
+          <span class="font-weight-bold mb-1">Отработана</span>
+        </v-stepper-step>
+      </v-stepper-header>
+    </v-stepper>
+    <div class="position--relative">
+      <h1 class="font-weight-bold text--enlarged mb-3">Заявка № {{ id }}</h1>
+      <div class="request-info mb-4">
+        <div class="text--light">Тип кружка</div>
+        <div class="font-weight-medium">{{ request.type }}</div>
+        <div class="text--light">Статус</div>
+        <div>
+          <CustomChip :color="StatusColor[status.type]">{{
+            status.text
+          }}</CustomChip>
+        </div>
+        <div class="text--light">Дата</div>
+        <div class="font-weight-medium">
+          <span>{{ request.date }}</span>
+          <span class="text--light">{{ request.time }}</span>
+        </div>
+        <div class="text--light">Ответственный</div>
+        <div class="font-weight-medium position--relative">
+          <template v-if="$route.query.employee === 'responsible'">
+            <div class="font-weight-medium">Мария Христорождественская</div>
+          </template>
+          <template v-else>
+            <CustomSelect
+              v-if="isResponsibleEditing"
+              :items="employees"
+              item-value="name"
+              item-text="name"
+              placeholer="Выберите"
+              class="position--absolute bg--gray"
+              :style="{
+                top: 0,
+                left: 0,
+              }"
+              @keydown.esc="isResponsibleEditing = false"
+              @change="setResponsible"
+            >
+              <template #no-data>
+                <div class="font-weight-regular text-center">
+                  Нет результатов
+                </div>
+              </template>
+            </CustomSelect>
+            <a
+              v-else-if="request.responsible"
+              class="text-decoration-underline"
+              @click.prevent="isResponsibleEditing = true"
+              >{{ request.responsible }}</a
+            >
+            <v-btn v-else outlined small @click="isResponsibleEditing = true"
+              >Назначить</v-btn
+            >
+          </template>
+        </div>
+        <div class="text--light">Комментарий</div>
+        <div>
+          <v-textarea
+            v-model="request.comment"
+            placeholder="Текст комментария..."
+            no-resize
+            rows="3"
+            outlined
+            hide-details
+            class="comment-field comment-textarea mb-2"
+          ></v-textarea>
+          <div class="d-flex justify-end">
+            <v-btn color="primary" small> Сохранить </v-btn>
+            <v-btn small class="text--light ml-4"> Отменить </v-btn>
+          </div>
+        </div>
+        <div class="text--light">Дата и время в/и*</div>
+        <div class="d-flex justify-space-between">
+          <CustomDatePicker class="mr-2" />
+          <CustomTimePicker />
+        </div>
+        <div class="text--light">Группа в/и*</div>
+        <div>
+          <v-select
+            :items="$options.groups"
+            :menu-props="{
+              bottom: true,
+              offsetY: true,
+              class: 'group-select__menu',
             }"
-            @keydown.esc="isResponsibleEditing = false"
-            @change="setResponsible"
+            item-text="name"
+            item-value="id"
+            placeholder="Выберите"
+            outlined
+            dense
+            hide-details
+            class="group-select"
+          ></v-select>
+        </div>
+        <div class="text--light">ФИО заявителя</div>
+        <div class="font-weight-medium">{{ request.requesterName }}</div>
+        <div class="text--light">ФИО ребенка</div>
+        <div class="font-weight-medium">{{ request.childName }}</div>
+        <div class="text--light">
+          ФИО сопровождающего<br />
+          (для кюбз)
+        </div>
+        <div class="font-weight-medium">{{ request.maintanerName || '-' }}</div>
+        <div class="text--light">Электронная почта</div>
+        <div class="font-weight-medium">{{ request.email }}</div>
+        <div class="text--light">Телефон</div>
+        <div class="font-weight-medium">{{ request.phone }}</div>
+        <div class="text--light">Приложение</div>
+        <div class="d-flex flex-wrap align-start">
+          <v-chip
+            v-for="file in request.files"
+            :key="file.id"
+            to="/"
+            target="_blank"
+            class="mr-2 mb-2"
+            >{{ file.name }}</v-chip
           >
-            <template #no-data>
-              <div class="font-weight-regular text-center">Нет результатов</div>
+        </div>
+        <div class="request-info__row">
+          <v-checkbox
+            v-model="request.agreeProccessing"
+            disabled
+            hide-details
+            class="d-inline-flex mt-0 pa-0"
+          >
+            <template #label>
+              <div class="text--small text--default ml-2 pt-1">
+                Согласие на обработку и распространение персональных данных
+              </div>
             </template>
-          </CustomSelect>
-          <a
-            v-else-if="request.responsible"
-            class="text-decoration-underline"
-            @click.prevent="isResponsibleEditing = true"
-            >{{ request.responsible }}</a
+          </v-checkbox>
+        </div>
+        <div class="request-info__row">
+          <v-checkbox
+            v-model="request.agreeePolicy"
+            disabled
+            hide-details
+            class="d-inline-flex mt-0 pa-0"
           >
-          <v-btn v-else outlined small @click="isResponsibleEditing = true"
-            >Назначить</v-btn
+            <template #label>
+              <div class="text--small text--default ml-2 pt-1">
+                Ознакомлен с политикой обработки персональных данных
+              </div>
+            </template>
+          </v-checkbox>
+        </div>
+        <div class="request-info__row">
+          <v-checkbox
+            v-model="request.agreeRules"
+            disabled
+            hide-details
+            class="d-inline-flex mt-0 pa-0"
           >
-        </template>
+            <template #label>
+              <div class="text--small text--default ml-2 pt-1">
+                Я ознакомлен и согласен с правилами и положениями КДФ «Пони –
+                Клуб»
+              </div>
+            </template>
+          </v-checkbox>
+        </div>
+        <div class="text--light">IP</div>
+        <div class="font-weight-medium">{{ request.ip }}</div>
+        <div class="text--light">Браузер</div>
+        <div class="font-weight-medium">{{ request.browser }}</div>
       </div>
-      <div class="text--light">Комментарий</div>
-      <div>
-        <v-textarea
-          v-model="request.comment"
-          placeholder="Текст комментария..."
-          no-resize
-          rows="3"
-          outlined
-          hide-details
-          class="comment-field comment-textarea mb-2"
-        ></v-textarea>
-        <v-btn outlined small color="primary"> Сохранить </v-btn>
-      </div>
-      <div class="text--light">ФИО заявителя</div>
-      <div class="font-weight-medium">{{ request.requesterName }}</div>
-      <div class="text--light">ФИО ребенка</div>
-      <div class="font-weight-medium">{{ request.childName }}</div>
-      <div class="text--light">
-        ФИО сопровождающего<br />
-        (для кюбз)
-      </div>
-      <div class="font-weight-medium">{{ request.maintanerName || '-' }}</div>
-      <div class="text--light">Электронная почта</div>
-      <div class="font-weight-medium">{{ request.email }}</div>
-      <div class="text--light">Телефон</div>
-      <div class="font-weight-medium">{{ request.phone }}</div>
-      <div class="text--light">Приложение</div>
-      <div class="d-flex flex-wrap align-start">
-        <v-chip
-          v-for="file in request.files"
-          :key="file.id"
-          to="/"
-          target="_blank"
-          class="mr-2 mb-2"
-          >{{ file.name }}</v-chip
+      <div class="d-flex align-center mb-4">
+        <v-btn to="/" depressed color="primary" small class="mr-6">
+          Закрыть
+        </v-btn>
+        <span class="text--light"
+          >При закрытии все изменения будут сохранены</span
         >
       </div>
-      <div class="request-info__row">
-        <v-checkbox
-          v-model="request.agreeProccessing"
-          disabled
-          hide-details
-          class="d-inline-flex mt-0 pa-0"
+      <div
+        v-if="
+          !$route.query.employee ||
+          ($route.query.employee === 'responsible' &&
+            ['accepted', 'documents_request', 'invitation'].includes(
+              $route.query.type
+            ))
+        "
+        class="request-actions position--absolute bg--gray pt-4 px-3 pb-6"
+      >
+        <div class="mb-4">Выберите вариант решения по заявке</div>
+        <div
+          v-if="$route.query.type === 'accepted'"
+          class="d-flex justify-space-between align-start"
         >
-          <template #label>
-            <div class="text--small text--default ml-2 pt-1">
-              Согласие на обработку и распространение персональных данных
-            </div>
-          </template>
-        </v-checkbox>
-      </div>
-      <div class="request-info__row">
-        <v-checkbox
-          v-model="request.agreeePolicy"
-          disabled
-          hide-details
-          class="d-inline-flex mt-0 pa-0"
+          <v-btn outlined color="indigo" small class="mr-6">
+            Запрос документов
+          </v-btn>
+          <v-btn outlined color="error" small class="mr-12">
+            Отклонена (гр. укомплектована)
+          </v-btn>
+          <v-btn outlined color="#99A2AD" small> Дубликат </v-btn>
+        </div>
+        <div
+          v-else-if="$route.query.type === 'documents_request'"
+          class="d-flex justify-space-between align-start"
         >
-          <template #label>
-            <div class="text--small text--default ml-2 pt-1">
-              Ознакомлен с политикой обработки персональных данных
-            </div>
-          </template>
-        </v-checkbox>
-      </div>
-      <div class="request-info__row">
-        <v-checkbox
-          v-model="request.agreeRules"
-          disabled
-          hide-details
-          class="d-inline-flex mt-0 pa-0"
+          <v-btn outlined color="#CD32A2" small class="mr-6">
+            Приглашение на в/и
+          </v-btn>
+          <v-btn outlined color="error" small class="mr-auto">
+            Отклонена (отсутствуют док.)
+          </v-btn>
+        </div>
+        <div
+          v-else-if="$route.query.type === 'invitation'"
+          class="d-flex justify-space-between align-start"
         >
-          <template #label>
-            <div class="text--small text--default ml-2 pt-1">
-              Я ознакомлен и согласен с правилами и положениями КДФ «Пони –
-              Клуб»
-            </div>
-          </template>
-        </v-checkbox>
-      </div>
-      <div class="text--light">IP</div>
-      <div class="font-weight-medium">{{ request.ip }}</div>
-      <div class="text--light">Браузер</div>
-      <div class="font-weight-medium">{{ request.browser }}</div>
-    </div>
-    <div class="d-flex align-center mb-4">
-      <v-btn to="/" depressed color="primary" small class="mr-6">
-        Закрыть
-      </v-btn>
-      <span class="text--light"
-        >При закрытии все изменения будут сохранены</span
-      >
-    </div>
-    <div
-      v-if="
-        !$route.query.employee ||
-        ($route.query.employee === 'responsible' &&
-          ['accepted', 'documents_request', 'invitation'].includes(
-            $route.query.type
-          ))
-      "
-      class="request-actions position--absolute bg--gray pt-4 px-3 pb-6"
-    >
-      <div class="mb-4">Выберите вариант решения по заявке</div>
-      <div
-        v-if="$route.query.type === 'accepted'"
-        class="d-flex justify-space-between align-start"
-      >
-        <v-btn outlined color="indigo" small class="mr-6">
-          Запрос документов
-        </v-btn>
-        <v-btn outlined color="error" small class="mr-12">
-          Отклонена (гр. укомплектована)
-        </v-btn>
-        <v-btn outlined color="#99A2AD" small> Дубликат </v-btn>
-      </div>
-      <div
-        v-else-if="$route.query.type === 'documents_request'"
-        class="d-flex justify-space-between align-start"
-      >
-        <v-btn outlined color="#CD32A2" small class="mr-6">
-          Приглашение на в/и
-        </v-btn>
-        <v-btn outlined color="error" small class="mr-auto">
-          Отклонена (отсутствуют док.)
-        </v-btn>
-      </div>
-      <div
-        v-else-if="$route.query.type === 'invitation'"
-        class="d-flex justify-space-between align-start"
-      >
-        <v-btn outlined color="success" small class="mr-6">
-          Одобрена (по итогам в/и)
-        </v-btn>
-        <v-btn outlined color="error" small class="mr-auto">
-          Отклонена (по итогам в/и)
-        </v-btn>
-      </div>
-      <div
-        v-else-if="!$route.query.employee"
-        class="d-flex align-start flex-wrap"
-      >
-        <v-btn outlined color="#DBD06E" small class="mr-3 mb-3">
-          Принята
-        </v-btn>
-        <v-btn outlined color="indigo" small class="mr-3 mb-3">
-          Запрос документов
-        </v-btn>
-        <v-btn outlined color="error" small class="mr-3 mb-3">
-          Отклонена (гр. укомплектована)
-        </v-btn>
-        <v-btn outlined color="#817070" small class="mr-3 mb-3">
-          Аннулировано
-        </v-btn>
-        <v-btn outlined color="error" small class="mr-3 mb-3">
-          Отклонена (отсутствуют док.)
-        </v-btn>
-        <v-btn outlined color="#CD32A2" small class="mr-3 mb-3">
-          Приглашение на в/и
-        </v-btn>
-        <v-btn outlined color="#C87E0F" small class="mr-3 mb-3">
-          Неявка на в/и
-        </v-btn>
-        <v-btn outlined color="success" small class="mr-3 mb-3">
-          Одобрена (по итогам в/и)
-        </v-btn>
-        <v-btn outlined color="error" small class="mr-3 mb-3">
-          Отклонена (по итогам в/и)
-        </v-btn>
-        <v-btn outlined color="#51607A" small class="mr-3 mb-3">
-          Отработана
-        </v-btn>
+          <v-btn outlined color="success" small class="mr-6">
+            Одобрена (по итогам в/и)
+          </v-btn>
+          <v-btn outlined color="error" small class="mr-auto">
+            Отклонена (по итогам в/и)
+          </v-btn>
+        </div>
+        <div
+          v-else-if="!$route.query.employee"
+          class="d-flex align-start flex-wrap"
+        >
+          <v-btn outlined color="#DBD06E" small class="mr-3 mb-3">
+            Принята
+          </v-btn>
+          <v-btn outlined color="indigo" small class="mr-3 mb-3">
+            Запрос документов
+          </v-btn>
+          <v-btn outlined color="error" small class="mr-3 mb-3">
+            Отклонена (гр. укомплектована)
+          </v-btn>
+          <v-btn outlined color="#817070" small class="mr-3 mb-3">
+            Аннулировано
+          </v-btn>
+          <v-btn outlined color="error" small class="mr-3 mb-3">
+            Отклонена (отсутствуют док.)
+          </v-btn>
+          <v-btn outlined color="#CD32A2" small class="mr-3 mb-3">
+            Приглашение на в/и
+          </v-btn>
+          <v-btn outlined color="#C87E0F" small class="mr-3 mb-3">
+            Неявка на в/и
+          </v-btn>
+          <v-btn outlined color="success" small class="mr-3 mb-3">
+            Одобрена (по итогам в/и)
+          </v-btn>
+          <v-btn outlined color="error" small class="mr-3 mb-3">
+            Отклонена (по итогам в/и)
+          </v-btn>
+          <v-btn outlined color="#51607A" small class="mr-3 mb-3">
+            Отработана
+          </v-btn>
+        </div>
       </div>
     </div>
   </div>
@@ -230,11 +288,20 @@
 <script>
 import CustomChip from '@/components/FormElements/CustomChip'
 import CustomSelect from '@/components/FormElements/CustomSelect'
+import CustomDatePicker from '@/components/FormElements/CustomDatePicker'
+import CustomTimePicker from '@/components/FormElements/CustomTimePicker'
 import { StatusColor, StatusText } from '@/constants/Status'
 
 export default {
   name: 'SingleRequestPage',
-  components: { CustomChip, CustomSelect },
+  auth: false,
+  components: { CustomChip, CustomSelect, CustomDatePicker, CustomTimePicker },
+  groups: [
+    { id: 1, name: 'Группа 1' },
+    { id: 2, name: 'Группа 2' },
+    { id: 3, name: 'Группа 3' },
+    { id: 4, name: 'Группа 4' },
+  ],
   data() {
     return {
       StatusColor,
@@ -301,7 +368,7 @@ export default {
 .request-info {
   width: min(700px, 80%);
   display: grid;
-  grid-template-columns: 200px auto;
+  grid-template-columns: 200px 370px;
   grid-gap: 16px;
 
   &__row {
@@ -316,7 +383,47 @@ export default {
   max-width: 640px;
 }
 
-.comment-textarea {
-  max-width: 322px;
+.status-timeline {
+  background: $light-gray;
+  border-radius: 10px;
+
+  ::v-deep {
+    .v-stepper__step {
+      flex: calc(100% / 6) 0 0;
+      padding: 7px;
+
+      &:not(:last-of-type)::after {
+        content: '';
+        position: absolute;
+        left: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 20px;
+        background: #ccd4df;
+      }
+
+      &--complete,
+      &--active {
+        background: $gray;
+      }
+
+      &__step {
+        display: none;
+      }
+    }
+
+    .v-stepper__header {
+      flex-wrap: nowrap;
+      box-shadow: none;
+    }
+
+    .v-stepper__label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  }
 }
 </style>
