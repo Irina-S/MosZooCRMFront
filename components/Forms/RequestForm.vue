@@ -298,7 +298,7 @@ export default {
   },
   async mounted() {
     const { data } = await this.$api.manuals.getApplicationsTypes()
-    this.sectionTypes = data
+    this.sectionTypes = data.models
     if (!this.form.type) {
       this.form.type = this.sectionTypes[0].id
     }
