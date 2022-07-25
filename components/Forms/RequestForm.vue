@@ -323,10 +323,13 @@ export default {
         })
         this.$emit('validated')
       } catch (err) {
+        this.$modal.show('error', { err })
         if (err.response?.status === 422) {
+          // debugger
+
           this.$refs.form.setErrors(err.response.data.errors)
         }
-        this.$modal.show('error', { err })
+        // debugger
       }
     },
   },

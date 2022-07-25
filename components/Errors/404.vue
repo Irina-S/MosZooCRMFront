@@ -25,10 +25,9 @@ export default {
   },
   mounted() {
     this.$emit('update:error-title', this.errorName)
-    this.$modal.show('default', {
+    this.$modal.show('error', {
       title: this.errorName,
       message: this.errorHtml,
-      okButton: false,
     })
   },
 }

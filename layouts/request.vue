@@ -22,6 +22,7 @@
     >
       <Nuxt />
     </div>
+    <Modal></Modal>
   </v-app>
 </template>
 
