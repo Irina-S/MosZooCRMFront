@@ -306,9 +306,12 @@ export default {
   async mounted() {
     const { data } = await this.$api.manuals.getApplicationsTypes()
     this.sectionTypes = data.models
-    if (!this.form.type) {
-      this.form.type = this.sectionTypes[0].id
+    const types = this.sectionTypes.map((item) => item.id)
+    if (types.includes(this.$route.query.type)) {
+      this.form.type = this.$route.query.type
+      return
     }
+    this.form.type = this.sectionTypes[0].id
   },
   methods: {
     async onSubmit() {
