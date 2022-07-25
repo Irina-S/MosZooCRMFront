@@ -84,7 +84,7 @@
             </v-text-field>
           </validation-provider>
         </div>
-        <div class="request-form__group">
+        <div v-if="form.type === 'kubz'" class="request-form__group">
           <div class="request-form__label mb-2">ФИО сопровождающего</div>
           <validation-provider
             v-slot="{ errors }"
@@ -294,6 +294,13 @@ export default {
       set(value) {
         this.$emit('update:checkboxes-data', value)
       },
+    },
+  },
+  watch: {
+    'form.type'(value) {
+      if (value !== 'kubz') {
+        delete this.form.accompanynig_person
+      }
     },
   },
   async mounted() {
