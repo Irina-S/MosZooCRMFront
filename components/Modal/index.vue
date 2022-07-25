@@ -20,6 +20,7 @@ export default {
   components: {
     Default,
     Error,
+    Success: () => import('@/components/Modal/Success'),
     // DynamicComponent: () => import('@/components/Modal/DynamicComponent'),
   },
   data() {

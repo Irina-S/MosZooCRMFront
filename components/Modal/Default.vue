@@ -1,10 +1,10 @@
 <template>
   <ModalWrapper :size="size" :resolve="resolve" v-on="$listeners">
     <template #default="{ close }">
-      <div v-if="title" class="modal-header">
-        <h2>{{ title }}</h2>
+      <div v-if="title" class="modal-header text-center mb-4">
+        <h2 class="modal-title">{{ title }}</h2>
       </div>
-      <div class="modal-content" v-html="message"></div>
+      <div class="modal-content text-center" v-html="message"></div>
       <div class="modal-footer">
         <BButton
           v-if="cancelButton"

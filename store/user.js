@@ -9,4 +9,7 @@ export const getters = {
   role(state, getters) {
     return getters.user?.role
   },
+  name(state, getters) {
+    return getters.user?.name
+  },
 }

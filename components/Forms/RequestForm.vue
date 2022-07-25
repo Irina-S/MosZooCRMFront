@@ -23,7 +23,7 @@
           <validation-provider v-slot="{ errors }" name="type" rules="required">
             <v-select
               v-model="form.type"
-              :items="sectionTypes"
+              :items="sections"
               :error-messages="errors"
               item-text="name"
               item-value="id"
@@ -275,7 +275,7 @@ export default {
   },
   data() {
     return {
-      sectionTypes: [],
+      sections: [],
     }
   },
   computed: {
@@ -305,13 +305,13 @@ export default {
   },
   async mounted() {
     const { data } = await this.$api.manuals.getApplicationsTypes()
-    this.sectionTypes = data.models
-    const types = this.sectionTypes.map((item) => item.id)
+    this.sections = data.models
+    const types = this.sections.map((item) => item.id)
     if (types.includes(this.$route.query.type)) {
       this.form.type = this.$route.query.type
       return
     }
-    this.form.type = this.sectionTypes[0].id
+    this.form.type = this.sections[0].id
   },
   methods: {
     async onSubmit() {
