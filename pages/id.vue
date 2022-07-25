@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-stepper value="0" alt-labels flat class="status-timeline mb-5">
+    <v-stepper value="2" alt-labels flat class="status-timeline mb-5">
       <v-stepper-header>
-        <v-stepper-step step="1">
+        <v-stepper-step step="1" complete>
           <span class="font-weight-bold mb-1">Принята</span>
           <span class="text--x-small">13.03.2021 09:00:05</span></v-stepper-step
         >
@@ -392,7 +392,7 @@ export default {
       flex: calc(100% / 6) 0 0;
       padding: 7px;
 
-      &:not(:last-of-type)::after {
+      &:not(:last-of-type, .v-stepper__step--active, .v-stepper__step--complete)::after {
         content: '';
         position: absolute;
         left: 100%;
@@ -406,6 +406,10 @@ export default {
       &--complete,
       &--active {
         background: $gray;
+      }
+
+      &--active {
+        border-radius: 0 10px 10px 0;
       }
 
       &__step {
