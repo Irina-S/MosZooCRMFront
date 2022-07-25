@@ -2,7 +2,9 @@
   <v-app>
     <v-app-bar class="header flex-grow-0 px-10 mb-3">
       <img src="~/assets/images/atom-logo.png" alt="лого" />
-      <v-avatar color="primary" size="40" class="avatar">А</v-avatar>
+      <v-avatar color="primary" size="40" class="avatar">{{
+        name[0].toUpperCase()
+      }}</v-avatar>
     </v-app-bar>
     <div class="flex-grow-1 px-10">
       <Nuxt />
@@ -12,10 +14,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'DefaultLayout',
   data() {
     return {}
+  },
+  computed: {
+    ...mapGetters('user', ['name']),
   },
 }
 </script>

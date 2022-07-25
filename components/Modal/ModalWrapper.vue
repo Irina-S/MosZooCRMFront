@@ -2,7 +2,9 @@
   <div v-hotkey="{ esc: close }" class="modal-wrapper" @click.self="close">
     <transition name="fade-scale">
       <div v-if="show" class="modal-inner" :class="`modal-inner_${size}`">
-        <BIconX v-if="iconClose" class="modal-close" @click="close" />
+        <v-icon class="modal-close align-self-end" @click="close"
+          >$close</v-icon
+        >
         <slot v-bind="{ close }"></slot>
       </div>
     </transition>

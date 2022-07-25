@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-stepper value="0" alt-labels flat class="status-timeline mb-5">
+    <v-stepper value="1" alt-labels flat class="status-timeline mb-5">
       <v-stepper-header>
         <v-stepper-step step="1">
           <span class="font-weight-bold mb-1">Принята</span>

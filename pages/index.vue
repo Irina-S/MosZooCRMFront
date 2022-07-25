@@ -2,52 +2,68 @@
   <div>
     <h1 class="font-weight-bold text--enlarged mb-3">Список заявок</h1>
     <v-data-table
-      :headers="requestTableHeaders"
-      :items="requestTableData"
-      :items-per-page="10"
+      :headers="applicationTableHeaders"
+      :items="applicationTableData"
+      :items-per-page="applicationTableOptions.itemsPerPage"
       :header-props="{ sortIcon: 'mdi-filter-variant' }"
+      :must-sort="true"
+      :sort-by.sync="applicationTableOptions.sortBy"
+      :sort-desc.sync="applicationTableOptions.sortDesc"
+      :server-items-length="totalItems"
       hide-default-footer
-      class="request-table mb-6"
+      class="application-table mb-6"
+      @update:sort-by="getList"
+      @update:sort-desc="getList"
     >
       <template #[`item.id`]="{ item }">
         <span class="font-weight-medium">{{ item.id }}</span>
       </template>
       <template #[`item.type`]="{ item }">
-        <span class="font-weight-medium">{{ item.type }}</span>
+        <span class="font-weight-medium">{{ item.type_as_string }}</span>
       </template>
       <template #[`item.status`]="{ item }">
-        <CustomChip :color="StatusColor[item.status.type]" small>{{
-          item.status.text
+        <CustomChip :color="StatusColor[item.status]" small>{{
+          item.status_as_string
         }}</CustomChip>
       </template>
-      <template #[`item.date`]="{ item }">
-        <span class="font-weight-medium mr-1">{{ item.date }}</span>
-        <span class="font-weight-medium text--light">{{ item.time }}</span>
+      <template #[`item.created_at`]="{ item }">
+        <span class="font-weight-medium mr-1">{{
+          $dayjs(item.created_at).format('DD.MM.YYYY')
+        }}</span>
+        <span class="font-weight-medium text--light">{{
+          $dayjs(item.created_at).format('HH:MM:ss')
+        }}</span>
       </template>
-      <template #[`item.responsible`]="{ item }">
-        <template v-if="$route.query.employee === 'responsible'">
-          <div class="font-weight-medium">Мария Христорождественская</div>
-        </template>
-        <template v-else>
+      <template #[`item.responsible_name`]="{ item }">
+        <template v-if="isAdmin">
           <CustomSelect
             v-if="item.isResponsibleEditing"
-            :items="employees"
-            item-value="name"
+            :items="moderators.items"
+            item-value="id"
             item-text="name"
             placeholer="Выберите"
             fixed
             @keydown.esc="item.isResponsibleEditing = false"
-            @change="setResponsible(item, $event)"
+            @change="updateResponsible(item, $event)"
+            @update:options="getList"
           >
             <template #no-data>
               <div class="font-weight-regular text-center">Нет результатов</div>
             </template>
           </CustomSelect>
+          <v-progress-circular
+            v-else-if="item.isResponsibleLoading"
+            indeterminate
+            color="primary"
+            size="20"
+            width="2"
+            class="mx-auto"
+          ></v-progress-circular>
           <a
-            v-else-if="item.responsible"
+            v-else-if="item.responsible_name"
             class="text-decoration-underline"
             @click.prevent="item.isResponsibleEditing = true"
-            >{{ item.responsible }}</a
+            >{{ item.responsible_name }}</a
           >
           <v-btn
             v-else
@@ -57,69 +73,89 @@
             >Назначить</v-btn
           >
         </template>
+        <template v-else>
+          <div class="font-weight-medium">{{ item.responsible_name }}</div>
+        </template>
       </template>
-      <template #[`item.applicant`]="{ item }">
+      <template #[`item.client_name`]="{ item }">
         <span class="font-weight-medium truncate-text" style="width: 95%">
-          {{ item.applicant }}</span
+          {{ item.client_name }}</span
         >
       </template>
       <template #[`item.comment`]="{ item }">
         <v-text-field
           v-if="item.isCommentEditing"
-          v-model="item.comment"
+          v-model="item.commentEditing"
           placeholder="Текст комментария..."
           outlined
           dense
           hide-details
           class="comment-field"
-          @keypress.enter="item.isCommentEditing = false"
+          @keypress.enter="updateComment(item, item.commentEditing)"
+          @keydown.esc="item.isCommentEditing = false"
         ></v-text-field>
-        <span
+        <v-progress-circular
+          v-else-if="item.isCommentLoading"
+          indeterminate
+          color="primary"
+          size="20"
+          width="2"
+          class="mx-auto"
+        ></v-progress-circular>
+        <div
           v-else
-          class="full-width font-weight-medium"
+          class="d-flex align-center full-width font-weight-medium"
           style="min-height: 26px"
-          @click="item.isCommentEditing = true"
-          >{{ item.comment }}</span
+          @click="editComment(item)"
         >
+          {{ item.comment }}
+        </div>
       </template>
     </v-data-table>
-    <div class="d-flex justify-center align-center">
+    <div v-if="totalPages > 1" class="d-flex justify-center align-center">
       <v-btn
         rounded
         elevation="0"
         class="pg-btn font-weight-reqular mr-6"
-        :disabled="page === 1"
-        @click="page = 1"
+        :disabled="applicationTableOptions.page === 1"
+        @click="applicationTableOptions.page = 1"
       >
         На первую
       </v-btn>
       <v-pagination
-        v-model="page"
-        :length="35"
+        v-model="applicationTableOptions.page"
+        :length="totalPages"
         total-visible="10"
         circle
+        @input="getList"
       ></v-pagination>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import CustomChip from '@/components/FormElements/CustomChip'
 import CustomSelect from '@/components/FormElements/CustomSelect'
 import { StatusColor } from '@/constants/Status'
+import roles from '@/mixins/roles'
 
 export default {
-  name: 'RequestList',
+  name: 'ApplicationList',
+  mixins: [roles],
   components: { CustomChip, CustomSelect },
   data() {
     return {
       StatusColor,
-      employees: [
-        { id: 1, name: 'Мария Христорождественская' },
-        { id: 2, name: 'Светлана Петрановская' },
-      ],
-      requestTableHeaders: [
+      sections: [],
+      statuses: [],
+      applicationTableOptions: {
+        page: 1,
+        itemsPerPage: 15,
+        sortBy: 'id',
+        sortDesc: true,
+        multiSort: false,
+      },
+      applicationTableHeaders: [
         {
           text: 'Номер',
           value: 'id',
@@ -135,25 +171,24 @@ export default {
         {
           text: 'Статус',
           value: 'status',
-          sortable: false,
+          sortable: true,
           class: 'text-no-wrap',
         },
         {
           text: 'Дата',
-          value: 'date',
-          sortable: false,
+          value: 'created_at',
+          sortable: true,
           class: 'text-no-wrap',
         },
         {
           text: 'Ответственный',
-          value: 'responsible',
-          sortable: true,
+          value: 'responsible_name',
           class: 'text-no-wrap',
           cellClass: 'position--relative',
         },
         {
           text: 'ФИО заявителя',
-          value: 'applicant',
+          value: 'client_name',
           sortable: true,
           class: 'text-no-wrap',
         },
@@ -165,159 +200,15 @@ export default {
           cellClass: 'd-flex',
         },
       ],
-      requestTableData: [
-        {
-          id: 122,
-          type: 'Пони-клуб',
-          status: {
-            type: 'NEW',
-            text: 'Новая',
-          },
-          date: '17.06.2022',
-          time: '09:00:07',
-          responsible: null,
-          applicant: 'Константинопольский Константин Константинович',
-          comment: '',
-          isCommentEditing: false,
-          isResponsibleEditing: false,
-        },
-        {
-          id: 121,
-          type: 'Пони-клуб',
-          status: {
-            type: 'NEW',
-            text: 'Новая',
-          },
-          date: '17.06.2022',
-          time: '08:45:09',
-          responsible: null,
-          applicant: 'Константинопольский Константин Константинович',
-          comment: '',
-          isCommentEditing: false,
-          isResponsibleEditing: false,
-        },
-        {
-          id: 120,
-          type: 'Краски мира',
-          status: {
-            type: 'APPROVED',
-            text: 'Приглашение на занятие',
-          },
-          date: '16.06.2022',
-          time: '12:44:02',
-          responsible: 'Светлана Петрановская',
-          applicant: 'Смирнов Петр Анатольевич',
-          comment: 'Текст комментария к заявке может быть дл...',
-          isCommentEditing: false,
-          isResponsibleEditing: false,
-        },
-        {
-          id: 119,
-          type: 'Краски мира',
-          status: {
-            type: 'ACCEPTED',
-            text: 'Принята',
-          },
-          date: '16.06.2022',
-          time: '12:09:07',
-          responsible: 'Мария Христорождественская ',
-          applicant: 'Григориев Василий Васильевич',
-          comment: '',
-          isCommentEditing: false,
-          isResponsibleEditing: false,
-        },
-        {
-          id: 118,
-          type: 'КЮБЗ',
-          status: {
-            type: 'APPROVED',
-            text: 'Одобрена (по итогам в/и)',
-          },
-          date: '16.06.2022',
-          time: '12:09:07',
-          responsible: 'Виктория Викторова',
-          applicant: 'Федоров Роман Евгеньевич',
-          comment: 'Текст комментария к заявке может быть дл...',
-          isCommentEditing: false,
-          isResponsibleEditing: false,
-        },
-        {
-          id: 117,
-          type: 'КЮБЗ',
-          status: {
-            type: 'DENIED',
-            text: 'Отклонена (гр. укомплектована)',
-          },
-          date: '16.06.2022',
-          time: '09:03:01',
-          responsible: 'Мария Христорождественская ',
-          applicant: 'Григориев Виктор Викторович',
-          comment: '',
-          isCommentEditing: false,
-          isResponsibleEditing: false,
-        },
-        {
-          id: 116,
-          type: 'Краски мира',
-          status: {
-            type: 'NEW',
-            text: 'Новая',
-          },
-          date: '15.06.2022',
-          time: '09:03:01',
-          responsible: null,
-          applicant: 'Котов Дмитрий Витальевич',
-          comment: '',
-          isCommentEditing: false,
-          isResponsibleEditing: false,
-        },
-        {
-          id: 115,
-          type: 'Пони-клуб',
-          status: {
-            type: 'DOCUMENTS_REQUEST',
-            text: 'Запрос документов',
-          },
-          date: '15.06.2022',
-          time: '09:03:01',
-          responsible: null,
-          applicant: 'Котов Дмитрий Витальевич',
-          comment: '',
-          isCommentEditing: false,
-          isResponsibleEditing: false,
-        },
-        {
-          id: 114,
-          type: 'Пони-клуб',
-          status: {
-            type: 'DUPLICATED',
-            text: 'Дубликат',
-          },
-          date: '15.06.2022',
-          time: '09:03:01',
-          responsible: 'Мария Христорождественская ',
-          applicant: 'Котов Дмитрий Витальевич',
-          comment: '',
-          isCommentEditing: false,
-          isResponsibleEditing: false,
-        },
-        {
-          id: 113,
-          type: 'Пони-клуб',
-          status: {
-            type: 'APPROVED',
-            text: 'Приглашение на занятие',
-          },
-          date: '15.06.2022',
-          time: '09:03:01',
-          responsible: 'Мария Христорождественская ',
-          applicant: 'Котов Дмитрий Витальевич',
-          comment: '',
-          isCommentEditing: false,
-          isResponsibleEditing: false,
-        },
-      ],
-      page: 1,
+      applicationTableData: [],
+      loading: false,
+      totalItems: 0,
+      totalPages: 0,
+      moderators: {
+        items: [],
+        total: 0,
+        page: 1,
+      },
     }
   },
   head() {
@@ -325,23 +216,115 @@ export default {
       title: 'Список заявок',
     }
   },
-  computed: {
-    ...mapGetters('user', ['role']),
-  },
   mounted() {
     console.log(`ROLE:${this.role}`)
+    this.getStatuses()
+    this.getList()
+    if (this.isAdmin) {
+      this.getModerators()
+    }
   },
   methods: {
-    setResponsible(request, value) {
-      request.responsible = value.name
-      request.isResponsibleEditing = false
+    async getSections() {
+      try {
+        const { data } = await this.$api.manuals.getApplicationsTypes()
+        this.sections = data.models
+      } catch (err) {
+        this.$modal.show('error', { err })
+      }
+    },
+    async getStatuses() {
+      try {
+        const { data } = await this.$api.manuals.getStatuses()
+        this.statuses = data.models
+      } catch (err) {
+        this.$modal.show('error', { err })
+      }
+    },
+    async getModerators() {
+      try {
+        const { data } = await this.$api.manuals.getModerators()
+        if (this.moderators.page === 1) {
+          this.moderators.items = []
+        }
+        this.moderators.items.push(...data.models)
+        this.moderators.total = data.meta.total
+        if (data.meta.total > data.meta.count) {
+          this.moderators.page++
+          setTimeout(this.getList, 0)
+        }
+      } catch (err) {
+        this.$modal.show('error', { err })
+      }
+    },
+    async getList() {
+      try {
+        const { data } = await this.$api.applications.getList({
+          page: this.applicationTableOptions.page,
+          sort: `${this.applicationTableOptions.sortDesc ? '-' : ''}${
+            this.applicationTableOptions.sortBy
+          }`,
+        })
+        this.applicationTableData = data.models.map((item) => ({
+          ...item,
+          status: item.status.toUpperCase(),
+          isResponsibleEditing: false,
+          isResponsibleLoading: false,
+          isCommentEditing: false,
+          isCommentLoading: false,
+          commentEditing: '',
+        }))
+        this.totalItems = data.meta.total
+        this.totalPages = data.meta.total_pages
+      } catch (err) {
+        this.$modal.show('error', { err })
+      }
+    },
+    async updateResponsible(application, responsible) {
+      try {
+        application.isResponsibleEditing = false
+        application.isResponsibleLoading = true
+        await this.$api.applications.update(application.id, {
+          responsible_id: responsible.id,
+        })
+        application.responsible_name = responsible.name
+        this.$modal.show('success', {
+          message: 'Изменения по заявке были сохранены!',
+        })
+      } catch (err) {
+        this.$modal.show('error', { err })
+      } finally {
+        application.isResponsibleLoading = false
+      }
+    },
+    async updateComment(application, comment) {
+      try {
+        application.isCommentEditing = false
+        application.isCommentLoading = true
+        await this.$api.applications.update(application.id, {
+          comment,
+        })
+        application.comment = comment
+        application.commentEditing = ''
+        this.$modal.show('success', {
+          message: 'Изменения по заявке были сохранены!',
+        })
+      } catch (err) {
+        this.$modal.show('error', { err })
+      } finally {
+        application.isCommentLoading = false
+      }
+    },
+    editComment(application) {
+      application.commentEditing = application.comment
+      application.isCommentEditing = true
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.request-table {
+.application-table {
   ::v-deep {
     tr {
       display: grid;
@@ -383,7 +366,6 @@ export default {
     .v-data-table-header__icon {
       opacity: 1 !important;
       margin-left: 4px;
-      color: $text-color-light !important;
     }
   }
 }

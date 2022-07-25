@@ -1,18 +1,11 @@
 <template>
-  <ModalWrapper :size="size" :resolve="resolve" v-on="$listeners">
-    <template #default="{ close }">
-      <div v-if="title" class="modal-header">
-        <h2>{{ title }}</h2>
+  <ModalWrapper size="normal" :resolve="resolve" v-on="$listeners">
+    <template>
+      <img src="@/assets/images/exclamation.svg" alt="ошибка" class="mb-4" />
+      <div v-if="title" class="modal-header text-center mb-4">
+        <h2 class="modal-title">{{ title }}</h2>
       </div>
-      <div class="modal-content" v-html="computedMessage"></div>
-      <div class="modal-footer">
-        <BButton
-          v-if="okButton"
-          variant="primary"
-          @click="close($event, resolveValue)"
-          >{{ okText }}</BButton
-        >
-      </div>
+      <div class="modal-content text-center" v-html="computedMessage"></div>
     </template>
   </ModalWrapper>
 </template>
