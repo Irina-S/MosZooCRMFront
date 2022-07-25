@@ -59,6 +59,7 @@
       />
 
       <v-btn
+        :disabled="loading"
         depressed
         large
         type="submit"
@@ -82,7 +83,7 @@ export default {
         password: null,
         remember_me: false,
       },
-
+      loading: false,
       showPassword: false,
     }
   },
@@ -94,6 +95,7 @@ export default {
   methods: {
     async onSubmit() {
       try {
+        this.loading = true
         await this.$auth.loginWith('local', {
           data: this.form,
         })
@@ -101,8 +103,11 @@ export default {
       } catch (err) {
         if (err.response?.status === 422) {
           this.$refs.form.setErrors(err.response.data.errors)
+          return
         }
         this.$modal.show('error', { err })
+      } finally {
+        this.loading = false
       }
     },
   },
