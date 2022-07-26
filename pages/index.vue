@@ -185,6 +185,7 @@ export default {
           value: 'responsible_name',
           class: 'text-no-wrap',
           cellClass: 'position--relative',
+          sortable: false,
         },
         {
           text: 'ФИО заявителя',
@@ -262,7 +263,9 @@ export default {
         const { data } = await this.$api.applications.getList({
           page: this.applicationTableOptions.page,
           sort: `${this.applicationTableOptions.sortDesc ? '-' : ''}${
-            this.applicationTableOptions.sortBy
+            this.applicationTableOptions.sortBy === 'client_name'
+              ? 'users.name'
+              : this.applicationTableOptions.sortBy
           }`,
         })
         this.applicationTableData = data.models.map((item) => ({
