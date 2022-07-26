@@ -78,6 +78,12 @@ a{
   }
 }
 
+.cursor{
+  &-pointer{
+    cursor: pointer;
+  }
+}
+
 .comment-field{
   &.v-input{
       font-size:1rem !important;

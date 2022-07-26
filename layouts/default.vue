@@ -1,7 +1,12 @@
 <template>
   <v-app>
     <v-app-bar class="header flex-grow-0 px-10 mb-3">
-      <img src="~/assets/images/atom-logo.png" alt="лого" />
+      <img
+        src="~/assets/images/atom-logo.png"
+        alt="лого"
+        class="cursor-pointer"
+        @click="$router.push('/')"
+      />
       <v-avatar v-if="name" color="primary" size="40" class="avatar">{{
         name[0].toUpperCase()
       }}</v-avatar>

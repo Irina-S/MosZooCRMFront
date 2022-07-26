@@ -7,5 +7,9 @@ export default {
     isAdmin() {
       return this.role === 'admin'
     },
+
+    isModerator() {
+      return this.role === 'moderator'
+    },
   },
 }
