@@ -34,10 +34,13 @@ export default {
         })
         application.responsible_name = responsible.name
         this.$modal.show('success', {
-          message: 'Изменения по заявке были сохранены!',
+          title: 'Изменения по заявке были сохранены!',
         })
       } catch (err) {
-        this.$modal.show('error', { err })
+        this.$modal.show('error', {
+          title: 'Произошла ошибка!',
+          message: 'Изменения по заявке не были сохранены',
+        })
       } finally {
         application.isResponsibleLoading = false
       }
@@ -52,10 +55,13 @@ export default {
         application.comment = comment
         application.commentEditing = ''
         this.$modal.show('success', {
-          message: 'Изменения по заявке были сохранены!',
+          title: 'Изменения по заявке были сохранены!',
         })
       } catch (err) {
-        this.$modal.show('error', { err })
+        this.$modal.show('error', {
+          title: 'Произошла ошибка!',
+          message: 'Изменения по заявке не были сохранены',
+        })
       } finally {
         application.isCommentLoading = false
       }

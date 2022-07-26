@@ -1,37 +1,36 @@
 <template>
   <div>
-    <v-stepper value="2" alt-labels flat class="status-timeline mb-5">
+    <v-stepper value="0" alt-labels flat class="status-timeline mb-5">
       <v-stepper-header>
-        <v-stepper-step step="1" complete>
+        <v-stepper-step step="1" :complete="steps[0]">
           <span class="font-weight-bold text--default mb-1">Принята</span>
-          <span class="text--x-small">13.03.2021 09:00:05</span></v-stepper-step
+          <!-- <span class="text--x-small">13.03.2021 09:00:05</span>--></v-stepper-step
         >
-
-        <v-stepper-step step="2">
+        <v-stepper-step step="2" :complete="steps[1]">
           <span class="font-weight-bold text--default mb-1"
             >Проверка заявки</span
           >
         </v-stepper-step>
 
-        <v-stepper-step step="3">
+        <v-stepper-step step="3" :complete="steps[2]">
           <span class="font-weight-bold text--default mb-1"
             >Проверка документов</span
           >
         </v-stepper-step>
 
-        <v-stepper-step step="4">
+        <v-stepper-step step="4" :complete="steps[3]">
           <span class="font-weight-bold text--default mb-1"
             >Прохождение в/и</span
           >
         </v-stepper-step>
 
-        <v-stepper-step step="5">
+        <v-stepper-step step="5" :complete="steps[4]">
           <span class="font-weight-bold text--default mb-1"
             >Решение принято</span
           >
         </v-stepper-step>
 
-        <v-stepper-step step="6">
+        <v-stepper-step step="6" :complete="steps[5]">
           <span class="font-weight-bold text--default mb-1">Отработана</span>
         </v-stepper-step>
       </v-stepper-header>
@@ -459,6 +458,35 @@ export default {
       title: `Заявка №${this.$route.params.id}`,
     }
   },
+  computed: {
+    steps() {
+      if (!this.application) {
+        return []
+      }
+      const status = this.application.status.toLowerCase()
+
+      const completed = status === Status.COMPLETED
+      const decided =
+        ![Status.INIT, Status.ACCEPTED, Status.DOCUMENTS_REQUEST].includes(
+          status
+        ) || completed
+      const examinations =
+        status === Status.INVITATION_TO_ENTRANCE_EXAMINATION || decided
+      const documentsChecking =
+        status === Status.DOCUMENTS_REQUEST || examinations
+      const checking = !!this.application.responsible_name || documentsChecking
+      const accepted = status === Status.ACCEPTED || checking
+
+      return [
+        accepted,
+        checking,
+        documentsChecking,
+        examinations,
+        decided,
+        completed,
+      ]
+    },
+  },
   mounted() {
     this.getModerators()
     this.getApplication()
@@ -499,13 +527,19 @@ export default {
       )
       this.application.commentEditing = this.application.comment
     },
-    async updateStatus(status) {
+    async updateStatus(value) {
       try {
         await this.$api.applications.updateStatus(this.$route.params.id, {
-          status,
+          status: Status[value],
+        })
+        this.$modal.show('success', {
+          title: 'Изменения по заявке были сохранены!',
         })
       } catch (err) {
-        this.$modal.show('error', { err })
+        this.$modal.show('error', {
+          title: 'Произошла ошибка!',
+          message: 'Изменения по заявке не были сохранены',
+        })
       }
     },
   },
@@ -546,6 +580,7 @@ export default {
 
   ::v-deep {
     .v-stepper__step {
+      min-height: 40px;
       flex: calc(100% / 6) 0 0;
       padding: 7px;
 
@@ -582,6 +617,7 @@ export default {
     .v-stepper__label {
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
       text-align: center;
     }
