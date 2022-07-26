@@ -3,28 +3,36 @@
     <v-stepper value="2" alt-labels flat class="status-timeline mb-5">
       <v-stepper-header>
         <v-stepper-step step="1" complete>
-          <span class="font-weight-bold mb-1">Принята</span>
+          <span class="font-weight-bold text--default mb-1">Принята</span>
           <span class="text--x-small">13.03.2021 09:00:05</span></v-stepper-step
         >
 
         <v-stepper-step step="2">
-          <span class="font-weight-bold mb-1">Проверка заявки</span>
+          <span class="font-weight-bold text--default mb-1"
+            >Проверка заявки</span
+          >
         </v-stepper-step>
 
         <v-stepper-step step="3">
-          <span class="font-weight-bold mb-1">Проверка документов</span>
+          <span class="font-weight-bold text--default mb-1"
+            >Проверка документов</span
+          >
         </v-stepper-step>
 
         <v-stepper-step step="4">
-          <span class="font-weight-bold mb-1">Прохождение в/и</span>
+          <span class="font-weight-bold text--default mb-1"
+            >Прохождение в/и</span
+          >
         </v-stepper-step>
 
         <v-stepper-step step="5">
-          <span class="font-weight-bold mb-1">Решение принято</span>
+          <span class="font-weight-bold text--default mb-1"
+            >Решение принято</span
+          >
         </v-stepper-step>
 
         <v-stepper-step step="6">
-          <span class="font-weight-bold mb-1">Отработана</span>
+          <span class="font-weight-bold text--default mb-1">Отработана</span>
         </v-stepper-step>
       </v-stepper-header>
     </v-stepper>
@@ -215,22 +223,49 @@
           v-if="$route.query.type === 'accepted'"
           class="d-flex justify-space-between align-start"
         >
-          <v-btn outlined color="indigo" small class="mr-6">
+          <v-btn
+            outlined
+            color="indigo"
+            small
+            class="font-weight-medium border--normal mr-6"
+          >
             Запрос документов
           </v-btn>
-          <v-btn outlined color="error" small class="mr-12">
+          <v-btn
+            outlined
+            color="error"
+            small
+            class="font-weight-medium border--normal mr-12"
+          >
             Отклонена (гр. укомплектована)
           </v-btn>
-          <v-btn outlined color="#99A2AD" small> Дубликат </v-btn>
+          <v-btn
+            outlined
+            color="#99A2AD"
+            small
+            class="font-weight-mediumborder--normal"
+          >
+            Дубликат
+          </v-btn>
         </div>
         <div
           v-else-if="$route.query.type === 'documents_request'"
           class="d-flex justify-space-between align-start"
         >
-          <v-btn outlined color="#CD32A2" small class="mr-6">
+          <v-btn
+            outlined
+            color="#CD32A2"
+            small
+            class="font-weight-medium border--normal mr-6"
+          >
             Приглашение на в/и
           </v-btn>
-          <v-btn outlined color="error" small class="mr-auto">
+          <v-btn
+            outlined
+            color="error"
+            small
+            class="font-weight-medium border--normal mr-auto"
+          >
             Отклонена (отсутствуют док.)
           </v-btn>
         </div>
@@ -238,10 +273,20 @@
           v-else-if="$route.query.type === 'invitation'"
           class="d-flex justify-space-between align-start"
         >
-          <v-btn outlined color="success" small class="mr-6">
+          <v-btn
+            outlined
+            color="success"
+            small
+            class="font-weight-medium border--normal mr-6"
+          >
             Одобрена (по итогам в/и)
           </v-btn>
-          <v-btn outlined color="error" small class="mr-auto">
+          <v-btn
+            outlined
+            color="error"
+            small
+            class="font-weight-medium border--normal mr-auto"
+          >
             Отклонена (по итогам в/и)
           </v-btn>
         </div>
@@ -249,34 +294,84 @@
           v-else-if="!$route.query.employee"
           class="d-flex align-start flex-wrap"
         >
-          <v-btn outlined color="#DBD06E" small class="mr-3 mb-3">
+          <v-btn
+            outlined
+            color="#DBD06E"
+            small
+            class="font-weight-medium border--normal mr-3 mb-3"
+          >
             Принята
           </v-btn>
-          <v-btn outlined color="indigo" small class="mr-3 mb-3">
+          <v-btn
+            outlined
+            color="indigo"
+            small
+            class="font-weight-medium border--normal mr-3 mb-3"
+          >
             Запрос документов
           </v-btn>
-          <v-btn outlined color="error" small class="mr-3 mb-3">
+          <v-btn
+            outlined
+            color="error"
+            small
+            class="font-weight-medium border--normal mr-3 mb-3"
+          >
             Отклонена (гр. укомплектована)
           </v-btn>
-          <v-btn outlined color="#817070" small class="mr-3 mb-3">
+          <v-btn
+            outlined
+            color="#817070"
+            small
+            class="font-weight-medium border--normal mr-3 mb-3"
+          >
             Аннулировано
           </v-btn>
-          <v-btn outlined color="error" small class="mr-3 mb-3">
+          <v-btn
+            outlined
+            color="error"
+            small
+            class="font-weight-medium border--normal mr-3 mb-3"
+          >
             Отклонена (отсутствуют док.)
           </v-btn>
-          <v-btn outlined color="#CD32A2" small class="mr-3 mb-3">
+          <v-btn
+            outlined
+            color="#CD32A2"
+            small
+            class="font-weight-medium border--normal mr-3 mb-3"
+          >
             Приглашение на в/и
           </v-btn>
-          <v-btn outlined color="#C87E0F" small class="mr-3 mb-3">
+          <v-btn
+            outlined
+            color="#C87E0F"
+            small
+            class="font-weight-medium border--normal mr-3 mb-3"
+          >
             Неявка на в/и
           </v-btn>
-          <v-btn outlined color="success" small class="mr-3 mb-3">
+          <v-btn
+            outlined
+            color="success"
+            small
+            class="font-weight-medium border--normal mr-3 mb-3"
+          >
             Одобрена (по итогам в/и)
           </v-btn>
-          <v-btn outlined color="error" small class="mr-3 mb-3">
+          <v-btn
+            outlined
+            color="error"
+            small
+            class="font-weight-medium border--normal mr-3 mb-3"
+          >
             Отклонена (по итогам в/и)
           </v-btn>
-          <v-btn outlined color="#51607A" small class="mr-3 mb-3">
+          <v-btn
+            outlined
+            color="#51607A"
+            small
+            class="font-weight-medium border--normal mr-3 mb-3"
+          >
             Отработана
           </v-btn>
         </div>
