@@ -45,9 +45,9 @@
             @click:append="showPassword = !showPassword"
           ></v-text-field>
         </validation-provider>
-        <NuxtLink to="/" class="d-inline-block mt-4 text-decoration-none"
+        <!-- <NuxtLink to="/" class="d-inline-block mt-4 text-decoration-none"
           >Забыли пароль?</NuxtLink
-        >
+        > -->
       </div>
 
       <v-checkbox
