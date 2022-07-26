@@ -171,6 +171,7 @@ export default {
       }
 
       input {
+        padding: 0 !important;
         text-align: center;
         font-family: 'ALS Story', sans-serif;
         font-style: normal;
