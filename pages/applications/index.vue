@@ -129,7 +129,6 @@
         :length="totalPages"
         total-visible="10"
         circle
-        @input="getList"
       ></v-pagination>
     </div>
   </div>
@@ -144,8 +143,8 @@ import updateApplication from '@/mixins/updateApplication'
 
 export default {
   name: 'ApplicationList',
-  mixins: [roles, updateApplication],
   components: { CustomChip, CustomSelect },
+  mixins: [roles, updateApplication],
   data() {
     return {
       StatusColor,
@@ -214,6 +213,11 @@ export default {
     return {
       title: 'Список заявок',
     }
+  },
+  watch: {
+    'applicationTableOptions.page'() {
+      this.getList()
+    },
   },
   mounted() {
     console.log(`ROLE:${this.role}`)

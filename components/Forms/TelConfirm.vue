@@ -25,7 +25,7 @@
         <validation-provider
           v-slot="{ errors }"
           name="code"
-          rules="required|length:4"
+          :rules="`required|length:${CODE_LENGTH}`"
         >
           <v-text-field
             v-model="form.code"
@@ -33,7 +33,7 @@
             :error-messages="errors"
             outlined
             persistent-hint
-            hint="Код состоит из 5 цифр и действителен в течении 90 сек "
+            :hint="`Код состоит из ${CODE_LENGTH} цифр и действителен в течении 90 сек`"
             class="custom-field confirm-form__code mx-auto mb-8"
           ></v-text-field>
         </validation-provider>
@@ -70,6 +70,7 @@ import prepareParams from '@/mixins/prepareParams'
 import CustomButton from '@/components/FormElements/CustomButton'
 
 const SMS_TIMEOUT = 90000
+const CODE_LENGTH = 4
 
 export default {
   components: { CustomButton },
@@ -86,6 +87,7 @@ export default {
   },
   data() {
     return {
+      CODE_LENGTH,
       canResendCode: false,
       smsTimerId: null,
       showMainErrorMessge: false,
