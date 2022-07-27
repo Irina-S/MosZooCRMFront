@@ -76,7 +76,7 @@
                 left: 0,
               }"
               @keydown.esc="application.isResponsibleEditing = false"
-              @change="updateResponsible(application, $event)"
+              @change="setResponsible(application, $event)"
             >
               <template #no-data>
                 <div class="font-weight-regular text-center">
@@ -132,18 +132,11 @@
               hide-details
               class="comment-field comment-textarea mb-2"
             ></v-textarea>
-            <div v-if="commentEditing" class="d-flex justify-end">
+            <div v-if="application.commentEditing" class="d-flex justify-end">
               <v-btn color="primary" small @click="saveComment">
                 Сохранить
               </v-btn>
-              <v-btn
-                :disabled="application.comment === application.commentEditing"
-                small
-                class="ml-4"
-                @click="resetComment"
-              >
-                Отменить
-              </v-btn>
+              <v-btn small class="ml-4" @click="resetComment"> Отменить </v-btn>
             </div>
           </template>
         </div>
@@ -529,6 +522,10 @@ export default {
     },
     prepareDate(date, time) {
       return `${date} ${time}:00`
+    },
+    async setResponsible(application, responsible) {
+      await this.updateResponsible(application, responsible)
+      this.getApplication()
     },
     resetComment() {
       this.application.commentEditing = this.application.comment

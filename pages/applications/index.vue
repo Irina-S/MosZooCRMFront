@@ -47,7 +47,7 @@
             fixed
             @click.stop
             @keydown.esc="item.isResponsibleEditing = false"
-            @change="updateResponsible(item, $event)"
+            @change="setResponsible(item, $event)"
           >
             <template #no-data>
               <div class="font-weight-regular text-center">Нет результатов</div>
@@ -149,7 +149,6 @@ export default {
     return {
       StatusColor,
       sections: [],
-      statuses: [],
       applicationTableOptions: {
         page: 1,
         itemsPerPage: 15,
@@ -236,14 +235,6 @@ export default {
         this.$modal.show('error', { err })
       }
     },
-    async getStatuses() {
-      try {
-        const { data } = await this.$api.manuals.getStatuses()
-        this.statuses = data.models
-      } catch (err) {
-        this.$modal.show('error', { err })
-      }
-    },
     async getList() {
       try {
         const { data } = await this.$api.applications.getList({
@@ -275,6 +266,10 @@ export default {
     },
     openApplication(application) {
       this.$router.push(`applications/${application.id}`)
+    },
+    async setResponsible(application, responsible) {
+      await this.updateResponsible(application, responsible)
+      this.getList()
     },
   },
 }
