@@ -7,6 +7,9 @@
         class="cursor-pointer"
         @click="$router.push('/')"
       />
+      <nuxt-link v-if="isAdmin" to="settings" class="mr-6 ml-auto">
+        <img src="@/assets/images/setting-icon.svg" alt="настройки" />
+      </nuxt-link>
       <v-avatar v-if="name" color="primary" size="40" class="avatar">{{
         name[0].toUpperCase()
       }}</v-avatar>
@@ -20,9 +23,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import roles from '@/mixins/roles'
 
 export default {
   name: 'DefaultLayout',
+  mixins: [roles],
   data() {
     return {}
   },

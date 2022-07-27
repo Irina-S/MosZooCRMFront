@@ -36,7 +36,7 @@ export default {
   target: 'static',
 
   loading: {
-    color: '#000',
+    color: '#006299',
     height: '5px',
   },
 

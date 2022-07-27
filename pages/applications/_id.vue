@@ -184,7 +184,7 @@
               dense
               hide-details
               class="group-select"
-            ></v-select>
+            />
           </div>
         </template>
         <template
@@ -395,13 +395,14 @@ import {
   StatusBtnText,
 } from '@/constants/Status'
 import roles from '@/mixins/roles'
+import manuals from '@/mixins/manuals'
 import checkboxes from '@/mixins/checkboxes'
 import updateApplication from '@/mixins/updateApplication'
 
 export default {
   name: 'ApplicationPage',
   components: { CustomChip, CustomSelect, CustomDatePicker, CustomTimePicker },
-  mixins: [roles, checkboxes, updateApplication],
+  mixins: [roles, manuals, checkboxes, updateApplication],
   data() {
     return {
       restrictedStatuses: [
@@ -414,10 +415,6 @@ export default {
       StatusColor,
       StatusBtnColor,
       StatusBtnText,
-      groups: {
-        items: [],
-        page: 1,
-      },
       agreement: true,
       application: null,
       examinations: {
@@ -477,24 +474,6 @@ export default {
     this.getApplication()
   },
   methods: {
-    async getGroups() {
-      try {
-        const { data } = await this.$api.groups.getList({
-          page: this.groups.page,
-        })
-        if (this.groups.page === 1) {
-          this.groups.items = []
-        }
-        this.groups.items.push(...data.models)
-        this.groups.total = data.meta.total
-        if (data.meta.total > data.meta.count) {
-          this.groups.page++
-          setTimeout(this.getGroups, 0)
-        }
-      } catch (err) {
-        this.$modal.show('error', { err })
-      }
-    },
     async getApplication() {
       try {
         const data = await this.$api.applications.get(this.$route.params.id)

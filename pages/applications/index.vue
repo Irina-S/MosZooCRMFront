@@ -139,16 +139,16 @@ import CustomChip from '@/components/FormElements/CustomChip'
 import CustomSelect from '@/components/FormElements/CustomSelect'
 import { StatusColor } from '@/constants/Status'
 import roles from '@/mixins/roles'
+import manuals from '@/mixins/manuals'
 import updateApplication from '@/mixins/updateApplication'
 
 export default {
   name: 'ApplicationList',
   components: { CustomChip, CustomSelect },
-  mixins: [roles, updateApplication],
+  mixins: [roles, manuals, updateApplication],
   data() {
     return {
       StatusColor,
-      sections: [],
       applicationTableOptions: {
         page: 1,
         itemsPerPage: 15,
@@ -227,14 +227,6 @@ export default {
     }
   },
   methods: {
-    async getSections() {
-      try {
-        const { data } = await this.$api.manuals.getApplicationsTypes()
-        this.sections = data.models
-      } catch (err) {
-        this.$modal.show('error', { err })
-      }
-    },
     async getList() {
       try {
         const { data } = await this.$api.applications.getList({
