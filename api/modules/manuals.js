@@ -1,7 +1,7 @@
 export default ($sendRequest) => {
   const request = {}
 
-  request.getApplicationsTypes = (params) => {
+  request.getApplicationsTypes = () => {
     return $sendRequest('get', '/api/v1/manuals/types')
   }
 
@@ -9,8 +9,8 @@ export default ($sendRequest) => {
     return $sendRequest('get', '/api/v1/manuals/statuses')
   }
 
-  request.getModerators = () => {
-    return $sendRequest('get', '/api/v1/manuals/moderators')
+  request.getModerators = (params) => {
+    return $sendRequest('get', '/api/v1/manuals/moderators', params)
   }
 
   return request

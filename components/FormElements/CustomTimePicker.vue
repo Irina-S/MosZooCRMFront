@@ -49,12 +49,16 @@ export default {
       menuY: null,
     }
   },
-  watch: {},
+  watch: {
+    time(value) {
+      this.$emit('input', value)
+    },
+  },
   methods: {
     toggleDatePicker() {
-      const { x, y } = this.$el.getBoundingClientRect()
+      const { x, y, height } = this.$el.getBoundingClientRect()
       this.menuX = x
-      this.menuY = y + 340
+      this.menuY = y + height
       this.open = !this.open
     },
     onTimeInput(value) {

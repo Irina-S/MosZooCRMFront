@@ -5,7 +5,11 @@
       <div v-if="title" class="modal-header text-center mb-4">
         <h2 class="modal-title">{{ title }}</h2>
       </div>
-      <div class="modal-content text-center" v-html="computedMessage"></div>
+      <div
+        v-if="computedMessage"
+        class="modal-content text-center"
+        v-html="computedMessage"
+      ></div>
     </template>
   </ModalWrapper>
 </template>

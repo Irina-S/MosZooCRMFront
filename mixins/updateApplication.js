@@ -3,7 +3,6 @@ export default {
     return {
       moderators: {
         items: [],
-        total: 0,
         page: 1,
       },
     }
@@ -11,7 +10,9 @@ export default {
   methods: {
     async getModerators() {
       try {
-        const { data } = await this.$api.manuals.getModerators()
+        const { data } = await this.$api.manuals.getModerators({
+          page: this.moderators.page,
+        })
         if (this.moderators.page === 1) {
           this.moderators.items = []
         }

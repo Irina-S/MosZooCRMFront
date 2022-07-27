@@ -1,23 +1,26 @@
 <template>
-  <ModalWrapper :size="size" :resolve="resolve" v-on="$listeners">
+  <ModalWrapper size="normal" :resolve="resolve" v-on="$listeners">
     <template #default="{ close }">
       <div v-if="title" class="modal-header text-center mb-4">
         <h2 class="modal-title">{{ title }}</h2>
       </div>
-      <div class="modal-content text-center" v-html="message"></div>
-      <div class="modal-footer">
-        <BButton
-          v-if="cancelButton"
-          variant="danger"
-          @click="close($event, false)"
-          >{{ cancelText }}</BButton
-        >
-        <BButton
+      <div
+        v-if="message"
+        v-html="message"
+        class="modal-content text-center"
+      ></div>
+      <div class="modal-footer mt-7">
+        <v-btn v-if="cancelButton" @click="close($event, false)">
+          {{ cancelText }}
+        </v-btn>
+        <v-btn
           v-if="okButton"
-          variant="primary"
+          color="primary"
+          class="ml-7"
           @click="close($event, true)"
-          >{{ okText }}</BButton
         >
+          {{ okText }}
+        </v-btn>
       </div>
     </template>
   </ModalWrapper>
@@ -35,13 +38,9 @@ export default {
       type: String,
       default: '',
     },
-    size: {
-      type: String,
-      default: 'normal',
-    },
     cancelButton: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     cancelText: {
       type: String,
@@ -53,7 +52,7 @@ export default {
     },
     okText: {
       type: String,
-      default: 'Ok',
+      default: 'Сохранить',
     },
     resolve: {
       type: Function,

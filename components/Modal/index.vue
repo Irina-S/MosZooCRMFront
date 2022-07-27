@@ -21,6 +21,7 @@ export default {
     Default,
     Error,
     Success: () => import('@/components/Modal/Success'),
+    Confirm: () => import('@/components/Modal/Confirm'),
     // DynamicComponent: () => import('@/components/Modal/DynamicComponent'),
   },
   data() {

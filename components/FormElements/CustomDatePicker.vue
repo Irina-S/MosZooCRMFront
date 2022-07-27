@@ -6,7 +6,7 @@
       dense
       outlined
       hide-details
-      placeholder="00.00.0000"
+      placeholder="дд.мм.гггг"
       prepend-inner-icon="mdi-calendar-month"
       class="date-picker"
       @click:prepend-inner="toggleDatePicker"
@@ -68,9 +68,7 @@ export default {
     },
     date() {
       try {
-        const datetime = `${this.dateFormatted ?? ''} ${this.time ?? ''}`
-
-        this.$emit('input', datetime)
+        this.$emit('input', this.date)
       } catch (error) {
         this.$emit('input', '')
       }
@@ -78,13 +76,14 @@ export default {
   },
   methods: {
     toggleDatePicker() {
-      const { x, y } = this.$el.getBoundingClientRect()
+      const { x, y, height } = this.$el.getBoundingClientRect()
       this.menuX = x
-      this.menuY = y + 340
+      this.menuY = y + height
       this.open = !this.open
     },
     onDateInput(value) {
       this.dateFormatted = this.$dayjs(value).format('DD.MM.YYYY')
+      this.open = !this.open
     },
   },
 }

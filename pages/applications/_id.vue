@@ -1,6 +1,12 @@
 <template>
   <div>
-    <v-stepper value="0" alt-labels flat class="status-timeline mb-5">
+    <v-stepper
+      v-if="application"
+      value="0"
+      alt-labels
+      flat
+      class="status-timeline mb-5"
+    >
       <v-stepper-header>
         <v-stepper-step step="1" :complete="steps[0]">
           <span class="font-weight-bold text--default mb-1">Принята</span>
@@ -126,11 +132,16 @@
               hide-details
               class="comment-field comment-textarea mb-2"
             ></v-textarea>
-            <div class="d-flex justify-end">
+            <div v-if="commentEditing" class="d-flex justify-end">
               <v-btn color="primary" small @click="saveComment">
                 Сохранить
               </v-btn>
-              <v-btn small class="text--light ml-4" @click="resetComment">
+              <v-btn
+                :disabled="application.comment === application.commentEditing"
+                small
+                class="ml-4"
+                @click="resetComment"
+              >
                 Отменить
               </v-btn>
             </div>
@@ -138,30 +149,36 @@
         </div>
         <template
           v-if="
+            ['pony_club'].includes(application.type) &&
             application.possible_next_statuses &&
             application.possible_next_statuses.includes(
-              Status.INVITATION_TO_ENTRANCE_EXAMINATION
+              Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
             )
           "
         >
           <div class="text--light">Дата и время в/и*</div>
           <div class="d-flex justify-space-between">
-            <CustomDatePicker class="mr-2" />
-            <CustomTimePicker />
+            <CustomDatePicker v-model="examinations.date" class="mr-2" />
+            <CustomTimePicker v-model="examinations.time" />
           </div>
         </template>
         <template
           v-if="
+            ['pony_club'].includes(application.type) &&
             application.possible_next_statuses &&
-            application.possible_next_statuses.includes(
-              Status.INVITATION_TO_ENTRANCE_EXAMINATION
-            )
+            (application.possible_next_statuses.includes(
+              Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
+            ) ||
+              application.possible_next_statuses.includes(
+                Status.APPROVED_BY_EXAMINATIONS
+              ))
           "
         >
           <div class="text--light">Группа в/и*</div>
           <div>
             <v-select
-              :items="$options.groups"
+              v-model="examinations.group"
+              :items="groups.items"
               :menu-props="{
                 bottom: true,
                 offsetY: true,
@@ -179,30 +196,33 @@
         </template>
         <template
           v-if="
+            ['kubz', 'kraski_mira'].includes(application.type) &&
             application.possible_next_statuses &&
             application.possible_next_statuses.includes(
               Status.INVITATION_TO_CLASS
             )
           "
         >
-          <div class="text--light">Дата и время в/и*</div>
+          <div class="text--light">Дата и время занятия</div>
           <div class="d-flex justify-space-between">
-            <CustomDatePicker class="mr-2" />
-            <CustomTimePicker />
+            <CustomDatePicker v-model="classes.date" class="mr-2" />
+            <CustomTimePicker v-model="classes.time" />
           </div>
         </template>
         <template
           v-if="
+            ['kubz', 'kraski_mira'].includes(application.type) &&
             application.possible_next_statuses &&
             application.possible_next_statuses.includes(
               Status.INVITATION_TO_CLASS
             )
           "
         >
-          <div class="text--light">Группа в/и*</div>
+          <div class="text--light">Группа занятия</div>
           <div>
             <v-select
-              :items="$options.groups"
+              v-model="classes.group"
+              :items="groups.items"
               :menu-props="{
                 bottom: true,
                 offsetY: true,
@@ -292,13 +312,13 @@
           >
             <template #label>
               <div
-                v-html="checkbox.label"
                 class="
                   application-info__agreement
                   text--small text--default
                   ml-2
                   pt-1
                 "
+                v-html="checkbox.label"
               ></div>
             </template>
           </v-checkbox>
@@ -317,7 +337,10 @@
         >
       </div>
       <div
-        v-if="(isAdmin && application.responsible_name) || isModerator"
+        v-if="
+          (isAdmin && application.responsible_name) ||
+          (isModerator && application.possible_next_statuses.length)
+        "
         class="
           application-actions
           position--absolute
@@ -329,90 +352,39 @@
         "
       >
         <div class="mb-4">Выберите вариант решения по заявке</div>
-        <div v-if="isAdmin" class="d-flex align-start flex-wrap">
-          <v-btn
-            v-for="(status, key) in StatusBtnText"
-            :key="key"
-            :color="StatusBtnColor[key]"
-            outlined
-            small
-            class="font-weight-medium border--normal mr-3 mb-3"
-            @click="updateStatus(key)"
-          >
-            {{ status }}
-          </v-btn>
+        <div class="d-flex align-start flex-wrap">
+          <template v-if="isAdmin">
+            <v-btn
+              v-for="(status, key) in StatusBtnText"
+              v-show="
+                key !== application.status &&
+                !restrictedStatuses.includes(Status[key])
+              "
+              :key="key"
+              :color="StatusBtnColor[key]"
+              outlined
+              small
+              class="font-weight-medium border--normal mr-3 mb-3"
+              @click="updateStatus(key)"
+            >
+              {{ status }}
+            </v-btn>
+          </template>
+          <template v-else>
+            <v-btn
+              v-for="(status, key) in StatusBtnText"
+              v-show="application.possible_next_statuses.includes(Status[key])"
+              :key="key"
+              :color="StatusBtnColor[key]"
+              outlined
+              small
+              class="font-weight-medium border--normal mr-3 mb-3"
+              @click="updateStatus(key)"
+            >
+              {{ status }}
+            </v-btn>
+          </template>
         </div>
-        <!-- <div
-          v-if="$route.query.type === 'accepted'"
-          class="d-flex justify-space-between align-start"
-        >
-          <v-btn
-            outlined
-            color="indigo"
-            small
-            class="font-weight-medium border--normal mr-6"
-          >
-            Запрос документов
-          </v-btn>
-          <v-btn
-            outlined
-            color="error"
-            small
-            class="font-weight-medium border--normal mr-12"
-          >
-            Отклонена (гр. укомплектована)
-          </v-btn>
-          <v-btn
-            outlined
-            color="#99A2AD"
-            small
-            class="font-weight-mediumborder--normal"
-          >
-            Дубликат
-          </v-btn>
-        </div>
-        <div
-          v-else-if="$route.query.type === 'documents_application'"
-          class="d-flex justify-space-between align-start"
-        >
-          <v-btn
-            outlined
-            color="#CD32A2"
-            small
-            class="font-weight-medium border--normal mr-6"
-          >
-            Приглашение на в/и
-          </v-btn>
-          <v-btn
-            outlined
-            color="error"
-            small
-            class="font-weight-medium border--normal mr-auto"
-          >
-            Отклонена (отсутствуют док.)
-          </v-btn>
-        </div>
-        <div
-          v-else-if="$route.query.type === 'invitation'"
-          class="d-flex justify-space-between align-start"
-        >
-          <v-btn
-            outlined
-            color="success"
-            small
-            class="font-weight-medium border--normal mr-6"
-          >
-            Одобрена (по итогам в/и)
-          </v-btn>
-          <v-btn
-            outlined
-            color="error"
-            small
-            class="font-weight-medium border--normal mr-auto"
-          >
-            Отклонена (по итогам в/и)
-          </v-btn>
-        </div> -->
       </div>
     </div>
   </div>
@@ -434,23 +406,37 @@ import checkboxes from '@/mixins/checkboxes'
 import updateApplication from '@/mixins/updateApplication'
 
 export default {
-  name: 'SingleapplicationPage',
-  mixins: [roles, checkboxes, updateApplication],
+  name: 'ApplicationPage',
   components: { CustomChip, CustomSelect, CustomDatePicker, CustomTimePicker },
-  groups: [
-    { id: 1, name: 'Группа 1' },
-    { id: 2, name: 'Группа 2' },
-    { id: 3, name: 'Группа 3' },
-    { id: 4, name: 'Группа 4' },
-  ],
+  mixins: [roles, checkboxes, updateApplication],
   data() {
     return {
+      restrictedStatuses: [
+        'approved_by_examinations',
+        'invitation_to_entrance_examinations',
+        'invitation_to_class',
+        'completed',
+      ], // временно запрещенные статусы для перевода админом
       Status,
       StatusColor,
       StatusBtnColor,
       StatusBtnText,
+      groups: {
+        items: [],
+        page: 1,
+      },
       agreement: true,
       application: null,
+      examinations: {
+        date: null,
+        time: null,
+        group: null,
+      },
+      classes: {
+        date: null,
+        time: null,
+        group: null,
+      },
     }
   },
   head() {
@@ -467,11 +453,14 @@ export default {
 
       const completed = status === Status.COMPLETED
       const decided =
-        ![Status.INIT, Status.ACCEPTED, Status.DOCUMENTS_REQUEST].includes(
-          status
-        ) || completed
+        ![
+          Status.INIT,
+          Status.ACCEPTED,
+          Status.DOCUMENTS_REQUEST,
+          Status.INVITATION_TO_ENTRANCE_EXAMINATIONS,
+        ].includes(status) || completed
       const examinations =
-        status === Status.INVITATION_TO_ENTRANCE_EXAMINATION || decided
+        status === Status.INVITATION_TO_ENTRANCE_EXAMINATIONS || decided
       const documentsChecking =
         status === Status.DOCUMENTS_REQUEST || examinations
       const checking = !!this.application.responsible_name || documentsChecking
@@ -488,10 +477,31 @@ export default {
     },
   },
   mounted() {
-    this.getModerators()
+    if (this.isAdmin) {
+      this.getModerators()
+    }
+    this.getGroups()
     this.getApplication()
   },
   methods: {
+    async getGroups() {
+      try {
+        const { data } = await this.$api.groups.getList({
+          page: this.groups.page,
+        })
+        if (this.groups.page === 1) {
+          this.groups.items = []
+        }
+        this.groups.items.push(...data.models)
+        this.groups.total = data.meta.total
+        if (data.meta.total > data.meta.count) {
+          this.groups.page++
+          setTimeout(this.getGroups, 0)
+        }
+      } catch (err) {
+        this.$modal.show('error', { err })
+      }
+    },
     async getApplication() {
       try {
         const data = await this.$api.applications.get(this.$route.params.id)
@@ -517,6 +527,9 @@ export default {
         6
       )} ${phone.substring(6, 8)} ${phone.substring(8, 0)}`
     },
+    prepareDate(date, time) {
+      return `${date} ${time}:00`
+    },
     resetComment() {
       this.application.commentEditing = this.application.comment
     },
@@ -529,9 +542,46 @@ export default {
     },
     async updateStatus(value) {
       try {
-        await this.$api.applications.updateStatus(this.$route.params.id, {
-          status: Status[value],
+        const confirm = await this.$modal.show('confirm', {
+          message: 'Вы уверены, что хотите изменить статус заявки?',
         })
+        if (!confirm) {
+          return
+        }
+        const params = {
+          status: Status[value],
+        }
+
+        switch (Status[value]) {
+          case Status.INVITATION_TO_ENTRANCE_EXAMINATIONS:
+            params.examination_date = this.prepareDate(
+              this.examinations.date,
+              this.examinations.time
+            )
+            params.group_id = this.examinations.group
+            break
+          case Status.APPROVED_BY_EXAMINATIONS:
+            params.group_id = this.examinations.group
+            break
+          case Status.INVITATION_TO_CLASS:
+            params.examination_date = this.prepareDate(
+              this.classes.date,
+              this.classes.time
+            )
+            params.group_id = this.classes.group
+            break
+          default:
+            break
+        }
+        if (this.isAdmin) {
+          await this.$api.applications.update(this.$route.params.id, params)
+        } else {
+          await this.$api.applications.updateStatus(
+            this.$route.params.id,
+            params
+          )
+        }
+        this.getApplication()
         this.$modal.show('success', {
           title: 'Изменения по заявке были сохранены!',
         })

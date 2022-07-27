@@ -2,6 +2,7 @@ import ws from './modules/ws'
 import applications from './modules/applications'
 import manuals from './modules/manuals'
 import auth from './modules/auth'
+import groups from './modules/groups'
 
 export default ({ $sendRequest, store }, inject) => {
   inject('api', {
@@ -9,5 +10,6 @@ export default ({ $sendRequest, store }, inject) => {
     applications: applications($sendRequest),
     manuals: manuals($sendRequest),
     auth: auth($sendRequest),
+    groups: groups($sendRequest),
   })
 }
