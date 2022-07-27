@@ -17,7 +17,7 @@ export const Status = {
 export const StatusColor = {
   INIT: '#A1D5E5',
   ACCEPTED: '#E5DEA1',
-  CANCELED: '#51607A',
+  CANCELED: '#AB9F9F',
   REJECTED_BY_COUNT: '#E5A1A1',
   APPROVED_BY_EXAMINATIONS: '#ABE5A1',
   REJECTED_BY_EXAMINATIONS: '#E5A1A1',
