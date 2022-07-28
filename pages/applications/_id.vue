@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-stepper
+    <!-- <v-stepper
       v-if="application"
       value="0"
       alt-labels
@@ -10,7 +10,7 @@
       <v-stepper-header>
         <v-stepper-step step="1" :complete="steps[0]">
           <span class="font-weight-bold text--default mb-1">Принята</span>
-          <!-- <span class="text--x-small">13.03.2021 09:00:05</span>--></v-stepper-step
+          </v-stepper-step
         >
         <v-stepper-step step="2" :complete="steps[1]">
           <span class="font-weight-bold text--default mb-1"
@@ -40,7 +40,7 @@
           <span class="font-weight-bold text--default mb-1">Отработана</span>
         </v-stepper-step>
       </v-stepper-header>
-    </v-stepper>
+    </v-stepper> -->
     <div v-if="application" class="position--relative">
       <h1 class="font-weight-bold text--enlarged mb-3">
         Заявка № {{ application.id }}
@@ -430,36 +430,34 @@ export default {
     }
   },
   computed: {
-    steps() {
-      if (!this.application) {
-        return []
-      }
-      const status = this.application.status.toLowerCase()
-
-      const completed = status === Status.COMPLETED
-      const decided =
-        ![
-          Status.INIT,
-          Status.ACCEPTED,
-          Status.DOCUMENTS_REQUEST,
-          Status.INVITATION_TO_ENTRANCE_EXAMINATIONS,
-        ].includes(status) || completed
-      const examinations =
-        status === Status.INVITATION_TO_ENTRANCE_EXAMINATIONS || decided
-      const documentsChecking =
-        status === Status.DOCUMENTS_REQUEST || examinations
-      const checking = !!this.application.responsible_name || documentsChecking
-      const accepted = status === Status.ACCEPTED || checking
-
-      return [
-        accepted,
-        checking,
-        documentsChecking,
-        examinations,
-        decided,
-        completed,
-      ]
-    },
+    // steps() {
+    //   if (!this.application) {
+    //     return []
+    //   }
+    //   const status = this.application.status.toLowerCase()
+    //   const completed = status === Status.COMPLETED
+    //   const decided =
+    //     ![
+    //       Status.INIT,
+    //       Status.ACCEPTED,
+    //       Status.DOCUMENTS_REQUEST,
+    //       Status.INVITATION_TO_ENTRANCE_EXAMINATIONS,
+    //     ].includes(status) || completed
+    //   const examinations =
+    //     status === Status.INVITATION_TO_ENTRANCE_EXAMINATIONS || decided
+    //   const documentsChecking =
+    //     status === Status.DOCUMENTS_REQUEST || examinations
+    //   const checking = !!this.application.responsible_name || documentsChecking
+    //   const accepted = status === Status.ACCEPTED || checking
+    //   return [
+    //     accepted,
+    //     checking,
+    //     documentsChecking,
+    //     examinations,
+    //     decided,
+    //     completed,
+    //   ]
+    // },
   },
   mounted() {
     if (this.isAdmin) {
