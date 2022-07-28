@@ -142,11 +142,12 @@
         </div>
         <template
           v-if="
-            ['pony_club'].includes(application.type) &&
-            application.possible_next_statuses &&
-            application.possible_next_statuses.includes(
-              Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
-            )
+            isAdmin ||
+            (['pony_club'].includes(application.type) &&
+              application.possible_next_statuses &&
+              application.possible_next_statuses.includes(
+                Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
+              ))
           "
         >
           <div class="text--light">Дата и время в/и*</div>
@@ -157,14 +158,15 @@
         </template>
         <template
           v-if="
-            ['pony_club'].includes(application.type) &&
-            application.possible_next_statuses &&
-            (application.possible_next_statuses.includes(
-              Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
-            ) ||
-              application.possible_next_statuses.includes(
-                Status.APPROVED_BY_EXAMINATIONS
-              ))
+            isAdmin ||
+            (['pony_club'].includes(application.type) &&
+              application.possible_next_statuses &&
+              (application.possible_next_statuses.includes(
+                Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
+              ) ||
+                application.possible_next_statuses.includes(
+                  Status.APPROVED_BY_EXAMINATIONS
+                )))
           "
         >
           <div class="text--light">Группа в/и*</div>
@@ -189,11 +191,12 @@
         </template>
         <template
           v-if="
-            ['kubz', 'kraski_mira'].includes(application.type) &&
-            application.possible_next_statuses &&
-            application.possible_next_statuses.includes(
-              Status.INVITATION_TO_CLASS
-            )
+            isAdmin ||
+            (['kubz', 'kraski_mira'].includes(application.type) &&
+              application.possible_next_statuses &&
+              application.possible_next_statuses.includes(
+                Status.INVITATION_TO_CLASS
+              ))
           "
         >
           <div class="text--light">Дата и время занятия</div>
@@ -204,11 +207,12 @@
         </template>
         <template
           v-if="
-            ['kubz', 'kraski_mira'].includes(application.type) &&
-            application.possible_next_statuses &&
-            application.possible_next_statuses.includes(
-              Status.INVITATION_TO_CLASS
-            )
+            isAdmin ||
+            (['kubz', 'kraski_mira'].includes(application.type) &&
+              application.possible_next_statuses &&
+              application.possible_next_statuses.includes(
+                Status.INVITATION_TO_CLASS
+              ))
           "
         >
           <div class="text--light">Группа занятия</div>
