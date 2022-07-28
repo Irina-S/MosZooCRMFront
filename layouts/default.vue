@@ -4,15 +4,20 @@
       <img
         src="~/assets/images/atom-logo.png"
         alt="лого"
-        class="cursor-pointer"
+        class="cursor--pointer"
         @click="$router.push('/')"
       />
       <nuxt-link v-if="isAdmin" to="/settings" class="mr-6 ml-auto">
         <img src="@/assets/images/setting-icon.svg" alt="настройки" />
       </nuxt-link>
-      <v-avatar v-if="name" color="primary" size="40" class="avatar">{{
-        name[0].toUpperCase()
-      }}</v-avatar>
+      <v-avatar
+        v-if="name"
+        color="primary"
+        size="40"
+        class="avatar cursor--pointer"
+        @click="logout"
+        >{{ name[0].toUpperCase() }}</v-avatar
+      >
     </v-app-bar>
     <div class="flex-grow-1 px-10">
       <Nuxt />
@@ -33,6 +38,14 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['name']),
+  },
+  mounted() {
+    console.log(this)
+  },
+  methods: {
+    logout() {
+      this.$auth.logout()
+    },
   },
 }
 </script>

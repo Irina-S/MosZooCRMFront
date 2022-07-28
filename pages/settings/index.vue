@@ -18,7 +18,7 @@
             align-center
             rounded-lg
             elevation-2
-            cursor-pointer
+            cursor--pointer
             text-decoration-none
           "
         >

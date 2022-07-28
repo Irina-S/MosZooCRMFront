@@ -191,7 +191,7 @@ export default {
   auth: {
     redirect: {
       login: '/auth',
-      logout: '/',
+      logout: '/auth',
       callback: '/auth',
       home: false,
     },
@@ -209,7 +209,10 @@ export default {
             url: '/api/v1/auth-by-password',
             method: 'post',
           },
-          // logout: '/api/logout',
+          logout: {
+            url: '/api/v1/auth/logout',
+            method: 'get',
+          },
           user: {
             url: '/api/v1/user/me',
             method: 'get',
