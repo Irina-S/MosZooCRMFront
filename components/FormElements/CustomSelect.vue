@@ -20,6 +20,7 @@
       ref="options"
       :id="`custom-select__options${_uid}`"
       class="custom-select__options"
+      @click.stop
     ></div>
   </div>
 </template>
@@ -41,10 +42,7 @@ export default {
     }
   },
   mounted() {
-    // console.dir(this.$el)
     const { x, y, width } = this.$el.parentElement.getBoundingClientRect()
-    // console.log(this.$el.parentElement)
-    // console.log(this.$el.parentElement.getBoundingClientRect())
     this.top = `${y}px`
     this.left = `${x}px`
     this.maxWidth = `${width * 0.98}px`

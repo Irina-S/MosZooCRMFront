@@ -14,11 +14,10 @@
       class="application-table mb-6"
       @update:sort-by="getList"
       @update:sort-desc="getList"
+      @click:row="openApplication"
     >
       <template #[`item.id`]="{ item }">
-        <span class="font-weight-medium" @click="openApplication(item)">{{
-          item.id
-        }}</span>
+        <span class="font-weight-medium">{{ item.id }}</span>
       </template>
       <template #[`item.type`]="{ item }">
         <span class="font-weight-medium">{{ item.type_as_string }}</span>
@@ -219,7 +218,6 @@ export default {
     },
   },
   mounted() {
-    console.log(`ROLE:${this.role}`)
     this.getStatuses()
     this.getList()
     if (this.isAdmin) {

@@ -2,7 +2,6 @@ export default ($sendRequest) => {
   const request = {}
 
   request.authBySms = (params) => {
-    console.log('auth')
     return $sendRequest('post', '/api/v1/auth', params)
   }
 
