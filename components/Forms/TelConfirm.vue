@@ -33,7 +33,7 @@
             :error-messages="errors"
             outlined
             persistent-hint
-            :hint="`Код состоит из ${CODE_LENGTH} цифр и действителен в течении ${seconds} сек`"
+            :hint="`Код состоит из ${CODE_LENGTH} цифр и действителен в течении 90 сек`"
             class="custom-field confirm-form__code mx-auto mb-8"
           ></v-text-field>
         </validation-provider>
@@ -52,7 +52,8 @@
             Повторная отправка кода подтверждения
           </a>
           <span v-else class="text--light"
-            >Повторная отправка кода подтверждения</span
+            >Повторная отправка кода подтверждения доступна через
+            {{ seconds }} сек</span
           >
         </div>
         <div class="d-flex justify-center">
@@ -69,9 +70,8 @@
 import prepareParams from '@/mixins/prepareParams'
 import CustomButton from '@/components/FormElements/CustomButton'
 
-// const SMS_TIMEOUT = 90000
 const SMS_INTERVAL = 1000
-const SMS_SECONDS = 90
+const SMS_SECONDS = 60
 const CODE_LENGTH = 4
 
 export default {
@@ -91,9 +91,8 @@ export default {
     return {
       CODE_LENGTH,
       canResendCode: false,
-      smsTimerId: null,
       smsIntervalId: null,
-      seconds: 90,
+      seconds: SMS_SECONDS,
       showMainErrorMessge: false,
       form: {
         code: null,
@@ -123,13 +122,10 @@ export default {
             clearInterval(this.smsIntervalId)
           }
         }, SMS_INTERVAL)
-        // this.smsTimerId = setTimeout(() => {
-        //   this.canResendCode = true
-        // }, SMS_TIMEOUT)
       } catch (err) {
         if (err.response?.status === 422 && err.response.data.errors.phone) {
           this.$refs.form.setErrors({ code: err.response.data.errors.phone })
-          clearTimeout(this.smsTimerId)
+          clearTimeout(this.smsIntervalId)
           return
         }
         this.$modal.show('error', { err })
