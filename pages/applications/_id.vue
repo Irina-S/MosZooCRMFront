@@ -349,10 +349,7 @@
           <template v-if="isAdmin">
             <v-btn
               v-for="(status, key) in StatusBtnText"
-              v-show="
-                key !== application.status &&
-                !restrictedStatuses.includes(Status[key])
-              "
+              v-show="key !== application.status"
               :key="key"
               :color="StatusBtnColor[key]"
               outlined
@@ -405,12 +402,6 @@ export default {
   mixins: [roles, manuals, checkboxes, updateApplication],
   data() {
     return {
-      restrictedStatuses: [
-        'approved_by_examinations',
-        'invitation_to_entrance_examinations',
-        'invitation_to_class',
-        'completed',
-      ], // временно запрещенные статусы для перевода админом
       Status,
       StatusColor,
       StatusBtnColor,
