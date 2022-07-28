@@ -46,8 +46,7 @@ export default {
           this.moderators.items = []
         }
         this.moderators.items.push(...data.models)
-        this.moderators.total = data.meta.total
-        if (data.meta.total > data.meta.count) {
+        if (data.meta.total > this.moderators.items.length) {
           this.moderators.page++
           setTimeout(this.getModerators, 0)
         }
@@ -64,8 +63,7 @@ export default {
           this.groups.items = []
         }
         this.groups.items.push(...data.models)
-        this.groups.total = data.meta.total
-        if (data.meta.total > data.meta.count) {
+        if (data.meta.total > this.groups.items.length) {
           this.groups.page++
           setTimeout(this.getGroups, 0)
         }
