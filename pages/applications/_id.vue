@@ -493,6 +493,9 @@ export default {
       )} ${phone.substring(6, 8)} ${phone.substring(8, 0)}`
     },
     prepareDate(date, time) {
+      if (!(date && time)) {
+        return null
+      }
       return `${date} ${time}:00`
     },
     async setResponsible(application, responsible) {

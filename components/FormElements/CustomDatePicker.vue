@@ -62,9 +62,11 @@ export default {
       const datePrepared = this.$dayjs(tmpDate).format('YYYY-MM-DD')
       if (datePrepared !== 'Invalid Date') {
         this.date = datePrepared
+        this.$emit('input', datePrepared)
+        return
       }
-      const datetime = `${this.dateFormatted ?? ''} ${this.time ?? ''}`
-      this.$emit('input', datetime)
+      this.date = null
+      this.$emit('input', '')
     },
     date() {
       try {
