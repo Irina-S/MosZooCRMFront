@@ -7,7 +7,7 @@
         class="cursor-pointer"
         @click="$router.push('/')"
       />
-      <nuxt-link v-if="isAdmin" to="settings" class="mr-6 ml-auto">
+      <nuxt-link v-if="isAdmin" to="/settings" class="mr-6 ml-auto">
         <img src="@/assets/images/setting-icon.svg" alt="настройки" />
       </nuxt-link>
       <v-avatar v-if="name" color="primary" size="40" class="avatar">{{
