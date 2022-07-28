@@ -33,7 +33,7 @@
             :error-messages="errors"
             outlined
             persistent-hint
-            :hint="`Код состоит из ${CODE_LENGTH} цифр и действителен в течении 90 сек`"
+            :hint="`Код состоит из ${CODE_LENGTH} цифр и действителен в течении ${seconds} сек`"
             class="custom-field confirm-form__code mx-auto mb-8"
           ></v-text-field>
         </validation-provider>
@@ -69,7 +69,9 @@
 import prepareParams from '@/mixins/prepareParams'
 import CustomButton from '@/components/FormElements/CustomButton'
 
-const SMS_TIMEOUT = 90000
+// const SMS_TIMEOUT = 90000
+const SMS_INTERVAL = 1000
+const SMS_SECONDS = 90
 const CODE_LENGTH = 4
 
 export default {
@@ -90,6 +92,8 @@ export default {
       CODE_LENGTH,
       canResendCode: false,
       smsTimerId: null,
+      smsIntervalId: null,
+      seconds: 90,
       showMainErrorMessge: false,
       form: {
         code: null,
@@ -104,6 +108,7 @@ export default {
     async auth() {
       this.showMainErrorMessge = false
       this.$refs.form.reset()
+      this.seconds = SMS_SECONDS
       try {
         const { data } = await this.$api.auth.authBySms({
           phone: this.preparePhone(this.phone),
@@ -111,9 +116,16 @@ export default {
         })
         this.form.session_id = data.session_id
         this.canResendCode = false
-        this.smsTimerId = setTimeout(() => {
-          this.canResendCode = true
-        }, SMS_TIMEOUT)
+        this.smsIntervalId = setInterval(() => {
+          this.seconds--
+          if (!this.seconds) {
+            this.canResendCode = true
+            clearInterval(this.smsIntervalId)
+          }
+        }, SMS_INTERVAL)
+        // this.smsTimerId = setTimeout(() => {
+        //   this.canResendCode = true
+        // }, SMS_TIMEOUT)
       } catch (err) {
         if (err.response?.status === 422 && err.response.data.errors.phone) {
           this.$refs.form.setErrors({ code: err.response.data.errors.phone })
