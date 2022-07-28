@@ -257,7 +257,7 @@ export default {
       application.isCommentEditing = true
     },
     openApplication(application) {
-      this.$router.push(`applications/${application.id}`)
+      this.$router.push(`/applications/${application.id}`)
     },
     async setResponsible(application, responsible) {
       await this.updateResponsible(application, responsible)
