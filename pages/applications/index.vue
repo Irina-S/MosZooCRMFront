@@ -92,6 +92,7 @@
           dense
           hide-details
           class="comment-field"
+          @click.stop
           @keypress.enter="updateComment(item, item.commentEditing)"
           @keydown.esc="item.isCommentEditing = false"
         ></v-text-field>
