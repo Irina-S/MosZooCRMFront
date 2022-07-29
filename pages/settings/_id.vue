@@ -2,49 +2,53 @@
   <div>
     <div class="d-flex align-center mb-7">
       <v-icon
-        @click="$router.push('/settings')"
         class="text--default mr-3 mt-n1"
+        @click="$router.push('/settings')"
         >mdi-chevron-left</v-icon
       >
       <h1 class="font-weight-bold text--enlarged">Пони-клуб</h1>
     </div>
     <v-form class="mb-15">
-      <v-row class="justify-space-between mb-6">
-        <v-col cols="4">
+      <v-row class="justify-space-between mx-n7 mb-6">
+        <v-col cols="4" class="px-7">
           <div class="mb-2">Дата и время начала приема заявок</div>
-          <v-row>
-            <v-col cols="6">
+          <v-row class="mx-n2">
+            <v-col cols="6" class="px-2">
               <CustomDatePicker />
             </v-col>
-            <v-col cols="6"><CustomTimePicker /></v-col>
+            <v-col cols="6" class="px-2"><CustomTimePicker /></v-col>
           </v-row>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="4" class="px-7">
           <div class="mb-2">Дата и время окончания приема заявок</div>
-          <v-row>
-            <v-col cols="6">
+          <v-row class="mx-n2">
+            <v-col cols="6" class="px-2">
               <CustomDatePicker />
             </v-col>
-            <v-col cols="6"><CustomTimePicker /></v-col>
+            <v-col cols="6" class="px-2"><CustomTimePicker /></v-col>
           </v-row>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="4" class="px-7">
           <div class="mb-2">ФИО ответственного по умолчанию</div>
-          <v-select
-            :items="[]"
-            :menu-props="{
-              bottom: true,
-              offsetY: true,
-              class: 'responsible-select__menu',
-            }"
-            item-text="name"
-            item-value="id"
-            placeholder="Выберите"
-            outlined
-            dense
-            hide-details
-            class="responsible-select"
-          />
+          <v-row class="mx-n2">
+            <v-col cols="12" class="px-2">
+              <v-select
+                :items="[]"
+                :menu-props="{
+                  bottom: true,
+                  offsetY: true,
+                  class: 'responsible-select__menu',
+                }"
+                item-text="name"
+                item-value="id"
+                placeholder="Выберите"
+                outlined
+                dense
+                hide-details
+                class="responsible-select"
+              />
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
       <div class="mb-6">Текст шаблонов писем для рассылки Клиенту</div>
@@ -191,8 +195,8 @@ import manuals from '@/mixins/manuals'
 
 export default {
   name: 'SectionsSettingsPage',
-  mixins: [manuals],
   components: { CustomDatePicker, CustomTimePicker },
+  mixins: [manuals],
   head() {
     return { title: 'Пони-клуб' }
   },
