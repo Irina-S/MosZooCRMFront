@@ -1,13 +1,13 @@
 export default {
   methods: {
-    async updateResponsible(application, responsible) {
+    async updateResponsible(application, responsibleId) {
       try {
         application.isResponsibleEditing = false
         application.isResponsibleLoading = true
         await this.$api.applications.update(application.id, {
-          responsible_id: responsible.id,
+          responsible_id: responsibleId,
         })
-        application.responsible_name = responsible.name
+        // application.responsible_name = responsible.name
         this.$modal.show('success', {
           title: 'Изменения по заявке были сохранены!',
         })

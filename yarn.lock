@@ -3531,6 +3531,7 @@ __metadata:
     v-mask: ^2.3.0
     vee-validate: ^3.4.13
     vue-async-computed: ^3.9.0
+    vue-select: ^3.20.0
   languageName: unknown
   linkType: soft
 
@@ -14771,6 +14772,15 @@ __metadata:
   version: 3.5.3
   resolution: "vue-router@npm:3.5.3"
   checksum: 7b2cc0d41ff2a8ec3da45761f29e14d0998119f47e4887f54e17eb534f7b4823acb778302891b0aa3a10c62ae8ba999393d7891cc08d36f02ea87aa268e2a36c
+  languageName: node
+  linkType: hard
+
+"vue-select@npm:^3.20.0":
+  version: 3.20.0
+  resolution: "vue-select@npm:3.20.0"
+  peerDependencies:
+    vue: 2.x
+  checksum: a76787bf0475310ed34ad3575fb72b65475e43bf074fbf4c2408d79d06064b33301deef5a12bf1e842921ef24685a73928a50991e43eca3b80ed3d98bd555109
   languageName: node
   linkType: hard
 

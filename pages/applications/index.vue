@@ -39,17 +39,17 @@
         <template v-if="isAdmin">
           <CustomSelect
             v-if="item.isResponsibleEditing"
-            :items="moderators.items"
-            item-value="id"
-            item-text="name"
-            placeholer="Выберите"
-            fixed
+            :options="moderators.items"
+            :reduce="(option) => option.id"
+            label="name"
             @click.stop
-            @keydown.esc="item.isResponsibleEditing = false"
-            @change="setResponsible(item, $event)"
+            @cancel="item.isResponsibleEditing = false"
+            @input="setResponsible(item, $event)"
           >
-            <template #no-data>
-              <div class="font-weight-regular text-center">Нет результатов</div>
+            <template #no-options>
+              <div class="font-weight-regular text-center py-2">
+                Нет результатов
+              </div>
             </template>
           </CustomSelect>
           <v-progress-circular
@@ -271,7 +271,7 @@ export default {
   ::v-deep {
     tr {
       display: grid;
-      grid-template-columns: 65px 100px 300px 150px 250px 300px auto;
+      grid-template-columns: 65px 100px 300px 150px 280px 300px auto;
       align-items: center;
       border-radius: 10px;
       margin-bottom: 10px;

@@ -1,35 +1,33 @@
 <template>
   <div
-    class="custom-select px-2 pt-2"
-    :class="fixed ? 'position--fixed' : ''"
-    :style="{ top, left, maxWidth }"
+    class="custom-select__wrapper mt-3"
+    :class="hasGrayBg ? 'custom-select--gray' : ''"
+    @click.stop
   >
-    <v-combobox
+    <vue-select
+      ref="select"
       v-bind="$attrs"
-      :attach="`#custom-select__options${_uid}`"
-      :menu-props="{ value: true }"
-      outlined
-      dense
-      hide-details
-      class="mb-2"
+      class="custom-select"
+      @close="$emit('cancel')"
       v-on="$listeners"
     >
       <slot v-for="slot in Object.keys($slots)" :slot="slot" :name="slot" />
-    </v-combobox>
-    <div
-      ref="options"
-      :id="`custom-select__options${_uid}`"
-      class="custom-select__options"
-      @click.stop
-    ></div>
+      <template v-for="(_, slot) of $scopedSlots" #[slot]="scope"
+        ><slot :name="slot" v-bind="scope"
+      /></template>
+    </vue-select>
   </div>
 </template>
 
 <script>
+import vSelect from 'vue-select'
+import 'vue-select/dist/vue-select.css'
+
 export default {
   name: 'CustomSelect',
+  components: { vueSelect: vSelect },
   props: {
-    fixed: {
+    hasGrayBg: {
       type: Boolean,
       default: false,
     },
@@ -42,10 +40,8 @@ export default {
     }
   },
   mounted() {
-    const { x, y, width } = this.$el.parentElement.getBoundingClientRect()
-    this.top = `${y}px`
-    this.left = `${x}px`
-    this.maxWidth = `${width * 0.98}px`
+    this.$refs.select.open = true
+    this.$el.querySelector('input').focus()
   },
   methods: {},
 }
@@ -53,82 +49,66 @@ export default {
 
 <style lang="scss" scoped>
 .custom-select {
-  max-width: 100%;
-  background: #fff;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 5px;
-  z-index: 100;
+  &__wrapper {
+    width: 100%;
+  }
 
   ::v-deep {
-    .v-input {
-      font-size: 0.765rem;
+    .vs__actions {
+      display: none;
     }
 
-    .v-input__slot {
-      min-height: 24px !important;
-      height: 24px !important;
-      padding: 10px 5px !important;
+    .vs__dropdown-menu {
+      padding: 0;
+      border: none;
+      border-radius: 0 0 5px 5px;
+      box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    }
 
-      input {
-        padding: 0 !important;
+    .vs__dropdown-option {
+      padding: 6px 12px;
+
+      &--highlight {
+        background: transparent;
+        color: $text-color;
+        font-weight: 700;
       }
     }
 
-    .v-input__append-inner {
-      display: none !important;
-    }
-
-    .v-select__selections {
-      padding: 0 !important;
-    }
-
-    fieldset {
+    .vs__selected-options {
+      height: 24px;
+      margin: 8px;
+      font-size: 0.765rem;
+      padding: 0 5px !important;
       border: 1px solid #99a2ad !important;
       border-radius: 10px !important;
       background: #fff;
+
+      input {
+        margin-top: 0;
+        font-size: 0.765rem;
+      }
     }
 
-    .v-list {
-      background: none;
+    .vs__dropdown-toggle {
+      padding-bottom: 0;
+      border: none;
+      border-radius: 5px 5px 0 0;
+      box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     }
+  }
 
-    .v-menu__content {
-      position: static;
-      max-width: 100%;
-      box-shadow: none !important;
-
-      .v-list {
-        padding: 0 !important;
-
-        &-item {
-          min-height: 30px !important;
-          padding: 0 !important;
-          font-size: 0.765rem !important;
-
-          &::before {
-            display: none !important;
-          }
-
-          &__title {
-            font-weight: 400 !important;
-          }
-
-          &__content {
-            padding: 0 !important;
-          }
-
-          .v-ripple__container {
-            display: none !important;
-          }
-
-          &:hover {
-            .v-list-item__title {
-              font-weight: 500 !important;
-            }
-          }
-        }
+  &--gray {
+    ::v-deep {
+      .vs__dropdown-toggle,
+      .vs__dropdown-menu {
+        background: $medium-gray;
       }
     }
   }
+}
+
+.bg--gray {
+  background: $medium-gray;
 }
 </style>

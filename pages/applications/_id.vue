@@ -66,20 +66,16 @@
           <template v-if="isAdmin">
             <CustomSelect
               v-if="application.isResponsibleEditing"
-              :items="moderators.items"
-              item-value="id"
-              item-text="name"
-              placeholer="Выберите"
-              class="position--absolute bg--gray"
-              :style="{
-                top: 0,
-                left: 0,
-              }"
-              @keydown.esc="application.isResponsibleEditing = false"
-              @change="setResponsible(application, $event)"
+              :options="moderators.items"
+              :reduce="(option) => option.id"
+              label="name"
+              has-gray-bg
+              @click.stop
+              @cancel="application.isResponsibleEditing = false"
+              @input="setResponsible(application, $event)"
             >
-              <template #no-data>
-                <div class="font-weight-regular text-center">
+              <template #no-options>
+                <div class="font-weight-regular text-center py-2">
                   Нет результатов
                 </div>
               </template>
@@ -94,7 +90,7 @@
             ></v-progress-circular>
             <a
               v-else-if="application.responsible_name"
-              class="text-decoration-underline"
+              class="font-weight-medium text-decoration-underline"
               @click.prevent.stop="application.isResponsibleEditing = true"
               >{{ application.responsible_name }}</a
             >

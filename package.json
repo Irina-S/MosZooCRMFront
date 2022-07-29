@@ -37,7 +37,8 @@
     "v-hotkey": "^0.9.0",
     "v-mask": "^2.3.0",
     "vee-validate": "^3.4.13",
-    "vue-async-computed": "^3.9.0"
+    "vue-async-computed": "^3.9.0",
+    "vue-select": "^3.20.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.14.7",
