@@ -7,17 +7,50 @@
         class="cursor--pointer"
         @click="$router.push('/')"
       />
-      <nuxt-link v-if="isAdmin" to="/settings" class="mr-6 ml-auto">
+      <div class="d-flex flex-column align-end mr-4 ml-auto">
+        <span v-if="name" class="text--small font-weight-medium">{{
+          name
+        }}</span>
+        <span v-if="role" class="text--x-small text--light">{{
+          RoleTitle[role.toUpperCase()]
+        }}</span>
+      </div>
+      <!-- <nuxt-link v-if="isAdmin" to="/settings" class="mr-6 ml-auto">
         <img src="@/assets/images/setting-icon.svg" alt="настройки" />
-      </nuxt-link>
-      <v-avatar
-        v-if="name"
-        color="primary"
-        size="40"
-        class="avatar cursor--pointer"
-        @click="logout"
-        >{{ name[0].toUpperCase() }}</v-avatar
-      >
+      </nuxt-link> -->
+      <v-menu :offset-y="true" bottom left content-class="user-menu">
+        <template #activator="{ attrs, on }">
+          <v-avatar
+            v-if="name"
+            v-bind="attrs"
+            color="primary"
+            size="40"
+            class="avatar cursor--pointer"
+            v-on="on"
+            >{{ name[0].toUpperCase() }}</v-avatar
+          >
+        </template>
+        <v-list>
+          <v-list-item v-if="isAdmin" to="/settings">
+            <v-list-item-icon class="mr-2">
+              <img src="@/assets/images/setting-icon.svg" alt="настройки" />
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Настройки</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item @click="logout">
+            <v-list-item-icon class="mr-2"
+              ><v-icon class="logout-icon text--default"
+                >mdi-logout-variant</v-icon
+              ></v-list-item-icon
+            >
+            <v-list-item-content>
+              <v-list-item-title>Выход</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-app-bar>
     <div class="flex-grow-1 px-10">
       <Nuxt />
@@ -28,16 +61,19 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { RoleTitle } from '@/constants/Roles'
 import roles from '@/mixins/roles'
 
 export default {
   name: 'DefaultLayout',
   mixins: [roles],
   data() {
-    return {}
+    return {
+      RoleTitle,
+    }
   },
   computed: {
-    ...mapGetters('user', ['name']),
+    ...mapGetters('user', ['name', 'role']),
   },
   mounted() {
     console.log(this)
@@ -61,12 +97,33 @@ export default {
       padding: 0 !important;
       width: 100%;
       justify-content: space-between;
+      align-items: center;
     }
   }
 }
 
 .avatar {
+  color: #fff;
   box-shadow: 0 4px 4px rgba(191, 184, 206, 0.5),
     2px 2px 15px rgba(191, 184, 206, 0.5);
+}
+
+.user-menu {
+  box-shadow: 0 4px 4px rgba(191, 184, 206, 0.5),
+    2px 2px 15px rgba(191, 184, 206, 0.5) !important;
+
+  ::v-deep {
+    .v-list-item--active::before {
+      opacity: 0;
+    }
+
+    .v-list-item--active:hover::before {
+      opacity: 0.04;
+    }
+  }
+}
+
+.logout-icon {
+  transform: scaleX(-1);
 }
 </style>
