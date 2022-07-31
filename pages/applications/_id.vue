@@ -479,14 +479,15 @@ export default {
         this.$modal.show('error', { err })
       }
     },
-    formatPhone(phone) {
+    formatPhone(value) {
+      const phone = value.toString()
       if (!phone || phone.length !== 10) {
         return ''
       }
-      return `+7 () ${phone.substring(0, 3)} ${phone.substring(
+      return `+7 (${phone.substring(0, 3)}) ${phone.substring(
         3,
         6
-      )} ${phone.substring(6, 8)} ${phone.substring(8, 0)}`
+      )} ${phone.substring(6, 8)} ${phone.substring(8, 10)}`
     },
     prepareDate(date, time) {
       if (!(date && time)) {
