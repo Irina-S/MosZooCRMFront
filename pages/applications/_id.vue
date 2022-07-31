@@ -62,7 +62,7 @@
           }}</span>
         </div>
         <div class="text--light">Ответственный</div>
-        <div class="font-weight-medium position--relative">
+        <div>
           <template v-if="isAdmin">
             <CustomSelect
               v-if="application.isResponsibleEditing"
