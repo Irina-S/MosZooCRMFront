@@ -58,7 +58,7 @@
         <div class="font-weight-medium">
           <span>{{ $dayjs(application.created_at).format('DD.MM.YYYY') }}</span>
           <span class="text--light">{{
-            $dayjs(application.created_at).format('HH:MM:ss')
+            $dayjs(application.created_at).format('HH:mm:ss')
           }}</span>
         </div>
         <div class="text--light">Ответственный</div>
