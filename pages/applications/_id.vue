@@ -56,9 +56,9 @@
         </div>
         <div class="text--light">Дата</div>
         <div class="font-weight-medium">
-          <span>{{ $dayjs(application.created_at).format('DD.MM.YYYY') }}</span>
+          <span>{{ parseDateFromExtended(application.created_at) }}</span>
           <span class="text--light">{{
-            $dayjs(application.created_at).format('HH:mm:ss')
+            parseTimeFromExtended(application.created_at)
           }}</span>
         </div>
         <div class="text--light">Ответственный</div>
@@ -394,12 +394,21 @@ import {
 import roles from '@/mixins/roles'
 import manuals from '@/mixins/manuals'
 import checkboxes from '@/mixins/checkboxes'
+import datetime from '@/mixins/datetime'
 import updateApplication from '@/mixins/updateApplication'
+import prepareParams from '@/mixins/prepareParams'
 
 export default {
   name: 'ApplicationPage',
   components: { CustomChip, CustomSelect, CustomDatePicker, CustomTimePicker },
-  mixins: [roles, manuals, checkboxes, updateApplication],
+  mixins: [
+    roles,
+    manuals,
+    checkboxes,
+    datetime,
+    updateApplication,
+    prepareParams,
+  ],
   data() {
     return {
       Status,
@@ -489,12 +498,6 @@ export default {
         6
       )} ${phone.substring(6, 8)} ${phone.substring(8, 10)}`
     },
-    prepareDate(date, time) {
-      if (!(date && time)) {
-        return null
-      }
-      return `${date} ${time}:00`
-    },
     async setResponsible(application, responsible) {
       await this.updateResponsible(application, responsible)
       this.getApplication()
@@ -523,7 +526,7 @@ export default {
 
         switch (Status[value]) {
           case Status.INVITATION_TO_ENTRANCE_EXAMINATIONS:
-            params.examination_date = this.prepareDate(
+            params.examination_date = this.prepareDateTime(
               this.examinations.date,
               this.examinations.time
             )
@@ -533,7 +536,7 @@ export default {
             params.group_id = this.examinations.group
             break
           case Status.INVITATION_TO_CLASS:
-            params.examination_date = this.prepareDate(
+            params.examination_date = this.prepareDateTime(
               this.classes.date,
               this.classes.time
             )

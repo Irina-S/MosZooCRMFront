@@ -6,7 +6,7 @@
         @click="$router.push('/settings')"
         >mdi-chevron-left</v-icon
       >
-      <h1 class="font-weight-bold text--enlarged">Пони-клуб</h1>
+      <h1 class="font-weight-bold text--enlarged">{{ title }}</h1>
     </div>
     <v-form class="mb-15">
       <v-row class="justify-space-between mx-n7 mb-6">
@@ -14,18 +14,22 @@
           <div class="mb-2">Дата и время начала приема заявок</div>
           <v-row class="mx-n2">
             <v-col cols="6" class="px-2">
-              <CustomDatePicker />
+              <CustomDatePicker v-model="startDate" />
             </v-col>
-            <v-col cols="6" class="px-2"><CustomTimePicker /></v-col>
+            <v-col cols="6" class="px-2"
+              ><CustomTimePicker v-model="startTime"
+            /></v-col>
           </v-row>
         </v-col>
         <v-col cols="4" class="px-7">
           <div class="mb-2">Дата и время окончания приема заявок</div>
           <v-row class="mx-n2">
             <v-col cols="6" class="px-2">
-              <CustomDatePicker />
+              <CustomDatePicker v-model="endDate" />
             </v-col>
-            <v-col cols="6" class="px-2"><CustomTimePicker /></v-col>
+            <v-col cols="6" class="px-2"
+              ><CustomTimePicker v-model="endTime"
+            /></v-col>
           </v-row>
         </v-col>
         <v-col cols="4" class="px-7">
@@ -33,7 +37,8 @@
           <v-row class="mx-n2">
             <v-col cols="12" class="px-2">
               <v-select
-                :items="[]"
+                v-model="responsibleId"
+                :items="moderators.items"
                 :menu-props="{
                   bottom: true,
                   offsetY: true,
@@ -181,8 +186,10 @@
         </div>
       </div>
       <div class="d-flex">
-        <v-btn> Отменить </v-btn>
-        <v-btn color="primary" class="ml-7"> Сохранить </v-btn>
+        <v-btn to="/settings"> Отменить </v-btn>
+        <v-btn color="primary" class="ml-7" @click="updateSetting">
+          Сохранить
+        </v-btn>
       </div>
     </v-form>
   </div>
@@ -192,16 +199,67 @@
 import CustomDatePicker from '@/components/FormElements/CustomDatePicker'
 import CustomTimePicker from '@/components/FormElements/CustomTimePicker'
 import manuals from '@/mixins/manuals'
+import datetime from '@/mixins/datetime'
+import prepareParams from '@/mixins/prepareParams'
 
 export default {
-  name: 'SectionsSettingsPage',
+  name: 'SectionSettingPage',
   components: { CustomDatePicker, CustomTimePicker },
-  mixins: [manuals],
+  mixins: [manuals, datetime, prepareParams],
+  data() {
+    return {
+      type: null,
+      startDate: null,
+      startTime: null,
+      endDate: null,
+      endTime: null,
+      responsibleId: null,
+    }
+  },
   head() {
-    return { title: 'Пони-клуб' }
+    return { title: this.title ? `${this.title} - Настройки` : '' }
+  },
+  computed: {
+    title() {
+      return (
+        this.sections.find((section) => section.id === this.type)?.name ?? ''
+      )
+    },
   },
   mounted() {
     this.getModerators()
+    this.getSections()
+    this.getSetting()
+  },
+  methods: {
+    async getSetting() {
+      try {
+        const data = await this.$api.settings.get(this.$route.params.id)
+        this.type = data.type
+        this.startDate = this.parseInvertedDateFromExtended(data.start_at)
+        this.startTime = this.parseShortTimeFromExtended(data.start_at)
+        this.endDate = this.parseInvertedDateFromExtended(data.finish_at)
+        this.endTime = this.parseShortTimeFromExtended(data.finish_at)
+        this.responsibleId = data.default_responsible_id
+      } catch (err) {
+        this.$modal.show('error', { err })
+      }
+    },
+    async updateSetting() {
+      try {
+        await this.$api.settings.update(this.$route.params.id, {
+          start_at: this.prepareDateTime(this.startDate, this.startTime),
+          finish_at: this.prepareDateTime(this.endDate, this.endTime),
+          default_responsible_id: this.responsibleId,
+        })
+        this.$modal.show('success', {
+          title: 'Изменения успешно сохранены!',
+        })
+        this.$router.push('/settings')
+      } catch (err) {
+        this.$modal.show('error', { err })
+      }
+    },
   },
 }
 </script>

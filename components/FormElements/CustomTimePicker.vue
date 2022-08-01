@@ -53,6 +53,9 @@ export default {
     time(value) {
       this.$emit('input', value)
     },
+    value() {
+      this.time = this.value
+    },
   },
   methods: {
     toggleDatePicker() {

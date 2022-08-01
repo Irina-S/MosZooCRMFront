@@ -75,6 +75,10 @@ export default {
         this.$emit('input', '')
       }
     },
+    value() {
+      this.date = this.value
+      this.dateFormatted = this.$dayjs(this.value).format('DD.MM.YYYY')
+    },
   },
   methods: {
     toggleDatePicker() {

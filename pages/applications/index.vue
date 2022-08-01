@@ -29,10 +29,10 @@
       </template>
       <template #[`item.created_at`]="{ item }">
         <span class="font-weight-medium mr-1">{{
-          $dayjs(item.created_at).format('DD.MM.YYYY')
+          parseDateFromExtended(item.created_at)
         }}</span>
         <span class="font-weight-medium text--light">{{
-          $dayjs(item.created_at).format('HH:mm:ss')
+          parseTimeFromExtended(item.created_at)
         }}</span>
       </template>
       <template #[`item.responsible_name`]="{ item }">
@@ -140,12 +140,13 @@ import CustomSelect from '@/components/FormElements/CustomSelect'
 import { StatusColor } from '@/constants/Status'
 import roles from '@/mixins/roles'
 import manuals from '@/mixins/manuals'
+import datetime from '@/mixins/datetime'
 import updateApplication from '@/mixins/updateApplication'
 
 export default {
   name: 'ApplicationList',
   components: { CustomChip, CustomSelect },
-  mixins: [roles, manuals, updateApplication],
+  mixins: [roles, manuals, datetime, updateApplication],
   data() {
     return {
       StatusColor,
