@@ -32,7 +32,7 @@
           $dayjs(item.created_at).format('DD.MM.YYYY')
         }}</span>
         <span class="font-weight-medium text--light">{{
-          $dayjs(item.created_at).format('HH:MM:ss')
+          $dayjs(item.created_at).format('HH:mm:ss')
         }}</span>
       </template>
       <template #[`item.responsible_name`]="{ item }">
