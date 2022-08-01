@@ -16,6 +16,52 @@
       @update:sort-desc="getList"
       @click:row="openApplication"
     >
+      <template #[`header.type`]="{ header }">
+        <span
+          v-if="!typeFilterEnabled"
+          @click.stop="typeFilterEnabled = !typeFilterEnabled"
+          >{{ header.text }}</span
+        >
+        <v-select
+          ref="typeSelect"
+          v-else
+          v-model="typeFilter"
+          class="table-select"
+          :items="sectionNames"
+          :autofocus="true"
+          label="Статус"
+          multiple
+          solo
+          chips
+          @blur="typeFilterEnabled = !typeFilterEnabled"
+          @focus="$refs.typeSelect.activateMenu()"
+          @change="getList"
+          @click.stop
+        />
+      </template>
+      <template #[`header.status`]="{ header }">
+        <span
+          v-if="!statusFilterEnabled"
+          @click.stop="statusFilterEnabled = !statusFilterEnabled"
+          >{{ header.text }}</span
+        >
+        <v-select
+          ref="statusSelect"
+          v-else
+          v-model="statusFilter"
+          class="table-select"
+          :items="statusNames"
+          :autofocus="true"
+          label="Статус"
+          multiple
+          solo
+          chips
+          @blur="statusFilterEnabled = !statusFilterEnabled"
+          @focus="$refs.statusSelect.activateMenu()"
+          @change="getList"
+          @click.stop
+        />
+      </template>
       <template #[`item.id`]="{ item }">
         <span class="font-weight-medium">{{ item.id }}</span>
       </template>
@@ -127,7 +173,7 @@
       <v-pagination
         v-model="applicationTableOptions.page"
         :length="totalPages"
-        total-visible="10"
+        :total-visible="$options.ROW_AMOUNT"
         circle
       ></v-pagination>
     </div>
@@ -147,6 +193,7 @@ export default {
   name: 'ApplicationList',
   components: { CustomChip, CustomSelect },
   mixins: [roles, manuals, datetime, updateApplication],
+  ROW_AMOUNT: 10,
   data() {
     return {
       StatusColor,
@@ -204,6 +251,10 @@ export default {
         },
       ],
       applicationTableData: [],
+      statusFilter: null,
+      statusFilterEnabled: false,
+      typeFilter: null,
+      typeFilterEnabled: false,
       loading: false,
       totalItems: 0,
       totalPages: 0,
@@ -214,6 +265,20 @@ export default {
       title: 'Список заявок',
     }
   },
+  computed: {
+    statusNames() {
+      return this.statuses.map((status) => ({
+        text: status.name,
+        value: status.id,
+      }))
+    },
+    sectionNames() {
+      return this.sections.map((section) => ({
+        text: section.name,
+        value: section.id,
+      }))
+    },
+  },
   watch: {
     'applicationTableOptions.page'() {
       this.getList()
@@ -221,6 +286,7 @@ export default {
   },
   mounted() {
     this.getStatuses()
+    this.getSections()
     this.getList()
     if (this.isAdmin) {
       this.getModerators()
@@ -236,6 +302,8 @@ export default {
               ? 'users.name'
               : this.applicationTableOptions.sortBy
           }`,
+          'filter[status]': this.statusFilter?.join(',') || '',
+          'filter[type]': this.typeFilter?.join(',') || '',
         })
         this.applicationTableData = data.models.map((item) => ({
           ...item,
@@ -268,6 +336,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.table-select {
+  z-index: 1;
+}
+
 .application-table {
   ::v-deep {
     tr {
