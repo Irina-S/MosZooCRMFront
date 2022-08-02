@@ -483,7 +483,10 @@ export default {
     },
     async saveApplication() {
       try {
-        const params = { comment: this.application.comment }
+        const params = {}
+        if (this.application.comment !== null) {
+          params.comment = this.application.comment
+        }
         if (this.application.responsible) {
           params.responsible_id = this.application.responsible.id
         }
