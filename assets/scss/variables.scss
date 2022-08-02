@@ -1,57 +1,53 @@
 $font-size-root: 16px;
 
-$text-field-enclosed-details-padding:0 24px;
+$text-field-enclosed-details-padding: 0 24px;
 
-$input-font-size:18px;
+$input-font-size: 18px;
 
-$btn-text-transform:none;
-$btn-letter-spacing:0;
-$btn-font-weight:400;
+$btn-text-transform: none;
+$btn-letter-spacing: 0;
+$btn-font-weight: 400;
 
-$btn-sizes:
-    (
-      'x-small': 18,
-      'small': 32,
-      'default': 40,
-      'large': 44,
-      'x-large': 52
-    );
+$btn-sizes: (
+  'x-small': 18,
+  'small': 32,
+  'default': 40,
+  'large': 44,
+  'x-large': 52,
+);
 
-$btn-font-sizes:
-    (
-        'x-small': .75rem,
-        'small': 1rem,
-        'default': .875rem,
-        'large': .875rem,
-        'x-large': 1rem
-    );
+$btn-font-sizes: (
+  'x-small': 0.75rem,
+  'small': 1rem,
+  'default': 0.875rem,
+  'large': 0.875rem,
+  'x-large': 1rem,
+);
 
+$data-table-regular-header-font-size: 0.75rem;
+$data-table-regular-header-height: 22px;
+$data-table-regular-row-font-size: 0.75rem;
+$data-table-regular-row-height: 32px;
 
-$data-table-regular-header-font-size:0.75rem;
-$data-table-regular-header-height:22px;
-$data-table-regular-row-font-size:0.75rem;
-$data-table-regular-row-height:32px;
-
-$icon-sizes: 
-  (
-    'x-small': (
-      'font-size': 10,
-      'height': 16
-    ),
-    'small': (
-      'font-size': 12,
-      'height': 18
-    ),
-    'default': (
-      'font-size': 12,
-      'height': 26
-    ),
-    'large': (
-      'font-size': 16,
-      'height': 54
-    ),
-    'x-large': (
-      'font-size': 18,
-      'height': 66
-    )
-  );
+$icon-sizes: (
+  'x-small': (
+    'font-size': 10,
+    'height': 16,
+  ),
+  'small': (
+    'font-size': 12,
+    'height': 18,
+  ),
+  'default': (
+    'font-size': 12,
+    'height': 26,
+  ),
+  'large': (
+    'font-size': 16,
+    'height': 54,
+  ),
+  'x-large': (
+    'font-size': 18,
+    'height': 66,
+  ),
+);

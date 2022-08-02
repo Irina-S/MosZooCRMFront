@@ -9,16 +9,7 @@
       /></v-app-bar-nav-icon>
     </v-app-bar>
     <div
-      class="
-        request-page__content
-        flex-grow-1
-        d-flex
-        flex-column
-        justify-center
-        mx-auto
-        mt-6
-        mb-18
-      "
+      class="request-page__content flex-grow-1 d-flex flex-column justify-center mx-auto mt-6 mb-18"
     >
       <Nuxt />
     </div>

@@ -8,12 +8,7 @@
       >
         <h1 class="request-form__title mb-6 text-center">Подать заявку</h1>
         <h4
-          class="
-            request-form__subtitle
-            mb-6
-            font-weight-regular
-            text--light text-center
-          "
+          class="request-form__subtitle mb-6 font-weight-regular text--light text-center"
         >
           Пожалуйста, заполните данную форму для подачи заявки на вступление в
           наши сеции и клубы

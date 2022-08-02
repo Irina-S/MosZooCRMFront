@@ -67,7 +67,6 @@
             <CustomSelect
               v-if="application.isResponsibleEditing"
               :options="moderators.items"
-              :reduce="(option) => option.id"
               label="name"
               has-gray-bg
               @click.stop
@@ -80,14 +79,6 @@
                 </div>
               </template>
             </CustomSelect>
-            <v-progress-circular
-              v-else-if="application.isResponsibleLoading"
-              indeterminate
-              color="primary"
-              size="20"
-              width="2"
-              class="mx-auto"
-            ></v-progress-circular>
             <a
               v-else-if="application.responsible_name"
               class="font-weight-medium text-decoration-underline"
@@ -110,31 +101,15 @@
         </div>
         <div class="text--light">Комментарий</div>
         <div>
-          <v-progress-circular
-            v-if="application.isCommentLoading"
-            indeterminate
-            color="primary"
-            size="20"
-            width="2"
-            class="mx-auto"
-          ></v-progress-circular>
-          <template v-else>
-            <v-textarea
-              v-model="application.commentEditing"
-              placeholder="Текст комментария..."
-              no-resize
-              rows="3"
-              outlined
-              hide-details
-              class="comment-field comment-textarea mb-2"
-            ></v-textarea>
-            <div v-if="application.commentEditing" class="d-flex justify-end">
-              <v-btn color="primary" small @click="saveComment">
-                Сохранить
-              </v-btn>
-              <v-btn small class="ml-4" @click="resetComment"> Отменить </v-btn>
-            </div>
-          </template>
+          <v-textarea
+            v-model="application.comment"
+            placeholder="Текст комментария..."
+            no-resize
+            rows="3"
+            outlined
+            hide-details
+            class="comment-field comment-textarea mb-2"
+          ></v-textarea>
         </div>
         <template
           v-if="
@@ -305,12 +280,7 @@
           >
             <template #label>
               <div
-                class="
-                  application-info__agreement
-                  text--small text--default
-                  ml-2
-                  pt-1
-                "
+                class="application-info__agreement text--small text--default ml-2 pt-1"
                 v-html="checkbox.label"
               ></div>
             </template>
@@ -322,27 +292,17 @@
         <div class="font-weight-medium">{{ application.browser }}</div>
       </div>
       <div class="d-flex align-center mb-4">
-        <v-btn to="/" depressed color="primary" small class="mr-6">
-          Закрыть
+        <v-btn color="primary" small class="mr-6" @click="saveApplication">
+          Сохранить
         </v-btn>
-        <span class="text--light"
-          >При закрытии все изменения будут сохранены</span
-        >
+        <v-btn to="/" small> Закрыть </v-btn>
       </div>
       <div
         v-if="
           (isAdmin && application.responsible_name) ||
           (isModerator && application.possible_next_statuses.length)
         "
-        class="
-          application-actions
-          position--absolute
-          rounded-lg
-          bg--gray
-          pt-4
-          px-3
-          pb-6
-        "
+        class="application-actions position--absolute rounded-lg bg--gray pt-4 px-3 pb-6"
       >
         <div class="mb-4">Выберите вариант решения по заявке</div>
         <div class="d-flex align-start flex-wrap">
@@ -434,36 +394,6 @@ export default {
       title: `Заявка №${this.$route.params.id}`,
     }
   },
-  computed: {
-    // steps() {
-    //   if (!this.application) {
-    //     return []
-    //   }
-    //   const status = this.application.status.toLowerCase()
-    //   const completed = status === Status.COMPLETED
-    //   const decided =
-    //     ![
-    //       Status.INIT,
-    //       Status.ACCEPTED,
-    //       Status.DOCUMENTS_REQUEST,
-    //       Status.INVITATION_TO_ENTRANCE_EXAMINATIONS,
-    //     ].includes(status) || completed
-    //   const examinations =
-    //     status === Status.INVITATION_TO_ENTRANCE_EXAMINATIONS || decided
-    //   const documentsChecking =
-    //     status === Status.DOCUMENTS_REQUEST || examinations
-    //   const checking = !!this.application.responsible_name || documentsChecking
-    //   const accepted = status === Status.ACCEPTED || checking
-    //   return [
-    //     accepted,
-    //     checking,
-    //     documentsChecking,
-    //     examinations,
-    //     decided,
-    //     completed,
-    //   ]
-    // },
-  },
   mounted() {
     if (this.isAdmin) {
       this.getModerators()
@@ -478,11 +408,8 @@ export default {
         this.application = {
           ...data,
           status: data.status.toUpperCase(),
+          responsible: null,
           isResponsibleEditing: false,
-          isResponsibleLoading: false,
-          isCommentEditing: false,
-          isCommentLoading: false,
-          commentEditing: data.comment,
         }
       } catch (err) {
         this.$modal.show('error', { err })
@@ -498,20 +425,22 @@ export default {
         6
       )} ${phone.substring(6, 8)} ${phone.substring(8, 10)}`
     },
-    async setResponsible(application, responsible) {
-      await this.updateResponsible(application, responsible)
-      this.getApplication()
+    setResponsible(application, responsible) {
+      application.responsible = responsible
+      application.responsible_name = responsible.name
+      // await this.updateResponsible(application, responsible)
+      // this.getApplication()
     },
-    resetComment() {
-      this.application.commentEditing = this.application.comment
-    },
-    async saveComment() {
-      await this.updateComment(
-        this.application,
-        this.application.commentEditing
-      )
-      this.application.commentEditing = this.application.comment
-    },
+    // resetComment() {
+    //   this.application.commentEditing = this.application.comment
+    // },
+    // async saveComment() {
+    //   await this.updateComment(
+    //     this.application,
+    //     this.application.commentEditing
+    //   )
+    //   this.application.commentEditing = this.application.comment
+    // },
     async updateStatus(value) {
       try {
         const confirm = await this.$modal.show('confirm', {
@@ -557,6 +486,24 @@ export default {
         this.$modal.show('success', {
           title: 'Изменения по заявке были сохранены!',
         })
+      } catch (err) {
+        this.$modal.show('error', {
+          title: 'Произошла ошибка!',
+          message: 'Изменения по заявке не были сохранены',
+        })
+      }
+    },
+    async saveApplication() {
+      try {
+        const params = { comment: this.application.comment }
+        if (this.application.responsible) {
+          params.responsible_id = this.application.responsible.id
+        }
+        await this.$api.applications.update(this.$route.params.id, params)
+        this.$modal.show('success', {
+          title: 'Изменения по заявке были сохранены!',
+        })
+        this.$router.push('/')
       } catch (err) {
         this.$modal.show('error', {
           title: 'Произошла ошибка!',

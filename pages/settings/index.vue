@@ -10,17 +10,7 @@
       <v-col v-for="setting in namedSettings" :key="setting.id" cols="4">
         <nuxt-link
           :to="`/settings/${setting.id}`"
-          class="
-            settings-item
-            d-flex
-            flex-column
-            justify-center
-            align-center
-            rounded-lg
-            elevation-2
-            cursor--pointer
-            text-decoration-none
-          "
+          class="settings-item d-flex flex-column justify-center align-center rounded-lg elevation-2 cursor--pointer text-decoration-none"
         >
           <img
             :src="sectionIcons[setting.type]"

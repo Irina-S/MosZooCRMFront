@@ -75,9 +75,6 @@ export default {
   computed: {
     ...mapGetters('user', ['name', 'role']),
   },
-  mounted() {
-    console.log(this)
-  },
   methods: {
     logout() {
       this.$auth.logout()
