@@ -38,7 +38,7 @@
             <v-col cols="12" class="px-2">
               <v-select
                 v-model="responsibleId"
-                :items="moderators.items"
+                :items="moderators"
                 :menu-props="{
                   bottom: true,
                   offsetY: true,

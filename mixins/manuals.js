@@ -1,71 +1,73 @@
 import { keyBy } from 'lodash-es'
+import { mapState } from 'vuex'
 
 export default {
-  data() {
-    return {
-      sections: [],
-      statuses: [],
-      moderators: {
-        items: [],
-        page: 1,
-      },
-      groups: {
-        items: [],
-        page: 1,
-      },
-    }
-  },
   computed: {
     statusesById() {
       return keyBy(this.statuses, (status) => status.id.toUpperCase())
     },
+    ...mapState('manuals', ['sections', 'statuses', 'moderators', 'groups']),
   },
   methods: {
     async getSections() {
+      if (this.sections.length) {
+        return
+      }
       try {
         const { data } = await this.$api.manuals.getApplicationsTypes()
-        this.sections = data.models
+        this.$store.commit('manuals/SET_SECTIONS', data.models)
       } catch (err) {
         this.$modal.show('error', { err })
       }
     },
     async getStatuses() {
+      if (this.statuses.length) {
+        return
+      }
       try {
         const { data } = await this.$api.manuals.getStatuses()
-        this.statuses = data.models
+        this.$store.commit('manuals/SET_STATUSES', data.models)
       } catch (err) {
         this.$modal.show('error', { err })
       }
     },
-    async getModerators() {
+    async getModerators(page = 1) {
+      if (this.moderators.length && page === 1) {
+        return
+      }
       try {
         const { data } = await this.$api.manuals.getModerators({
-          page: this.moderators.page,
+          page,
         })
-        if (this.moderators.page === 1) {
-          this.moderators.items = []
+        if (data.meta.current_page === 1) {
+          this.$store.commit('manuals/SET_MODERATORS', [])
         }
-        this.moderators.items.push(...data.models)
-        if (data.meta.total > this.moderators.items.length) {
-          this.moderators.page++
-          setTimeout(this.getModerators, 0)
+        this.$store.commit('manuals/ADD_MODERATORS', data.models)
+        if (data.meta.total > this.moderators.length) {
+          setTimeout(() => {
+            this.getModerators(data.meta.current_page + 1)
+          }, 0)
         }
       } catch (err) {
         this.$modal.show('error', { err })
       }
     },
-    async getGroups() {
+    async getGroups(page = 1) {
+      if (this.groups.length && page === 1) {
+        return
+      }
       try {
         const { data } = await this.$api.groups.getList({
-          page: this.groups.page,
+          page,
         })
-        if (this.groups.page === 1) {
-          this.groups.items = []
+        if (data.meta.current_page === 1) {
+          this.$store.commit('manuals/SET_GROUPS', [])
         }
-        this.groups.items.push(...data.models)
-        if (data.meta.total > this.groups.items.length) {
-          this.groups.page++
-          setTimeout(this.getGroups, 0)
+        this.$store.commit('manuals/ADD_GROUPS', data.models)
+        if (data.meta.total > this.groups.length) {
+          setTimeout(() => {
+            this.getGroups(data.meta.current_page + 1)
+          }, 0)
         }
       } catch (err) {
         this.$modal.show('error', { err })

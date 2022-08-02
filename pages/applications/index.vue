@@ -85,7 +85,7 @@
         <template v-if="isAdmin">
           <CustomSelect
             v-if="item.isResponsibleEditing"
-            :options="moderators.items"
+            :options="moderators"
             :reduce="(option) => option.id"
             label="name"
             @click.stop
