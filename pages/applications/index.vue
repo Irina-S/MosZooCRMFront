@@ -2,6 +2,7 @@
   <div>
     <h1 class="font-weight-bold text--enlarged mb-3">Список заявок</h1>
     <v-data-table
+      ref="list"
       :headers="applicationTableHeaders"
       :items="applicationTableData"
       :items-per-page="applicationTableOptions.itemsPerPage"
@@ -22,45 +23,131 @@
           @click.stop="typeFilterEnabled = !typeFilterEnabled"
           >{{ header.text }}</span
         >
-        <v-select
-          ref="typeSelect"
+        <v-combobox
           v-else
+          ref="typeSelect"
           v-model="typeFilter"
           class="table-select"
           :items="sectionNames"
           :autofocus="true"
-          label="Статус"
+          label="Тип кружка"
+          :attach="true"
           multiple
+          small-chips
           solo
-          chips
+          dense
           @blur="typeFilterEnabled = !typeFilterEnabled"
           @focus="$refs.typeSelect.activateMenu()"
           @change="getList"
-          @click.stop
-        />
+        >
+          <template #prepend-item>
+            <v-list-item @mousedown.prevent @click="selectAllSections">
+              <v-icon class="mr-3">
+                {{
+                  typeFilter && typeFilter.length === sections.length
+                    ? 'mdi-checkbox-outline'
+                    : 'mdi-checkbox-blank-outline'
+                }}
+              </v-icon>
+              Все
+            </v-list-item>
+          </template>
+          <template #selection="{ item }">
+            <CustomChip
+              class="black--text"
+              :color="StatusColor[item.value.toUpperCase()]"
+              small
+            >
+              <span class="mr-2">{{ item.text }}</span>
+              <v-icon small @click="removeItemFromTypeFilter(item.value)"
+                >mdi-close</v-icon
+              >
+            </CustomChip>
+          </template>
+          <template #item="{ item }">
+            <v-icon class="mr-3">
+              {{
+                typeFilter &&
+                typeFilter.find((type) => type.value === item.value)
+                  ? 'mdi-checkbox-outline'
+                  : 'mdi-checkbox-blank-outline'
+              }}
+            </v-icon>
+            <CustomChip class="black--text" color="#F4F5F8" small>{{
+              item.text
+            }}</CustomChip>
+          </template>
+        </v-combobox>
       </template>
       <template #[`header.status`]="{ header }">
+        <!--        <span @click.stop="statusFilterEnabled = !statusFilterEnabled">-->
         <span
           v-if="!statusFilterEnabled"
           @click.stop="statusFilterEnabled = !statusFilterEnabled"
-          >{{ header.text }}</span
-        >
-        <v-select
-          ref="statusSelect"
+          >{{ header.text }}
+        </span>
+        <v-combobox
           v-else
+          ref="statusSelect"
           v-model="statusFilter"
           class="table-select"
           :items="statusNames"
           :autofocus="true"
           label="Статус"
+          :attach="true"
+          :menu-props="{ bottom: true, offsetY: true }"
           multiple
+          small-chips
           solo
-          chips
+          dense
           @blur="statusFilterEnabled = !statusFilterEnabled"
           @focus="$refs.statusSelect.activateMenu()"
           @change="getList"
-          @click.stop
-        />
+          @click.native.stop
+          @mousedown.native.stop
+        >
+          <template #prepend-item>
+            <v-list-item @mousedown.prevent @click="selectAllStatuses">
+              <v-icon class="mr-3">
+                {{
+                  statusFilter && statusFilter.length === statuses.length
+                    ? 'mdi-checkbox-outline'
+                    : 'mdi-checkbox-blank-outline'
+                }}
+              </v-icon>
+              Все
+            </v-list-item>
+          </template>
+          <template #selection="{ item }">
+            <CustomChip
+              class="black--text"
+              :color="StatusColor[item.value.toUpperCase()]"
+              small
+            >
+              <span class="mr-2">{{ item.text }}</span>
+              <v-icon small @click="removeItemFromStatusFilter(item.value)"
+                >mdi-close
+              </v-icon>
+            </CustomChip>
+          </template>
+          <template #item="{ item }">
+            <v-icon class="mr-3">
+              {{
+                statusFilter &&
+                statusFilter.find((status) => status.value === item.value)
+                  ? 'mdi-checkbox-outline'
+                  : 'mdi-checkbox-blank-outline'
+              }}
+            </v-icon>
+            <CustomChip
+              class="black--text"
+              :color="StatusColor[item.value.toUpperCase()]"
+              small
+              >{{ item.text }}
+            </CustomChip>
+          </template>
+        </v-combobox>
+        <!--        </span>-->
       </template>
       <template #[`item.id`]="{ item }">
         <span class="font-weight-medium">{{ item.id }}</span>
@@ -302,8 +389,10 @@ export default {
               ? 'users.name'
               : this.applicationTableOptions.sortBy
           }`,
-          'filter[status]': this.statusFilter?.join(',') || '',
-          'filter[type]': this.typeFilter?.join(',') || '',
+          'filter[status]':
+            this.statusFilter?.map((item) => item.value).join(',') || '',
+          'filter[type]':
+            this.typeFilter?.map((item) => item.value).join(',') || '',
         })
         this.applicationTableData = data.models.map((item) => ({
           ...item,
@@ -331,6 +420,38 @@ export default {
       await this.updateResponsible(application, responsible)
       this.getList()
     },
+    removeItemFromTypeFilter(name) {
+      this.typeFilter = this.typeFilter.filter((type) => type.value !== name)
+      this.getList()
+    },
+    removeItemFromStatusFilter(name) {
+      this.statusFilter = this.statusFilter.filter(
+        (status) => status.value !== name
+      )
+      this.getList()
+    },
+    selectAllStatuses() {
+      if ((this.statusFilter?.length || 0) < this.statuses?.length) {
+        this.statusFilter = this.statuses.map(({ id, name }) => ({
+          text: name,
+          value: id,
+        }))
+      } else {
+        this.statusFilter = []
+      }
+      this.getList()
+    },
+    selectAllSections() {
+      if ((this.typeFilter?.length || 0) < this.sections?.length) {
+        this.typeFilter = this.sections.map(({ id, name }) => ({
+          text: name,
+          value: id,
+        }))
+      } else {
+        this.typeFilter = []
+      }
+      this.getList()
+    },
   },
 }
 </script>
@@ -338,10 +459,21 @@ export default {
 <style lang="scss" scoped>
 .table-select {
   z-index: 1;
+  min-width: 200px;
+
+  ::v-deep {
+    .v-list-item--link::before {
+      display: none;
+    }
+  }
 }
 
 .application-table {
   ::v-deep {
+    .v-data-table__wrapper {
+      min-height: 400px;
+    }
+
     tr {
       display: grid;
       grid-template-columns: 65px 100px 300px 150px 280px 300px auto;
@@ -366,7 +498,7 @@ export default {
       padding: 7px 12px !important;
       border-bottom: none !important;
 
-      span {
+      > span {
         color: $text-color-light !important;
       }
     }
