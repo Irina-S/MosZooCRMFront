@@ -66,7 +66,7 @@
           <template v-if="isAdmin">
             <CustomSelect
               v-if="application.isResponsibleEditing"
-              :options="moderators.items"
+              :options="moderators"
               label="name"
               has-gray-bg
               @click.stop
@@ -144,7 +144,7 @@
           <div>
             <v-select
               v-model="examinations.group"
-              :items="groups.items"
+              :items="groups"
               :menu-props="{
                 bottom: true,
                 offsetY: true,
@@ -190,7 +190,7 @@
           <div>
             <v-select
               v-model="classes.group"
-              :items="groups.items"
+              :items="groups"
               :menu-props="{
                 bottom: true,
                 offsetY: true,
@@ -428,19 +428,7 @@ export default {
     setResponsible(application, responsible) {
       application.responsible = responsible
       application.responsible_name = responsible.name
-      // await this.updateResponsible(application, responsible)
-      // this.getApplication()
     },
-    // resetComment() {
-    //   this.application.commentEditing = this.application.comment
-    // },
-    // async saveComment() {
-    //   await this.updateComment(
-    //     this.application,
-    //     this.application.commentEditing
-    //   )
-    //   this.application.commentEditing = this.application.comment
-    // },
     async updateStatus(value) {
       try {
         const confirm = await this.$modal.show('confirm', {
@@ -495,7 +483,10 @@ export default {
     },
     async saveApplication() {
       try {
-        const params = { comment: this.application.comment }
+        const params = {}
+        if (this.application.comment !== null) {
+          params.comment = this.application.comment
+        }
         if (this.application.responsible) {
           params.responsible_id = this.application.responsible.id
         }
