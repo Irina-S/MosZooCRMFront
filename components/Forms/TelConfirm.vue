@@ -1,16 +1,20 @@
 <template>
-  <div>
-    <validation-observer v-slot="{ handleSubmit, valid, invalid }" ref="form">
+  <div class="d-flex flex-column">
+    <validation-observer
+      v-slot="{ handleSubmit, valid, invalid }"
+      ref="form"
+      class="flex-grow-1 d-flex"
+    >
       <v-form
         ref="form"
-        class="confirm-form px-5 py-10"
+        class="confirm-form d-flex flex-column d-sm-block pt-5 px-3 pb-6 px-sm-5 py-sm-10"
         @submit.prevent="handleSubmit(confirm)"
       >
-        <h1 class="confirm-form__title text-center mb-6">
+        <h1 class="confirm-form__title text-center mb-4 mb-sm-6">
           Подтверждение номера телефона
         </h1>
         <div
-          class="text-center mb-7"
+          class="confirm-form__subtitle text-center mb-7"
           :class="showMainErrorMessge ? 'error--text' : ''"
         >
           <template v-if="showMainErrorMessge">
@@ -31,27 +35,34 @@
             v-model="form.code"
             v-mask="'#####'"
             :error-messages="errors"
+            :dense="$vuetify.breakpoint.xs"
             outlined
             persistent-hint
             :hint="`Код состоит из ${CODE_LENGTH} цифр и действителен в течении 90 сек`"
-            class="custom-field confirm-form__code mx-auto mb-8"
+            class="custom-field confirm-form__code mx-auto mb-6 mb-sm-8"
           ></v-text-field>
         </validation-provider>
-        <div class="d-flex justify-center mb-6">
+        <div
+          class="d-flex justify-center order-6 order-sm-4 mt-auto mt-sm-0 mb-2 mb-sm-6"
+        >
           <CustomButton
             :disabled="invalid"
             :active="valid"
             type="submit"
-            class="mr-8"
+            class="flex-grow-1 flex-grow-sm-0 mr-3 mr-sm-8"
             >Отправить</CustomButton
           >
-          <CustomButton @click="$emit('go-back')">Отменить</CustomButton>
+          <CustomButton
+            class="flex-grow-1 flex-grow-sm-0"
+            @click="$emit('go-back')"
+            >Отменить</CustomButton
+          >
         </div>
-        <div class="d-flex justify-center mb-4">
+        <div class="d-flex justify-center mb-2 mb-sm-4">
           <a v-if="canResendCode" href="#" @click.prevent="auth">
             Повторная отправка кода подтверждения
           </a>
-          <span v-else class="text--light"
+          <span v-else class="text-center text--light"
             >Повторная отправка кода подтверждения доступна через
             {{ seconds }} сек</span
           >
@@ -189,6 +200,36 @@ export default {
         font-size: 32px;
         line-height: 130%;
         letter-spacing: 0.175em;
+      }
+    }
+  }
+}
+
+@media (max-width: map-get($grid-breakpoints, 'sm')) {
+  .confirm-form {
+    background: #fff;
+
+    &__title {
+      font-size: 16px;
+    }
+
+    &__subtitle {
+      font-size: 10px;
+    }
+
+    &__code {
+      ::v-deep {
+        .v-messages__message {
+          font-size: 11px;
+        }
+
+        .v-input__slot {
+          max-width: 170px;
+        }
+
+        input {
+          font-size: 24px;
+        }
       }
     }
   }

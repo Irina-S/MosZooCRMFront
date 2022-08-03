@@ -33,7 +33,7 @@ export default {
   color: #044947;
   font-family: 'ALS Story', sans-serif;
   font-size: 24px;
-  line-height: 24px;
+  line-height: 1;
   font-style: normal;
   font-weight: 800;
   transition: 0.3s;
@@ -44,6 +44,12 @@ export default {
 
   &--disabled {
     cursor: default;
+  }
+}
+
+@media (max-width: map-get($grid-breakpoints, 'sm')) {
+  .custom-button {
+    font-size: 1.14rem;
   }
 }
 </style>

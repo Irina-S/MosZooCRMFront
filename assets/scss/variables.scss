@@ -1,3 +1,11 @@
+$grid-breakpoints: (
+  'xs': 0,
+  'sm': 500px,
+  'md': 960px,
+  'lg': 1280px - 24px,
+  'xl': 1920px - 24px,
+);
+
 $font-size-root: 16px;
 
 $text-field-enclosed-details-padding: 0 24px;

@@ -1,24 +1,25 @@
 <template>
-  <div>
+  <div class="flex-grow-1 flex-sm-grow-0 d-flex flex-column">
     <RequestForm
       v-if="step === $options.steps.form"
       :form-data.sync="form"
       :checkboxes-data="checkboxes"
       :is-phone-change="changePhone"
+      class="flex-grow-1 flex-sm-grow-0"
       @validated="onValidationSuccess"
     />
     <TelConfirm
       v-else-if="step === $options.steps.confirm"
       :phone="form.phone"
       :child-name="form.child_name"
-      class="mt-9"
+      class="flex-grow-1 flex-sm-grow-0 mt-sm-9"
       @go-back="switchStep($options.steps.form)"
       @change-phone="onPhoneChange"
       @confirmed="onConfirm"
     />
     <TelConfirmed
       v-else-if="step === $options.steps.completed"
-      class="mt-n15"
+      class="mt-sm-n15"
       @close="switchStep($options.steps.form)"
     />
   </div>

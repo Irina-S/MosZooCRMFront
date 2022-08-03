@@ -3,12 +3,14 @@
     <validation-observer v-slot="{ handleSubmit, valid, invalid }" ref="form">
       <v-form
         ref="form"
-        class="request-form pa-8"
+        class="request-form pt-5 px-3 pb-6 pa-sm-8"
         @submit.prevent="handleSubmit(onSubmit)"
       >
-        <h1 class="request-form__title mb-6 text-center">Подать заявку</h1>
+        <h1 class="request-form__title mb-4 mb-sm-6 text-center">
+          Подать заявку
+        </h1>
         <h4
-          class="request-form__subtitle mb-6 font-weight-regular text--light text-center"
+          class="request-form__subtitle mb-4 mb-sm-6 font-weight-regular text--light text-center"
         >
           Пожалуйста, заполните данную форму для подачи заявки на вступление в
           наши сеции и клубы
@@ -20,6 +22,8 @@
               v-model="form.type"
               :items="sections"
               :error-messages="errors"
+              :menu-props="{ bottom: true, offsetY: true }"
+              :dense="$vuetify.breakpoint.xs"
               item-text="name"
               item-value="id"
               persistent-hint
@@ -38,6 +42,7 @@
             <v-text-field
               v-model="form.applicant_name"
               :error-messages="errors"
+              :dense="$vuetify.breakpoint.xs"
               placeholder="Введите полное имя"
               outlined
               class="custom-field"
@@ -54,6 +59,7 @@
             <v-text-field
               v-model="form.child_name"
               :error-messages="errors"
+              :dense="$vuetify.breakpoint.xs"
               placeholder="Введите полное имя"
               outlined
               class="custom-field"
@@ -71,6 +77,7 @@
               v-model="form.child_birthday"
               v-mask="'##.##.####'"
               :error-messages="errors"
+              :dense="$vuetify.breakpoint.xs"
               placeholder="дд.мм.гггг"
               prepend-inner-icon="mdi-calendar-month-outline"
               outlined
@@ -89,6 +96,7 @@
             <v-text-field
               v-model="form.accompanynig_person"
               :error-messages="errors"
+              :dense="$vuetify.breakpoint.xs"
               placeholder="Введите полное имя"
               outlined
               class="custom-field"
@@ -105,6 +113,7 @@
             <v-text-field
               v-model="form.email"
               :error-messages="errors"
+              :dense="$vuetify.breakpoint.xs"
               placeholder="Введите адрес"
               outlined
               class="custom-field"
@@ -126,6 +135,7 @@
                   ? 'Измените номер телефона и нажмите кнопку Отправить заявку'
                   : errors
               "
+              :dense="$vuetify.breakpoint.xs"
               placeholder="(000) 000 00 00"
               outlined
               class="custom-field request-form__phone"
@@ -134,7 +144,7 @@
             </v-text-field>
           </validation-provider>
         </div>
-        <div class="request-form__group mb-7">
+        <div class="request-form__group">
           <div class="request-form__label mb-2">Загрузка файлов</div>
 
           <div class="request-form__file-hint text--light mb-3">
@@ -159,10 +169,13 @@
                 :false-value="0"
                 color="success"
                 hide-details
-                class="d-inline-flex mt-0 mb-4"
+                class="d-inline-flex mt-0 mb-2 mb-sm-4"
               >
                 <template #label>
-                  <div class="text--small ml-2">
+                  <div
+                    class="ml-sm-2"
+                    :class="!$vuetify.breakpoint.xs ? 'text--small' : ''"
+                  >
                     Я даю
                     <a href="#"
                       >Согласие на обработку и распространение персональных
@@ -181,10 +194,13 @@
                 :false-value="0"
                 color="success"
                 hide-details
-                class="d-inline-flex mt-0 mb-4"
+                class="d-inline-flex mt-0 mb-2 mb-sm-4"
               >
                 <template #label>
-                  <div class="text--small ml-2">
+                  <div
+                    class="ml-sm-2"
+                    :class="!$vuetify.breakpoint.xs ? 'text--small' : ''"
+                  >
                     Я ознакомлен с
                     <a href="#"> Политикой обработки персональных данных</a>
                   </div>
@@ -200,10 +216,14 @@
                 :false-value="0"
                 color="success"
                 hide-details
-                class="d-inline-flex mt-0 mb-4"
+                class="d-inline-flex mt-0 mb-2 mb-sm-4"
               >
                 <template #label>
-                  <div class="text--small ml-2" v-html="checkbox.label"></div>
+                  <div
+                    class="ml-sm-2"
+                    :class="!$vuetify.breakpoint.xs ? 'text--small' : ''"
+                    v-html="checkbox.label"
+                  ></div>
                 </template>
               </v-checkbox>
             </validation-provider>
@@ -235,7 +255,11 @@
           </validation-provider>
         </div> -->
         <div class="d-flex justify-center">
-          <CustomButton :disabled="invalid" :active="valid" type="submit"
+          <CustomButton
+            :disabled="invalid"
+            :active="valid"
+            type="submit"
+            :class="$vuetify.breakpoint.xs ? 'flex-grow-1' : ''"
             >Отправить заявку</CustomButton
           >
         </div>
@@ -394,6 +418,42 @@ export default {
   ::v-deep {
     .v-messages__message {
       text-align: right;
+    }
+  }
+}
+
+@media (max-width: map-get($grid-breakpoints, 'sm')) {
+  .request-form {
+    &__title {
+      font-size: 16px;
+    }
+
+    &__subtitle {
+      font-size: 10px;
+    }
+
+    &__label {
+      font-size: 14px;
+    }
+
+    &__phone {
+      ::v-deep {
+        .v-input__prepend-inner {
+          margin-top: 13px !important;
+        }
+      }
+    }
+
+    &__date {
+      ::v-deep {
+        .v-input__prepend-inner {
+          padding-right: 10px;
+
+          .v-icon {
+            font-size: 18px !important;
+          }
+        }
+      }
     }
   }
 }

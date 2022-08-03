@@ -2,14 +2,14 @@
   <v-app class="request-page">
     <v-app-bar
       elevation="0"
-      class="request-page__header flex-grow-0 d-flex align-center px-6"
+      class="request-page__header flex-grow-0 d-flex align-center px-sm-6"
     >
       <v-app-bar-nav-icon
-        ><img src="@/assets/images/logo.png" alt="лого"
+        ><img class="logo" src="@/assets/images/logo.png" alt="лого"
       /></v-app-bar-nav-icon>
     </v-app-bar>
     <div
-      class="request-page__content flex-grow-1 d-flex flex-column justify-center mx-auto mt-6 mb-18"
+      class="request-page__content flex-grow-1 d-flex flex-column justify-center mx-sm-auto mt-sm-6 mb-sm-18"
     >
       <Nuxt />
     </div>
@@ -20,6 +20,9 @@
 <script>
 export default {
   name: 'RequestLayout',
+  mounted() {
+    console.log(this.$vuetify)
+  },
 }
 </script>
 
@@ -39,7 +42,24 @@ export default {
   }
 
   &__content {
-    width: 624px;
+    width: min(624px, 96%);
+  }
+}
+
+@media (max-width: map-get($grid-breakpoints, 'sm')) {
+  .request-page {
+    &__header {
+      height: 48px !important
+      ;
+    }
+
+    &__content {
+      width: 100%;
+    }
+  }
+
+  .logo {
+    height: 48px;
   }
 }
 </style>

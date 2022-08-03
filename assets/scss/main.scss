@@ -192,3 +192,41 @@ a {
     background: $light-gray !important;
   }
 }
+
+@media (max-width: map-get($grid-breakpoints, 'sm')) {
+  html {
+    font-size: 14px !important;
+  }
+
+  .v-input {
+    font-size: 1rem !important;
+    line-height: 1 !important;
+
+    // &__slot{
+    //   padding: 0 20px !important;
+    // }
+
+    .v-label {
+      font-size: 1rem !important;
+      line-height: 1.14 !important;
+    }
+  }
+
+  .v-text-field.v-text-field--enclosed:not(.v-text-field--rounded)
+    > .v-input__control
+    > .v-input__slot {
+    padding: 0 20px !important;
+  }
+
+  .v-input--checkbox {
+    .v-input--selection-controls__input .v-icon {
+      font-size: 18px !important;
+    }
+  }
+
+  .v-messages {
+    &__message {
+      font-size: 10px !important;
+    }
+  }
+}

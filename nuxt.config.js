@@ -175,6 +175,14 @@ export default {
         dark: false,
       },
     },
+    breakpoint: {
+      thresholds: {
+        xs: 500,
+        sm: 960,
+        md: 1280,
+        lg: 1920,
+      },
+    },
   },
 
   axios,

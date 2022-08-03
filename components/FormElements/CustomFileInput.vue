@@ -26,10 +26,6 @@
       </v-chip>
     </template>
   </v-file-input>
-  <!-- <div class="task-modal__files-error error--text">
-      {{ errors[0] }}
-    </div> -->
-  <!-- </validation-provider> -->
 </template>
 
 <script>
@@ -87,14 +83,28 @@ export default {
       }
     }
 
-    // .v-text-field__details {
-    //   display: none;
-    // }
-
     .v-input__prepend-outer,
     .v-input__append-inner {
       .v-icon {
         color: $text-color !important;
+      }
+    }
+  }
+}
+
+@media (max-width: map-get($grid-breakpoints, 'sm')) {
+  .custom-file-input {
+    ::v-deep {
+      .v-input__prepend-outer .v-icon {
+        font-size: 18px !important;
+      }
+
+      .v-input__slot {
+        padding: 0 20px !important;
+      }
+
+      .v-file-input__text {
+        text-align: center;
       }
     }
   }
