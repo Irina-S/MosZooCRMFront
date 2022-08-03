@@ -42,19 +42,19 @@
         >
           <template #prepend-item>
             <v-list-item @mousedown.prevent @click="selectAllSections">
-              <v-icon class="mr-3">
+              <v-icon class="mr-1">
                 {{
                   typeFilter && typeFilter.length === sections.length
                     ? 'mdi-checkbox-outline'
                     : 'mdi-checkbox-blank-outline'
                 }}
               </v-icon>
-              Все
+              <span class="grey--text text-subtitle-2">Все</span>
             </v-list-item>
           </template>
           <template #selection="{ item }">
             <CustomChip
-              class="black--text"
+              class="black--text mt-1 mb-1"
               :color="StatusColor[item.value.toUpperCase()]"
               small
             >
@@ -65,7 +65,7 @@
             </CustomChip>
           </template>
           <template #item="{ item }">
-            <v-icon class="mr-3">
+            <v-icon class="mr-0">
               {{
                 typeFilter &&
                 typeFilter.find((type) => type.value === item.value)
@@ -108,19 +108,19 @@
         >
           <template #prepend-item>
             <v-list-item @mousedown.prevent @click="selectAllStatuses">
-              <v-icon class="mr-3">
+              <v-icon class="mr-1">
                 {{
                   statusFilter && statusFilter.length === statuses.length
                     ? 'mdi-checkbox-outline'
                     : 'mdi-checkbox-blank-outline'
                 }}
               </v-icon>
-              Все
+              <span class="grey--text text-subtitle-2">Все</span>
             </v-list-item>
           </template>
           <template #selection="{ item }">
             <CustomChip
-              class="black--text"
+              class="black--text mt-1 mb-1"
               :color="StatusColor[item.value.toUpperCase()]"
               small
             >
@@ -131,7 +131,7 @@
             </CustomChip>
           </template>
           <template #item="{ item }">
-            <v-icon class="mr-3">
+            <v-icon class="mr-0">
               {{
                 statusFilter &&
                 statusFilter.find((status) => status.value === item.value)
@@ -459,9 +459,13 @@ export default {
 <style lang="scss" scoped>
 .table-select {
   z-index: 1;
-  min-width: 200px;
+  min-width: 330px;
 
   ::v-deep {
+    .v-list-item {
+      min-height: 30px;
+    }
+
     .v-list-item--link::before {
       display: none;
     }
