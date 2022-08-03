@@ -1,8 +1,12 @@
 <template>
   <v-app class="auth-page">
     <div class="flex-grow-1 d-flex justify-content">
-      <div class="auth-page__left">
-        <img src="~/assets/images/atom-logo.png" alt="лого" class="mb-14" />
+      <div class="auth-page__left px-3 py-4 px-sm-12 py-sm-8">
+        <img
+          src="~/assets/images/atom-logo.png"
+          alt="лого"
+          class="mb-9 mb-sm-14"
+        />
         <Nuxt />
       </div>
       <div class="auth-page__right">
@@ -35,7 +39,6 @@ export default {
     min-height: 100%;
     max-width: 580px;
     flex: 45% 0 0;
-    padding: 34px 50px;
   }
 
   &__right {
@@ -58,6 +61,19 @@ export default {
 
   &__img {
     max-width: 307px;
+  }
+}
+
+@media (max-width: map-get($grid-breakpoints, 'md')) {
+  .auth-page {
+    &__left {
+      flex: 100% 0 0;
+      max-width: unset;
+    }
+
+    &__right {
+      display: none;
+    }
   }
 }
 </style>

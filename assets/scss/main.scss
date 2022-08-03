@@ -202,9 +202,11 @@ a {
     font-size: 1rem !important;
     line-height: 1 !important;
 
-    // &__slot{
-    //   padding: 0 20px !important;
-    // }
+    &--dense {
+      .v-icon {
+        font-size: 18px !important;
+      }
+    }
 
     .v-label {
       font-size: 1rem !important;
@@ -221,12 +223,6 @@ a {
   .v-input--checkbox {
     .v-input--selection-controls__input .v-icon {
       font-size: 18px !important;
-    }
-  }
-
-  .v-messages {
-    &__message {
-      font-size: 10px !important;
     }
   }
 }

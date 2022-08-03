@@ -455,6 +455,16 @@ export default {
         }
       }
     }
+
+    &__group {
+      ::v-deep {
+        .v-messages {
+          &__message {
+            font-size: 10px !important;
+          }
+        }
+      }
+    }
   }
 }
 </style>
