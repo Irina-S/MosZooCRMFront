@@ -70,3 +70,9 @@
     line-height: 1.15;
   }
 }
+
+@media (max-width: map-get($grid-breakpoints, 'sm')) {
+  .modal-inner {
+    padding: 20px 10px 25px;
+  }
+}

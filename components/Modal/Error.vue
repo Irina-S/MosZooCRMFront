@@ -1,5 +1,9 @@
 <template>
-  <ModalWrapper size="normal" :resolve="resolve" v-on="$listeners">
+  <ModalWrapper
+    :size="$vuetify.breakpoint.xs ? 'fullscreen' : 'normal'"
+    :resolve="resolve"
+    v-on="$listeners"
+  >
     <template>
       <img src="@/assets/images/exclamation.svg" alt="ошибка" class="mb-4" />
       <div v-if="title" class="modal-header text-center mb-4">

@@ -1,5 +1,9 @@
 <template>
-  <ModalWrapper :size="size" :resolve="resolve" v-on="$listeners">
+  <ModalWrapper
+    :size="$vuetify.breakpoint.xs ? 'fullscreen' : size"
+    :resolve="resolve"
+    v-on="$listeners"
+  >
     <template #default="{ close }">
       <div v-if="title" class="modal-header text-center mb-4">
         <h2 class="modal-title">{{ title }}</h2>

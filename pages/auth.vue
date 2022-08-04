@@ -137,7 +137,7 @@ export default {
       }
 
       .v-text-field__details {
-        min-height: 18px !important;
+        min-height: unset !important;
         overflow: visible !important;
         padding: 0 !important;
       }

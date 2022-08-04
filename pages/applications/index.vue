@@ -1,6 +1,22 @@
 <template>
   <div>
-    <h1 class="font-weight-bold text--enlarged mb-3">Список заявок</h1>
+    <h1
+      class="mb-3"
+      :class="
+        !$vuetify.breakpoint.xs
+          ? 'font-weight-bold text--enlarged'
+          : 'text--normal'
+      "
+    >
+      Список заявок
+    </h1>
+    <div v-if="$vuetify.breakpoint.xs" class="d-flex justify-end mb-4">
+      <span class="text--small cursor--pointer" @click="openMobileFilters"
+        >Фильтры<v-icon class="text--default ml-1"
+          >mdi-filter-variant</v-icon
+        ></span
+      >
+    </div>
     <v-data-table
       ref="list"
       :headers="applicationTableHeaders"
@@ -8,11 +24,17 @@
       :items-per-page="applicationTableOptions.itemsPerPage"
       :header-props="{ sortIcon: 'mdi-filter-variant' }"
       :must-sort="true"
+      :mobile-breakpoint="$vuetify.breakpoint.thresholds.xs"
       :sort-by.sync="applicationTableOptions.sortBy"
       :sort-desc.sync="applicationTableOptions.sortDesc"
       :server-items-length="totalItems"
       hide-default-footer
-      class="application-table mb-6"
+      class="mb-6"
+      :class="
+        $vuetify.breakpoint.xs
+          ? 'application-table--mobile'
+          : 'application-table'
+      "
       @update:sort-by="getList"
       @update:sort-desc="getList"
       @click:row="openApplication"
@@ -28,8 +50,9 @@
           ref="typeSelect"
           v-model="typeFilter"
           class="table-select"
-          :items="sectionNames"
+          :items="sections"
           :autofocus="true"
+          item-text="name"
           label="Тип кружка"
           :attach="true"
           multiple
@@ -55,11 +78,11 @@
           <template #selection="{ item }">
             <CustomChip
               class="black--text mt-1 mb-1"
-              :color="StatusColor[item.value.toUpperCase()]"
+              :color="StatusColor[item.id.toUpperCase()]"
               small
             >
-              <span class="mr-2">{{ item.text }}</span>
-              <v-icon small @click="removeItemFromTypeFilter(item.value)"
+              <span class="mr-2">{{ item.name }}</span>
+              <v-icon small @click="removeItemFromTypeFilter(item.id)"
                 >mdi-close</v-icon
               >
             </CustomChip>
@@ -67,14 +90,13 @@
           <template #item="{ item }">
             <v-icon class="mr-0">
               {{
-                typeFilter &&
-                typeFilter.find((type) => type.value === item.value)
+                typeFilter && typeFilter.find((type) => type.id === item.id)
                   ? 'mdi-checkbox-outline'
                   : 'mdi-checkbox-blank-outline'
               }}
             </v-icon>
             <CustomChip class="black--text" color="#F4F5F8" small>{{
-              item.text
+              item.name
             }}</CustomChip>
           </template>
         </v-combobox>
@@ -91,11 +113,12 @@
           ref="statusSelect"
           v-model="statusFilter"
           class="table-select"
-          :items="statusNames"
+          :items="statuses"
           :autofocus="true"
           label="Статус"
           :attach="true"
           :menu-props="{ bottom: true, offsetY: true }"
+          item-text="name"
           multiple
           small-chips
           solo
@@ -121,11 +144,11 @@
           <template #selection="{ item }">
             <CustomChip
               class="black--text mt-1 mb-1"
-              :color="StatusColor[item.value.toUpperCase()]"
+              :color="StatusColor[item.id.toUpperCase()]"
               small
             >
-              <span class="mr-2">{{ item.text }}</span>
-              <v-icon small @click="removeItemFromStatusFilter(item.value)"
+              <span class="mr-2">{{ item.name }}</span>
+              <v-icon small @click="removeItemFromStatusFilter(item.id)"
                 >mdi-close
               </v-icon>
             </CustomChip>
@@ -134,36 +157,49 @@
             <v-icon class="mr-0">
               {{
                 statusFilter &&
-                statusFilter.find((status) => status.value === item.value)
+                statusFilter.find((status) => status.id === item.id)
                   ? 'mdi-checkbox-outline'
                   : 'mdi-checkbox-blank-outline'
               }}
             </v-icon>
             <CustomChip
               class="black--text"
-              :color="StatusColor[item.value.toUpperCase()]"
+              :color="StatusColor[item.id.toUpperCase()]"
               small
-              >{{ item.text }}
+              >{{ item.name }}
             </CustomChip>
           </template>
         </v-combobox>
         <!--        </span>-->
       </template>
       <template #[`item.id`]="{ item }">
-        <span class="font-weight-medium">{{ item.id }}</span>
+        <span
+          class="font-weight-medium"
+          :class="$vuetify.breakpoint.xs ? 'text--light' : ''"
+          >{{ item.id }}</span
+        >
       </template>
       <template #[`item.type`]="{ item }">
-        <span class="font-weight-medium">{{ item.type_as_string }}</span>
+        <span
+          class="font-weight-medium"
+          :class="$vuetify.breakpoint.xs ? 'font-weight-bold' : ''"
+          >{{ item.type_as_string }}</span
+        >
       </template>
       <template #[`item.status`]="{ item }">
-        <CustomChip :color="StatusColor[item.status]" small>{{
-          item.status_as_string
-        }}</CustomChip>
+        <CustomChip
+          :color="StatusColor[item.status]"
+          small
+          class="mb-3 mb-sm-0"
+          >{{ item.status_as_string }}</CustomChip
+        >
       </template>
       <template #[`item.created_at`]="{ item }">
-        <span class="font-weight-medium mr-1">{{
-          parseDateFromExtended(item.created_at)
-        }}</span>
+        <span
+          class="font-weight-medium mr-1"
+          :class="$vuetify.breakpoint.xs ? 'text--light' : ''"
+          >{{ parseDateFromExtended(item.created_at) }}</span
+        >
         <span class="font-weight-medium text--light">{{
           parseTimeFromExtended(item.created_at)
         }}</span>
@@ -247,7 +283,7 @@
         </div>
       </template>
     </v-data-table>
-    <div v-if="totalPages > 1" class="d-flex justify-center align-center">
+    <div v-if="totalPages > 1" class="d-flex justify-center align-center mb-10">
       <v-btn
         rounded
         elevation="0"
@@ -352,20 +388,20 @@ export default {
       title: 'Список заявок',
     }
   },
-  computed: {
-    statusNames() {
-      return this.statuses.map((status) => ({
-        text: status.name,
-        value: status.id,
-      }))
-    },
-    sectionNames() {
-      return this.sections.map((section) => ({
-        text: section.name,
-        value: section.id,
-      }))
-    },
-  },
+  // computed: {
+  // statusNames() {
+  //   return this.statuses.map((status) => ({
+  //     text: status.name,
+  //     value: status.id,
+  //   }))
+  // },
+  // sectionNames() {
+  //   return this.sections.map((section) => ({
+  //     text: section.name,
+  //     value: section.id,
+  //   }))
+  // },
+  // },
   watch: {
     'applicationTableOptions.page'() {
       this.getList()
@@ -390,9 +426,9 @@ export default {
               : this.applicationTableOptions.sortBy
           }`,
           'filter[status]':
-            this.statusFilter?.map((item) => item.value).join(',') || '',
+            this.statusFilter?.map((item) => item.id).join(',') || '',
           'filter[type]':
-            this.typeFilter?.map((item) => item.value).join(',') || '',
+            this.typeFilter?.map((item) => item.id).join(',') || '',
         })
         this.applicationTableData = data.models.map((item) => ({
           ...item,
@@ -432,10 +468,7 @@ export default {
     },
     selectAllStatuses() {
       if ((this.statusFilter?.length || 0) < this.statuses?.length) {
-        this.statusFilter = this.statuses.map(({ id, name }) => ({
-          text: name,
-          value: id,
-        }))
+        this.statusFilter = [...this.statuses]
       } else {
         this.statusFilter = []
       }
@@ -443,14 +476,25 @@ export default {
     },
     selectAllSections() {
       if ((this.typeFilter?.length || 0) < this.sections?.length) {
-        this.typeFilter = this.sections.map(({ id, name }) => ({
-          text: name,
-          value: id,
-        }))
+        this.typeFilter = [...this.sections]
       } else {
         this.typeFilter = []
       }
       this.getList()
+    },
+    async openMobileFilters() {
+      const filters = await this.$modal.show('filters', {
+        filters: {
+          typeFilter: this.typeFilter,
+          statusFilter: this.statusFilter,
+        },
+        options: { types: this.sections, statuses: this.statuses },
+      })
+      if (filters) {
+        this.typeFilter = filters.typeFilter
+        this.statusFilter = filters.statusFilter
+        this.getList()
+      }
     },
   },
 }
@@ -527,6 +571,96 @@ export default {
     &.v-btn--disabled.v-btn--has-bg.theme--light {
       background-color: $button-color-default !important;
     }
+  }
+}
+
+@media (max-width: map-get($grid-breakpoints, 'sm')) {
+  .application-table--mobile {
+    ::v-deep {
+      .v-data-table-header__icon {
+        opacity: 1 !important;
+      }
+
+      th {
+        padding: 0 !important;
+        border: none !important;
+      }
+
+      td {
+        font-size: 12px !important;
+      }
+
+      .v-data-table__mobile-table-row {
+        display: grid;
+        grid-template-columns: 35px auto 120px;
+        grid-template-rows: repeat(3, auto);
+        gap: 10px 0;
+        padding: 8px 10px;
+        margin-bottom: 10px;
+        background: $medium-gray !important;
+        border-radius: 10px;
+
+        > :nth-child(1) {
+          grid-column-start: 1;
+          grid-column-end: 2;
+          grid-row-start: 1;
+          grid-row-end: 2;
+        }
+
+        > :nth-child(2) {
+          grid-column-start: 2;
+          grid-column-end: 3;
+          grid-row-start: 1;
+          grid-row-end: 2;
+        }
+
+        > :nth-child(3) {
+          grid-column-start: 1;
+          grid-column-end: 4;
+          grid-row-start: 2;
+          grid-row-end: 3;
+        }
+
+        > :nth-child(4) {
+          grid-column-start: 3;
+          grid-column-end: 4;
+          grid-row-start: 1;
+          grid-row-end: 2;
+        }
+
+        > :nth-child(5) {
+          grid-column-start: 1;
+          grid-column-end: 4;
+          grid-row-start: 3;
+          grid-row-end: 4;
+        }
+
+        > :nth-child(6),
+        > :nth-child(7) {
+          display: none !important;
+        }
+      }
+
+      .v-data-table__mobile-row {
+        min-height: unset !important;
+        padding: 0 !important;
+        border: none !important;
+      }
+
+      .v-data-table__mobile-row__header {
+        display: none !important;
+      }
+
+      .v-data-table__mobile-row__cell {
+        flex-grow: 1 !important;
+        padding: 0 !important;
+        text-align: left !important;
+      }
+    }
+  }
+
+  .pg-btn {
+    display: none;
   }
 }
 </style>

@@ -4,10 +4,24 @@
       <v-icon @click="$router.push('/')" class="text--default mr-3 mt-n1"
         >mdi-chevron-left</v-icon
       >
-      <h1 class="font-weight-bold text--enlarged">Список кружков</h1>
+      <h1
+        class="font-weight-bold"
+        :class="
+          !$vuetify.breakpoint.xs
+            ? 'font-weight-bold text--enlarged'
+            : 'text--normal'
+        "
+      >
+        Список кружков
+      </h1>
     </div>
     <v-row class="justify-space-between">
-      <v-col v-for="setting in namedSettings" :key="setting.id" cols="4">
+      <v-col
+        v-for="setting in namedSettings"
+        :key="setting.id"
+        cols="12"
+        sm="4"
+      >
         <nuxt-link
           :to="`/settings/${setting.id}`"
           class="settings-item d-flex flex-column justify-center align-center rounded-lg elevation-2 cursor--pointer text-decoration-none"

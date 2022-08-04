@@ -1,10 +1,10 @@
 <template>
   <v-app>
-    <v-app-bar class="header flex-grow-0 px-10 mb-3">
+    <v-app-bar class="header flex-grow-0 px-3 px-sm-10 mb-3">
       <img
         src="~/assets/images/atom-logo.png"
         alt="лого"
-        class="cursor--pointer"
+        class="logo cursor--pointer"
         @click="$router.push('/')"
       />
       <div class="d-flex flex-column align-end mr-4 ml-auto">
@@ -24,7 +24,7 @@
             v-if="name"
             v-bind="attrs"
             color="primary"
-            size="40"
+            :size="$vuetify.breakpoint.xs ? 24 : 40"
             class="avatar cursor--pointer"
             v-on="on"
             >{{ name[0].toUpperCase() }}</v-avatar
@@ -52,7 +52,7 @@
         </v-list>
       </v-menu>
     </v-app-bar>
-    <div class="flex-grow-1 px-10">
+    <div class="flex-grow-1 px-3 px-sm-10">
       <Nuxt />
     </div>
     <Modal></Modal>
@@ -122,5 +122,17 @@ export default {
 
 .logout-icon {
   transform: scaleX(-1);
+}
+
+@media (max-width: map-get($grid-breakpoints, 'sm')) {
+  .header {
+    height: 50px;
+    background: none !important;
+    box-shadow: none !important;
+  }
+
+  .logo {
+    width: 70px;
+  }
 }
 </style>

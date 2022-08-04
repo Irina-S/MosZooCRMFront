@@ -202,12 +202,6 @@ a {
     font-size: 1rem !important;
     line-height: 1 !important;
 
-    &--dense {
-      .v-icon {
-        font-size: 18px !important;
-      }
-    }
-
     .v-label {
       font-size: 1rem !important;
       line-height: 1.14 !important;
@@ -217,12 +211,23 @@ a {
   .v-text-field.v-text-field--enclosed:not(.v-text-field--rounded)
     > .v-input__control
     > .v-input__slot {
-    padding: 0 20px !important;
+    padding: 0 8px !important;
   }
 
-  .v-input--checkbox {
-    .v-input--selection-controls__input .v-icon {
-      font-size: 18px !important;
+  .v-icon {
+    font-size: 18px !important;
+  }
+
+  .v-pagination__item {
+    width: 35px !important;
+    height: 35px !important;
+  }
+
+  .custom-field {
+    &.v-text-field.v-text-field--enclosed:not(.v-text-field--rounded)
+      > .v-input__control
+      > .v-input__slot {
+      padding: 0 20px !important;
     }
   }
 }

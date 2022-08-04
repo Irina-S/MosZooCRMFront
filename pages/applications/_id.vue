@@ -1,233 +1,212 @@
 <template>
   <div>
-    <!-- <v-stepper
-      v-if="application"
-      value="0"
-      alt-labels
-      flat
-      class="status-timeline mb-5"
-    >
-      <v-stepper-header>
-        <v-stepper-step step="1" :complete="steps[0]">
-          <span class="font-weight-bold text--default mb-1">Принята</span>
-          </v-stepper-step
-        >
-        <v-stepper-step step="2" :complete="steps[1]">
-          <span class="font-weight-bold text--default mb-1"
-            >Проверка заявки</span
-          >
-        </v-stepper-step>
-
-        <v-stepper-step step="3" :complete="steps[2]">
-          <span class="font-weight-bold text--default mb-1"
-            >Проверка документов</span
-          >
-        </v-stepper-step>
-
-        <v-stepper-step step="4" :complete="steps[3]">
-          <span class="font-weight-bold text--default mb-1"
-            >Прохождение в/и</span
-          >
-        </v-stepper-step>
-
-        <v-stepper-step step="5" :complete="steps[4]">
-          <span class="font-weight-bold text--default mb-1"
-            >Решение принято</span
-          >
-        </v-stepper-step>
-
-        <v-stepper-step step="6" :complete="steps[5]">
-          <span class="font-weight-bold text--default mb-1">Отработана</span>
-        </v-stepper-step>
-      </v-stepper-header>
-    </v-stepper> -->
-    <div v-if="application" class="position--relative">
-      <h1 class="font-weight-bold text--enlarged mb-3">
+    <div v-if="application">
+      <h1
+        class="font-weight-bold mb-3"
+        :class="
+          !$vuetify.breakpoint.xs
+            ? 'font-weight-bold text--enlarged'
+            : 'text--normal'
+        "
+      >
         Заявка № {{ application.id }}
       </h1>
-      <div class="application-info mb-4">
-        <div class="text--light">Тип кружка</div>
-        <div class="font-weight-medium">{{ application.type_as_string }}</div>
-        <div class="text--light">Статус</div>
-        <div>
-          <CustomChip :color="StatusColor[application.status]">{{
-            application.status_as_string
-          }}</CustomChip>
-        </div>
-        <div class="text--light">Дата</div>
-        <div class="font-weight-medium">
-          <span>{{ parseDateFromExtended(application.created_at) }}</span>
-          <span class="text--light">{{
-            parseTimeFromExtended(application.created_at)
-          }}</span>
-        </div>
-        <div class="text--light">Ответственный</div>
-        <div>
-          <template v-if="isAdmin">
-            <CustomSelect
-              v-if="application.isResponsibleEditing"
-              :options="moderators"
-              label="name"
-              has-gray-bg
-              @click.stop
-              @cancel="application.isResponsibleEditing = false"
-              @input="setResponsible(application, $event)"
-            >
-              <template #no-options>
-                <div class="font-weight-regular text-center py-2">
-                  Нет результатов
+      <v-row>
+        <v-col cols="12" md="7">
+          <div class="application-info mb-4">
+            <div class="text--light">Тип кружка</div>
+            <div class="font-weight-medium">
+              {{ application.type_as_string }}
+            </div>
+            <div class="text--light">Статус</div>
+            <div>
+              <CustomChip :color="StatusColor[application.status]">{{
+                application.status_as_string
+              }}</CustomChip>
+            </div>
+            <div class="text--light">Дата</div>
+            <div class="font-weight-medium">
+              <span>{{ parseDateFromExtended(application.created_at) }}</span>
+              <span class="text--light">{{
+                parseTimeFromExtended(application.created_at)
+              }}</span>
+            </div>
+            <div class="text--light">Ответственный</div>
+            <div>
+              <template v-if="isAdmin">
+                <CustomSelect
+                  v-if="application.isResponsibleEditing"
+                  :options="moderators"
+                  label="name"
+                  has-gray-bg
+                  @click.stop
+                  @cancel="application.isResponsibleEditing = false"
+                  @input="setResponsible(application, $event)"
+                >
+                  <template #no-options>
+                    <div class="font-weight-regular text-center py-2">
+                      Нет результатов
+                    </div>
+                  </template>
+                </CustomSelect>
+                <a
+                  v-else-if="application.responsible_name"
+                  class="font-weight-medium text-decoration-underline"
+                  @click.prevent.stop="application.isResponsibleEditing = true"
+                  >{{ application.responsible_name }}</a
+                >
+                <v-btn
+                  v-else
+                  outlined
+                  small
+                  @click.prevent.stop="application.isResponsibleEditing = true"
+                  >Назначить</v-btn
+                >
+              </template>
+              <template v-else>
+                <div class="font-weight-medium">
+                  {{ application.responsible_name || '-' }}
                 </div>
               </template>
-            </CustomSelect>
-            <a
-              v-else-if="application.responsible_name"
-              class="font-weight-medium text-decoration-underline"
-              @click.prevent.stop="application.isResponsibleEditing = true"
-              >{{ application.responsible_name }}</a
-            >
-            <v-btn
-              v-else
-              outlined
-              small
-              @click.prevent.stop="application.isResponsibleEditing = true"
-              >Назначить</v-btn
-            >
-          </template>
-          <template v-else>
-            <div class="font-weight-medium">
-              {{ application.responsible_name || '-' }}
             </div>
-          </template>
-        </div>
-        <div class="text--light">Комментарий</div>
-        <div>
-          <v-textarea
-            v-model="application.comment"
-            placeholder="Текст комментария..."
-            no-resize
-            rows="3"
-            outlined
-            hide-details
-            class="comment-field comment-textarea mb-2"
-          ></v-textarea>
-        </div>
-        <template
-          v-if="
-            isAdmin ||
-            (['pony_club'].includes(application.type) &&
-              application.possible_next_statuses &&
-              application.possible_next_statuses.includes(
-                Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
-              ))
-          "
-        >
-          <div class="text--light">Дата и время в/и*</div>
-          <div class="d-flex justify-space-between">
-            <CustomDatePicker v-model="examinations.date" class="mr-2" />
-            <CustomTimePicker v-model="examinations.time" />
-          </div>
-        </template>
-        <template
-          v-if="
-            isAdmin ||
-            (['pony_club'].includes(application.type) &&
-              application.possible_next_statuses &&
-              (application.possible_next_statuses.includes(
-                Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
-              ) ||
-                application.possible_next_statuses.includes(
-                  Status.APPROVED_BY_EXAMINATIONS
-                )))
-          "
-        >
-          <div class="text--light">Группа в/и*</div>
-          <div>
-            <v-select
-              v-model="examinations.group"
-              :items="groups"
-              :menu-props="{
-                bottom: true,
-                offsetY: true,
-                class: 'group-select__menu',
-              }"
-              item-text="name"
-              item-value="id"
-              placeholder="Выберите"
-              outlined
-              dense
-              hide-details
-              class="group-select"
-            />
-          </div>
-        </template>
-        <template
-          v-if="
-            isAdmin ||
-            (['kubz', 'kraski_mira'].includes(application.type) &&
-              application.possible_next_statuses &&
-              application.possible_next_statuses.includes(
-                Status.INVITATION_TO_CLASS
-              ))
-          "
-        >
-          <div class="text--light">Дата и время занятия</div>
-          <div class="d-flex justify-space-between">
-            <CustomDatePicker v-model="classes.date" class="mr-2" />
-            <CustomTimePicker v-model="classes.time" />
-          </div>
-        </template>
-        <template
-          v-if="
-            isAdmin ||
-            (['kubz', 'kraski_mira'].includes(application.type) &&
-              application.possible_next_statuses &&
-              application.possible_next_statuses.includes(
-                Status.INVITATION_TO_CLASS
-              ))
-          "
-        >
-          <div class="text--light">Группа занятия</div>
-          <div>
-            <v-select
-              v-model="classes.group"
-              :items="groups"
-              :menu-props="{
-                bottom: true,
-                offsetY: true,
-                class: 'group-select__menu',
-              }"
-              item-text="name"
-              item-value="id"
-              placeholder="Выберите"
-              outlined
-              dense
-              hide-details
-              class="group-select"
-            ></v-select>
-          </div>
-        </template>
-        <div class="text--light">ФИО заявителя</div>
-        <div class="font-weight-medium">
-          {{ application.client_name || '-' }}
-        </div>
-        <div class="text--light">ФИО ребенка</div>
-        <div class="font-weight-medium">
-          {{ application.child_name || '-' }}
-        </div>
-        <div class="text--light">
-          ФИО сопровождающего<br />
-          (для кюбз)
-        </div>
-        <div class="font-weight-medium">
-          {{ application.accompanynig_person || '-' }}
-        </div>
-        <div class="text--light">Электронная почта</div>
-        <div class="font-weight-medium">{{ application.email }}</div>
-        <div class="text--light">Телефон</div>
-        <div class="font-weight-medium">
-          {{ formatPhone(application.phone) }}
-        </div>
-        <!-- <div class="text--light">Приложение</div>
+            <div class="text--light">Комментарий</div>
+            <div>
+              <v-textarea
+                v-model="application.comment"
+                placeholder="Текст комментария..."
+                no-resize
+                rows="3"
+                outlined
+                hide-details
+                class="comment-textarea mb-2"
+              ></v-textarea>
+            </div>
+            <template
+              v-if="
+                isAdmin ||
+                (['pony_club'].includes(application.type) &&
+                  application.possible_next_statuses &&
+                  application.possible_next_statuses.includes(
+                    Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
+                  ))
+              "
+            >
+              <div class="text--light">Дата и время в/и*</div>
+              <div class="d-flex justify-space-between">
+                <CustomDatePicker
+                  v-model="examinations.date"
+                  class="flex-grow-1 mr-2"
+                />
+                <CustomTimePicker
+                  v-model="examinations.time"
+                  class="flex-grow-1"
+                />
+              </div>
+            </template>
+            <template
+              v-if="
+                isAdmin ||
+                (['pony_club'].includes(application.type) &&
+                  application.possible_next_statuses &&
+                  (application.possible_next_statuses.includes(
+                    Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
+                  ) ||
+                    application.possible_next_statuses.includes(
+                      Status.APPROVED_BY_EXAMINATIONS
+                    )))
+              "
+            >
+              <div class="text--light">Группа в/и*</div>
+              <div>
+                <v-select
+                  v-model="examinations.group"
+                  :items="groups"
+                  :menu-props="{
+                    bottom: true,
+                    offsetY: true,
+                    class: 'group-select__menu',
+                  }"
+                  item-text="name"
+                  item-value="id"
+                  placeholder="Выберите"
+                  outlined
+                  dense
+                  hide-details
+                  class="group-select"
+                />
+              </div>
+            </template>
+            <template
+              v-if="
+                isAdmin ||
+                (['kubz', 'kraski_mira'].includes(application.type) &&
+                  application.possible_next_statuses &&
+                  application.possible_next_statuses.includes(
+                    Status.INVITATION_TO_CLASS
+                  ))
+              "
+            >
+              <div class="text--light">Дата и время занятия</div>
+              <div class="d-flex justify-space-between">
+                <CustomDatePicker
+                  v-model="classes.date"
+                  class="flex-grow-1 mr-2"
+                />
+                <CustomTimePicker v-model="classes.time" class="flex-grow-1" />
+              </div>
+            </template>
+            <template
+              v-if="
+                isAdmin ||
+                (['kubz', 'kraski_mira'].includes(application.type) &&
+                  application.possible_next_statuses &&
+                  application.possible_next_statuses.includes(
+                    Status.INVITATION_TO_CLASS
+                  ))
+              "
+            >
+              <div class="text--light">Группа занятия</div>
+              <div>
+                <v-select
+                  v-model="classes.group"
+                  :items="groups"
+                  :menu-props="{
+                    bottom: true,
+                    offsetY: true,
+                    class: 'group-select__menu',
+                  }"
+                  item-text="name"
+                  item-value="id"
+                  placeholder="Выберите"
+                  outlined
+                  dense
+                  hide-details
+                  class="group-select"
+                ></v-select>
+              </div>
+            </template>
+            <div class="text--light">ФИО заявителя</div>
+            <div class="font-weight-medium">
+              {{ application.client_name || '-' }}
+            </div>
+            <div class="text--light">ФИО ребенка</div>
+            <div class="font-weight-medium">
+              {{ application.child_name || '-' }}
+            </div>
+            <div class="text--light">
+              ФИО сопровождающего<br />
+              (для кюбз)
+            </div>
+            <div class="font-weight-medium">
+              {{ application.accompanynig_person || '-' }}
+            </div>
+            <div class="text--light">Электронная почта</div>
+            <div class="font-weight-medium">{{ application.email }}</div>
+            <div class="text--light">Телефон</div>
+            <div class="font-weight-medium">
+              {{ formatPhone(application.phone) }}
+            </div>
+            <!-- <div class="text--light">Приложение</div>
         <div class="d-flex flex-wrap align-start">
           <v-chip
             v-for="file in application.files"
@@ -238,104 +217,114 @@
             >{{ file.name }}</v-chip
           >
         </div> -->
-        <div class="application-info__row">
-          <v-checkbox
-            v-model="agreement"
-            disabled
-            hide-details
-            class="d-inline-flex mt-0 pa-0"
-          >
-            <template #label>
-              <div class="text--small text--default ml-2 pt-1">
-                Я даю Согласие на обработку и распространение персональных
-                данных
-              </div>
-            </template>
-          </v-checkbox>
-        </div>
-        <div class="application-info__row">
-          <v-checkbox
-            v-model="agreement"
-            disabled
-            hide-details
-            class="d-inline-flex mt-0 pa-0"
-          >
-            <template #label>
-              <div class="text--small text--default ml-2 pt-1">
-                Я ознакомлен с политикой обработки персональных данных
-              </div>
-            </template>
-          </v-checkbox>
-        </div>
-        <div
-          v-for="checkbox in checkboxes[application.type]"
-          :key="checkbox.model"
-          class="application-info__row"
-        >
-          <v-checkbox
-            v-model="agreement"
-            disabled
-            hide-details
-            class="d-inline-flex mt-0 pa-0"
-          >
-            <template #label>
-              <div
-                class="application-info__agreement text--small text--default ml-2 pt-1"
-                v-html="checkbox.label"
-              ></div>
-            </template>
-          </v-checkbox>
-        </div>
-        <div class="text--light">IP</div>
-        <div class="font-weight-medium">{{ application.IP }}</div>
-        <div class="text--light">Браузер</div>
-        <div class="font-weight-medium">{{ application.browser }}</div>
-      </div>
-      <div class="d-flex align-center mb-4">
-        <v-btn color="primary" small class="mr-6" @click="saveApplication">
-          Сохранить
-        </v-btn>
-        <v-btn to="/" small> Закрыть </v-btn>
-      </div>
-      <div
-        v-if="
-          (isAdmin && application.responsible_name) ||
-          (isModerator && application.possible_next_statuses.length)
-        "
-        class="application-actions position--absolute rounded-lg bg--gray pt-4 px-3 pb-6"
-      >
-        <div class="mb-4">Выберите вариант решения по заявке</div>
-        <div class="d-flex align-start flex-wrap">
-          <template v-if="isAdmin">
-            <v-btn
-              v-for="(status, key) in StatusBtnText"
-              v-show="key !== application.status"
-              :key="key"
-              :color="StatusBtnColor[key]"
-              outlined
-              small
-              class="font-weight-medium border--normal mr-3 mb-3"
-              @click="updateStatus(key)"
+            <div class="application-info__row">
+              <v-checkbox
+                v-model="agreement"
+                disabled
+                hide-details
+                class="d-inline-flex mt-0 pa-0"
+              >
+                <template #label>
+                  <div class="text--small text--default ml-2 pt-1">
+                    Я даю Согласие на обработку и распространение персональных
+                    данных
+                  </div>
+                </template>
+              </v-checkbox>
+            </div>
+            <div class="application-info__row">
+              <v-checkbox
+                v-model="agreement"
+                disabled
+                hide-details
+                class="d-inline-flex mt-0 pa-0"
+              >
+                <template #label>
+                  <div class="text--small text--default ml-2 pt-1">
+                    Я ознакомлен с политикой обработки персональных данных
+                  </div>
+                </template>
+              </v-checkbox>
+            </div>
+            <div
+              v-for="checkbox in checkboxes[application.type]"
+              :key="checkbox.model"
+              class="application-info__row"
             >
-              {{ status }}
+              <v-checkbox
+                v-model="agreement"
+                disabled
+                hide-details
+                class="d-inline-flex mt-0 pa-0"
+              >
+                <template #label>
+                  <div
+                    class="application-info__agreement text--small text--default ml-2 pt-1"
+                    v-html="checkbox.label"
+                  ></div>
+                </template>
+              </v-checkbox>
+            </div>
+            <div class="text--light">IP</div>
+            <div class="font-weight-medium">{{ application.IP }}</div>
+            <div class="text--light">Браузер</div>
+            <div class="font-weight-medium">{{ application.browser }}</div>
+          </div>
+          <div class="d-flex align-center mb-4">
+            <v-btn color="primary" small class="mr-6" @click="saveApplication">
+              Сохранить
             </v-btn>
+            <v-btn to="/" small> Закрыть </v-btn>
+          </div>
+        </v-col>
+        <v-col cols="12" md="5" class="order-first order-md-last">
+          <template v-if="$vuetify.breakpoint.mdAndUp">
+            <div
+              v-if="
+                (isAdmin && application.responsible_name) ||
+                (isModerator && application.possible_next_statuses.length)
+              "
+              class="rounded-lg bg--gray pt-4 px-3 pb-6"
+            >
+              <div class="mb-4">Выберите вариант решения по заявке</div>
+              <div class="d-flex align-start flex-wrap">
+                <!-- <template v-if="isAdmin"> -->
+                <v-btn
+                  v-for="status in availableStatuses"
+                  v-show="status.id.toUpperCase() !== application.status"
+                  :key="status.id"
+                  :color="StatusBtnColor[status.id.toUpperCase()]"
+                  outlined
+                  small
+                  class="font-weight-medium border--normal mr-3 mb-3"
+                  @click="updateStatus(status.id)"
+                >
+                  {{ status.name }}
+                </v-btn>
+              </div>
+            </div>
           </template>
           <template v-else>
-            <v-btn
-              v-for="(status, key) in StatusBtnText"
-              v-show="application.possible_next_statuses.includes(Status[key])"
-              :key="key"
-              :color="StatusBtnColor[key]"
+            <v-select
+              :menu-props="{ bottom: true, offsetY: true }"
+              :items="availableStatuses"
+              :dense="$vuetify.breakpoint.xs"
+              item-value="id"
+              item-text="name"
+              hide-details
               outlined
-              small
-              class="font-weight-medium border--normal mr-3 mb-3"
-              @click="updateStatus(key)"
+              placeholder="Решение по заявке"
+              @change="updateStatus"
             >
-              {{ status }}
-            </v-btn>
+              <template #item="{ item }">
+                <CustomChip :color="StatusColor[item.id.toUpperCase()]">{{
+                  item.name
+                }}</CustomChip>
+              </template>
+            </v-select>
           </template>
-        </div>
-      </div>
+        </v-col>
+      </v-row>
     </div>
   </div>
 </template>
@@ -394,10 +383,24 @@ export default {
       title: `Заявка №${this.$route.params.id}`,
     }
   },
+  computed: {
+    availableStatuses() {
+      if (this.isAdmin) {
+        const keys = Object.keys(this.StatusBtnColor)
+        return this.statuses.filter((status) =>
+          keys.includes(status.id.toUpperCase())
+        )
+      }
+      return this.statuses.filter((status) =>
+        this.application.possible_next_statuses.includes(status.id)
+      )
+    },
+  },
   mounted() {
     if (this.isAdmin) {
       this.getModerators()
     }
+    this.getStatuses()
     this.getGroups()
     this.getApplication()
   },
@@ -438,7 +441,7 @@ export default {
           return
         }
         const params = {
-          status: Status[value],
+          status: Status[value.toUpperCase()],
         }
 
         switch (Status[value]) {
@@ -474,6 +477,7 @@ export default {
         this.$modal.show('success', {
           title: 'Изменения по заявке были сохранены!',
         })
+        this.$router.push('/')
       } catch (err) {
         this.$modal.show('error', {
           title: 'Произошла ошибка!',
@@ -508,9 +512,8 @@ export default {
 
 <style lang="scss" scoped>
 .application-info {
-  width: min(700px, 80%);
   display: grid;
-  grid-template-columns: 200px 370px;
+  grid-template-columns: 200px auto;
   grid-gap: 16px;
 
   &__row {
@@ -528,58 +531,18 @@ export default {
   }
 }
 
-.application-actions {
-  right: 0;
-  top: 0;
-  max-width: 640px;
-}
+@media (max-width: map-get($grid-breakpoints, 'md')) {
+  .application-info {
+    grid-template-columns: auto;
+    gap: 0;
 
-.status-timeline {
-  background: $light-gray;
-  border-radius: 10px;
-
-  ::v-deep {
-    .v-stepper__step {
-      min-height: 40px;
-      flex: calc(100% / 6) 0 0;
-      padding: 7px;
-
-      &:not(:last-of-type, .v-stepper__step--active, .v-stepper__step--complete)::after {
-        content: '';
-        position: absolute;
-        left: 100%;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 1px;
-        height: 20px;
-        background: #ccd4df;
-      }
-
-      &--complete,
-      &--active {
-        background: $gray;
-      }
-
-      &--active {
-        border-radius: 0 10px 10px 0;
-      }
-
-      &__step {
-        display: none;
-      }
+    &__row {
+      grid-column-start: 1;
+      grid-column-end: 2;
     }
 
-    .v-stepper__header {
-      flex-wrap: nowrap;
-      box-shadow: none;
-    }
-
-    .v-stepper__label {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
+    > :nth-child(2n) {
+      margin-bottom: 10px;
     }
   }
 }

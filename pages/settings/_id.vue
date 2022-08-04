@@ -6,12 +6,26 @@
         @click="$router.push('/settings')"
         >mdi-chevron-left</v-icon
       >
-      <h1 class="font-weight-bold text--enlarged">{{ title }}</h1>
+      <h1
+        class="font-weight-bold"
+        :class="
+          !$vuetify.breakpoint.xs
+            ? 'font-weight-bold text--enlarged'
+            : 'text--normal'
+        "
+      >
+        {{ title }}
+      </h1>
     </div>
     <v-form class="mb-15">
-      <v-row class="justify-space-between mx-n7 mb-6">
-        <v-col cols="4" class="px-7">
-          <div class="mb-2">Дата и время начала приема заявок</div>
+      <v-row class="justify-space-between mx-n6 mb-6">
+        <v-col cols="12" md="4" class="d-flex flex-column justify-end px-6">
+          <div
+            class="mb-2"
+            :class="$vuetify.breakpoint.mdAndDown ? 'text--small' : ''"
+          >
+            Дата и время начала приема заявок
+          </div>
           <v-row class="mx-n2">
             <v-col cols="6" class="px-2">
               <CustomDatePicker v-model="startDate" />
@@ -21,8 +35,13 @@
             /></v-col>
           </v-row>
         </v-col>
-        <v-col cols="4" class="px-7">
-          <div class="mb-2">Дата и время окончания приема заявок</div>
+        <v-col cols="12" md="4" class="d-flex flex-column justify-end px-6">
+          <div
+            class="mb-2"
+            :class="$vuetify.breakpoint.mdAndDown ? 'text--small' : ''"
+          >
+            Дата и время окончания приема заявок
+          </div>
           <v-row class="mx-n2">
             <v-col cols="6" class="px-2">
               <CustomDatePicker v-model="endDate" />
@@ -32,8 +51,13 @@
             /></v-col>
           </v-row>
         </v-col>
-        <v-col cols="4" class="px-7">
-          <div class="mb-2">ФИО ответственного по умолчанию</div>
+        <v-col cols="12" md="4" class="d-flex flex-column justify-end px-6">
+          <div
+            class="mb-2"
+            :class="$vuetify.breakpoint.mdAndDown ? 'text--small' : ''"
+          >
+            ФИО ответственного по умолчанию
+          </div>
           <v-row class="mx-n2">
             <v-col cols="12" class="px-2">
               <v-select
@@ -186,8 +210,14 @@
         </div>
       </div>
       <div class="d-flex">
-        <v-btn to="/settings"> Отменить </v-btn>
-        <v-btn color="primary" class="ml-7" @click="updateSetting">
+        <v-btn to="/settings" class="flex-grow-1 flex-sm-grow-0">
+          Отменить
+        </v-btn>
+        <v-btn
+          color="primary"
+          class="flex-grow-1 flex-sm-grow-0 ml-3 ml-sm-7"
+          @click="updateSetting"
+        >
           Сохранить
         </v-btn>
       </div>
