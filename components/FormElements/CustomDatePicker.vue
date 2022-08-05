@@ -71,9 +71,16 @@ export default {
   },
   methods: {
     toggleDatePicker() {
+      const menuWidth = 290
+      const menuHeight = 390
       const { x, y, height } = this.$el.getBoundingClientRect()
-      this.menuX = x
-      this.menuY = y + height
+      if (window.innerWidth - x < menuWidth + 100) {
+        this.menuX = (window.innerWidth - menuWidth) / 2
+        this.menuY = (window.innerHeight - menuHeight) / 2
+      } else {
+        this.menuX = x
+        this.menuY = y + height
+      }
       this.open = !this.open
     },
     onDateInput(value) {
