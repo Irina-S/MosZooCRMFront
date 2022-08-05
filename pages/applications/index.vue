@@ -75,16 +75,14 @@
               <span class="grey--text text-subtitle-2">Все</span>
             </v-list-item>
           </template>
-          <template #selection="{ item }">
+          <template #selection="{ item, parent }">
             <CustomChip
               class="black--text mt-1 mb-1"
               :color="StatusColor[item.id.toUpperCase()]"
               small
             >
               <span class="mr-2">{{ item.name }}</span>
-              <v-icon small @click="removeItemFromTypeFilter(item.id)"
-                >mdi-close</v-icon
-              >
+              <v-icon small @click="parent.selectItem(item)">mdi-close</v-icon>
             </CustomChip>
           </template>
           <template #item="{ item }">
@@ -141,16 +139,14 @@
               <span class="grey--text text-subtitle-2">Все</span>
             </v-list-item>
           </template>
-          <template #selection="{ item }">
+          <template #selection="{ item, parent }">
             <CustomChip
               class="black--text mt-1 mb-1"
               :color="StatusColor[item.id.toUpperCase()]"
               small
             >
               <span class="mr-2">{{ item.name }}</span>
-              <v-icon small @click="removeItemFromStatusFilter(item.id)"
-                >mdi-close
-              </v-icon>
+              <v-icon small @click="parent.selectItem(item)">mdi-close </v-icon>
             </CustomChip>
           </template>
           <template #item="{ item }">
@@ -456,16 +452,16 @@ export default {
       await this.updateResponsible(application, responsible)
       this.getList()
     },
-    removeItemFromTypeFilter(name) {
-      this.typeFilter = this.typeFilter.filter((type) => type.value !== name)
-      this.getList()
-    },
-    removeItemFromStatusFilter(name) {
-      this.statusFilter = this.statusFilter.filter(
-        (status) => status.value !== name
-      )
-      this.getList()
-    },
+    // removeItemFromTypeFilter(name) {
+    //   this.typeFilter = this.typeFilter.filter((type) => type.item !== name)
+    //   this.getList()
+    // },
+    // removeItemFromStatusFilter(name) {
+    //   this.statusFilter = this.statusFilter.filter(
+    //     (status) => status.item !== name
+    //   )
+    //   this.getList()
+    // },
     selectAllStatuses() {
       if ((this.statusFilter?.length || 0) < this.statuses?.length) {
         this.statusFilter = [...this.statuses]
