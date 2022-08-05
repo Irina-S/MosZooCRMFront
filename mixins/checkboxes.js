@@ -53,10 +53,6 @@ export default {
             model: 'agree_with_entrance_tests_kfd',
             label: `Я ознакомлен и согласен с <a href="#">Вступительными испытаниями КДФ «Пони клуб»</a>`,
           },
-          {
-            model: 'have_read_charter_of_kfd',
-            label: `Я ознакомлен с <a href="#">Уставом КДФ «Пони клуб»</a>`,
-          },
         ],
         kraski_mira: [
           {

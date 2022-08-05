@@ -343,19 +343,20 @@ export default {
   methods: {
     async onSubmit() {
       try {
-        await this.$api.applications.validate({
+        const params = {
           ...this.form,
           phone: this.preparePhone(this.form.phone),
-        })
+        }
+        if (this.form.type === 'pony_club') {
+          delete params.have_read_charter_of_kfd
+        }
+        await this.$api.applications.validate(params)
         this.$emit('validated')
       } catch (err) {
         this.$modal.show('error', { err })
         if (err.response?.status === 422) {
-          // debugger
-
           this.$refs.form.setErrors(err.response.data.errors)
         }
-        // debugger
       }
     },
   },

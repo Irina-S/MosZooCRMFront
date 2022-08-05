@@ -84,11 +84,14 @@ export default {
     },
     async onConfirm() {
       try {
-        await this.$api.applications.create({
+        const params = {
           ...this.form,
-          // child_birthday: this.prepareDate(this.form.child_birthday),
           phone: this.preparePhone(this.form.phone),
-        })
+        }
+        if (this.form.type === 'pony_club') {
+          delete params.have_read_charter_of_kfd
+        }
+        await this.$api.applications.create(params)
         this.switchStep(this.$options.steps.completed)
       } catch (err) {
         this.$modal.show('error', { err })
