@@ -13,7 +13,7 @@
           class="request-form__subtitle mb-4 mb-sm-6 font-weight-regular text--light text-center"
         >
           Пожалуйста, заполните данную форму для подачи заявки на вступление в
-          наши сеции и клубы
+          наши секции и клубы
         </h4>
         <div class="request-form__group">
           <div class="request-form__label mb-2">Название секции/клуба</div>
@@ -73,7 +73,14 @@
             name="child_birthday"
             rules="required"
           >
-            <v-text-field
+            <CustomDatePicker
+              v-model="form.child_birthday"
+              :error-messages="errors"
+              :dense="$vuetify.breakpoint.xs"
+              :hide-details="false"
+              is-request
+            />
+            <!-- <v-text-field
               v-model="form.child_birthday"
               v-mask="'##.##.####'"
               :error-messages="errors"
@@ -83,7 +90,7 @@
               outlined
               class="custom-field request-form__date"
             >
-            </v-text-field>
+            </v-text-field> -->
           </validation-provider>
         </div>
         <div v-if="form.type === 'kubz'" class="request-form__group">
@@ -234,7 +241,7 @@
           необходимости предоставить следующие документы:<br />
           1. Оригинал заполненного заявления установленной формы;<br />
           2. Копия Свидетельства о рождении участника (до 14 лет);<br />
-          3. Копия паспотрта участника (с14 лет);<br />
+          3. Копия паспорта участника (с14 лет);<br />
           4. Копия паспорта Представителя (первый разворот, лист с регистрацией
           по месту жительства, лист с отметкой “Дети”;<br />
           5. Иные документы, подтверждающие полномочия законного представителя
@@ -272,10 +279,11 @@
 import prepareParams from '@/mixins/prepareParams'
 import CustomFileInput from '@/components/FormElements/CustomFileInput'
 import CustomButton from '@/components/FormElements/CustomButton'
+import CustomDatePicker from '@/components/FormElements/CustomDatePicker'
 
 export default {
   name: 'RequestForm',
-  components: { CustomFileInput, CustomButton },
+  components: { CustomFileInput, CustomButton, CustomDatePicker },
   mixins: [prepareParams],
   layout: 'request',
   props: {
@@ -337,7 +345,6 @@ export default {
       try {
         await this.$api.applications.validate({
           ...this.form,
-          child_birthday: this.prepareDate(this.form.child_birthday),
           phone: this.preparePhone(this.form.phone),
         })
         this.$emit('validated')

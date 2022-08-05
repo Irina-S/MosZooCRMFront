@@ -7,7 +7,7 @@
     >
       <v-form
         ref="form"
-        class="confirm-form d-flex flex-column d-sm-block pt-5 px-3 pb-6 px-sm-5 py-sm-10"
+        class="confirm-form d-flex flex-column d-sm-block pt-5 px-3 pb-6 px-sm-8 py-sm-10"
         @submit.prevent="handleSubmit(confirm)"
       >
         <h1 class="confirm-form__title text-center mb-4 mb-sm-6">
@@ -18,8 +18,11 @@
           :class="showMainErrorMessge ? 'error--text' : ''"
         >
           <template v-if="showMainErrorMessge">
-            Код подтверждения был введен не верно. <br />
+            Код подтверждения был введен неверно. <br />
             Введите корректный код в поле ниже, чтобы завершить отправку заявки:
+          </template>
+          <template v-else-if="canResendCode">
+            Время для введения кода истекло. Запросите повторную отправку кода
           </template>
           <template v-else>
             Код подтверждения отправлен вам по sms на номер {{ phone }}.<br />
@@ -38,7 +41,11 @@
             :dense="$vuetify.breakpoint.xs"
             outlined
             persistent-hint
-            :hint="`Код состоит из ${CODE_LENGTH} цифр и действителен в течении 90 сек`"
+            :hint="
+              codeSeconds
+                ? `Код состоит из ${CODE_LENGTH} цифр и действителен в течении ${codeSeconds} сек`
+                : 'Время для введения кода истекло. Запросите повторную отправку кода'
+            "
             class="custom-field confirm-form__code mx-auto mb-6 mb-sm-8"
           ></v-text-field>
         </validation-provider>
@@ -64,7 +71,7 @@
           </a>
           <span v-else class="text-center text--light"
             >Повторная отправка кода подтверждения доступна через
-            {{ seconds }} сек</span
+            {{ smsSeconds }} сек</span
           >
         </div>
         <div class="d-flex justify-center">
@@ -84,6 +91,7 @@ import CustomButton from '@/components/FormElements/CustomButton'
 const SMS_INTERVAL = 1000
 const SMS_SECONDS = 60
 const CODE_LENGTH = 4
+const CODE_SECONDS = 90
 
 export default {
   components: { CustomButton },
@@ -103,7 +111,9 @@ export default {
       CODE_LENGTH,
       canResendCode: false,
       smsIntervalId: null,
-      seconds: SMS_SECONDS,
+      codeIntervalId: null,
+      smsSeconds: SMS_SECONDS,
+      codeSeconds: CODE_SECONDS,
       showMainErrorMessge: false,
       form: {
         code: null,
@@ -118,7 +128,8 @@ export default {
     async auth() {
       this.showMainErrorMessge = false
       this.$refs.form.reset()
-      this.seconds = SMS_SECONDS
+      this.smsSeconds = SMS_SECONDS
+      this.codeSeconds = CODE_SECONDS
       try {
         const { data } = await this.$api.auth.authBySms({
           phone: this.preparePhone(this.phone),
@@ -127,10 +138,16 @@ export default {
         this.form.session_id = data.session_id
         this.canResendCode = false
         this.smsIntervalId = setInterval(() => {
-          this.seconds--
-          if (!this.seconds) {
+          this.smsSeconds--
+          if (!this.smsSeconds) {
             this.canResendCode = true
             clearInterval(this.smsIntervalId)
+          }
+        }, SMS_INTERVAL)
+        this.codeIntervalId = setInterval(() => {
+          this.codeSeconds--
+          if (this.codeSeconds === 0) {
+            clearInterval(this.codeIntervalId)
           }
         }, SMS_INTERVAL)
       } catch (err) {
@@ -147,7 +164,6 @@ export default {
         this.form.phone = this.preparePhone(this.phone)
         const { token } = await this.$api.auth.confirm(this.form)
         this.$auth.strategy.token.set(token)
-        console.log(token)
         this.$emit('confirmed')
       } catch (err) {
         if (err.response?.status === 422) {

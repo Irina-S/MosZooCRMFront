@@ -86,7 +86,7 @@ export default {
       try {
         await this.$api.applications.create({
           ...this.form,
-          child_birthday: this.prepareDate(this.form.child_birthday),
+          // child_birthday: this.prepareDate(this.form.child_birthday),
           phone: this.preparePhone(this.form.phone),
         })
         this.switchStep(this.$options.steps.completed)

@@ -73,6 +73,7 @@
             <div>
               <v-textarea
                 v-model="application.comment"
+                :dense="$vuetify.breakpoint.xs"
                 placeholder="Текст комментария..."
                 no-resize
                 rows="3"
