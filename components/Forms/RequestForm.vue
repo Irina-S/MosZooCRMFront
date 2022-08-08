@@ -1,9 +1,13 @@
 <template>
   <div>
-    <validation-observer v-slot="{ handleSubmit, valid, invalid }" ref="form">
+    <validation-observer
+      v-slot="{ handleSubmit, valid, invalid }"
+      ref="form"
+      class="flex-grow-1 d-flex"
+    >
       <v-form
         ref="form"
-        class="request-form pt-5 px-3 pb-6 pa-sm-8"
+        class="request-form flex-grow-1 pt-5 px-3 pb-6 pa-sm-8"
         @submit.prevent="handleSubmit(onSubmit)"
       >
         <h1 class="request-form__title mb-4 mb-sm-6 text-center">

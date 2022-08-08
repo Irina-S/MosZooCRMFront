@@ -7,7 +7,7 @@
     >
       <v-form
         ref="form"
-        class="confirm-form d-flex flex-column d-sm-block pt-5 px-3 pb-6 px-sm-8 py-sm-10"
+        class="confirm-form flex-grow-1 d-flex flex-column d-sm-block pt-5 px-3 pb-6 px-sm-8 py-sm-10"
         @submit.prevent="handleSubmit(confirm)"
       >
         <h1 class="confirm-form__title text-center mb-4 mb-sm-6">
@@ -21,9 +21,6 @@
             Код подтверждения был введен неверно. <br />
             Введите корректный код в поле ниже, чтобы завершить отправку заявки:
           </template>
-          <template v-else-if="canResendCode">
-            Время для введения кода истекло. Запросите повторную отправку кода
-          </template>
           <template v-else>
             Код подтверждения отправлен вам по sms на номер {{ phone }}.<br />
             Введите его в поле ниже, чтобы завершить отправку заявки:
@@ -32,7 +29,7 @@
         <validation-provider
           v-slot="{ errors }"
           name="code"
-          :rules="`required|length:${CODE_LENGTH}`"
+          :rules="`length:${CODE_LENGTH}`"
         >
           <v-text-field
             v-model="form.code"

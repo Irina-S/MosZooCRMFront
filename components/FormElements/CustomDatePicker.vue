@@ -60,6 +60,14 @@ export default {
   },
   watch: {
     value() {
+      this.parseValue()
+    },
+  },
+  mounted() {
+    this.parseValue()
+  },
+  methods: {
+    parseValue() {
       if (!this.value) {
         this.date = ''
         this.dateFormatted = ''
@@ -68,8 +76,6 @@ export default {
       this.date = this.value
       this.dateFormatted = this.$dayjs(this.value).format('DD.MM.YYYY')
     },
-  },
-  methods: {
     toggleDatePicker() {
       const menuWidth = 290
       const menuHeight = 390
@@ -122,7 +128,7 @@ export default {
   &.v-input--dense {
     ::v-deep {
       .v-input__icon--prepend-inner {
-        margin-top: 2px !important;
+        margin-top: 0 !important;
       }
 
       .v-input__prepend-inner {

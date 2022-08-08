@@ -1,6 +1,6 @@
 <template>
   <div class="flex-grow-1 d-flex d-sm-block">
-    <div class="confirmation pa-3 pa-sm-8">
+    <div class="confirmation flex-grow-1 pa-3 pa-sm-8">
       <div class="d-flex justify-end">
         <v-icon class="text--default" @click="$emit('close')">mdi-close</v-icon>
       </div>
