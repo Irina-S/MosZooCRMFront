@@ -261,8 +261,9 @@
                 <template #label>
                   <div
                     class="application-info__agreement text--small text--default ml-2 pt-1"
-                    v-html="checkbox.label"
-                  ></div>
+                  >
+                    {{ checkbox.label }} {{ checkbox.linkTitle }}
+                  </div>
                 </template>
               </v-checkbox>
             </div>

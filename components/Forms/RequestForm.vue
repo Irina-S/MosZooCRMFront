@@ -184,7 +184,7 @@
                     :class="!$vuetify.breakpoint.xs ? 'text--small' : ''"
                   >
                     Я даю
-                    <a href="#"
+                    <a href="#" target="_blank" @click.stop
                       >Согласие на обработку и распространение персональных
                       данных</a
                     >
@@ -209,7 +209,9 @@
                     :class="!$vuetify.breakpoint.xs ? 'text--small' : ''"
                   >
                     Я ознакомлен с
-                    <a href="#"> Политикой обработки персональных данных</a>
+                    <a href="#" target="_blank" @click.stop>
+                      Политикой обработки персональных данных</a
+                    >
                   </div>
                 </template>
               </v-checkbox>
@@ -229,8 +231,12 @@
                   <div
                     class="ml-sm-2"
                     :class="!$vuetify.breakpoint.xs ? 'text--small' : ''"
-                    v-html="checkbox.label"
-                  ></div>
+                  >
+                    {{ checkbox.label }}
+                    <a href="#" target="_blank" @click.stop>{{
+                      checkbox.linkTitle
+                    }}</a>
+                  </div>
                 </template>
               </v-checkbox>
             </validation-provider>
