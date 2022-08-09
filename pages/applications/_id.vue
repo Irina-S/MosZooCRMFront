@@ -84,6 +84,19 @@
             </div>
             <template
               v-if="
+                application.status === Status.DOCUMENTS_REQUEST.toUpperCase()
+              "
+            >
+              <div class="text--light">Дата приема документов</div>
+              <div>
+                <CustomDatePicker
+                  v-model="application.receipt_documents_at"
+                  class="flex-grow-1"
+                />
+              </div>
+            </template>
+            <template
+              v-if="
                 isAdmin ||
                 (['pony_club'].includes(application.type) &&
                   application.possible_next_statuses &&
@@ -412,6 +425,9 @@ export default {
         const data = await this.$api.applications.get(this.$route.params.id)
         this.application = {
           ...data,
+          receipt_documents_at: this.parseInvertedDateFromExtended(
+            data.receipt_documents_at
+          ),
           status: data.status.toUpperCase(),
           responsible: null,
           isResponsibleEditing: false,
@@ -495,6 +511,11 @@ export default {
         }
         if (this.application.responsible) {
           params.responsible_id = this.application.responsible.id
+        }
+        if (
+          this.application.status === Status.DOCUMENTS_REQUEST.toUpperCase()
+        ) {
+          params.receipt_documents_at = this.application.receipt_documents_at
         }
         await this.$api.applications.update(this.$route.params.id, params)
         this.$modal.show('success', {
