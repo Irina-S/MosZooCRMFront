@@ -450,7 +450,7 @@ export default {
       application.responsible = responsible
       application.responsible_name = responsible.name
     },
-    async updateStatus(value) {
+    async updateStatus(newStatus) {
       try {
         const confirm = await this.$modal.show('confirm', {
           message: 'Вы уверены, что хотите изменить статус заявки?',
@@ -459,10 +459,15 @@ export default {
           return
         }
         const params = {
-          status: Status[value.toUpperCase()],
+          status: newStatus,
         }
-
-        switch (Status[value.toUpperCase()]) {
+        if (this.application.comment !== null) {
+          params.comment = this.application.comment
+        }
+        if (this.application.responsible) {
+          params.responsible_id = this.application.responsible.id
+        }
+        switch (newStatus) {
           case Status.INVITATION_TO_ENTRANCE_EXAMINATIONS:
             params.examination_date = this.prepareDateTime(
               this.examinations.date,
