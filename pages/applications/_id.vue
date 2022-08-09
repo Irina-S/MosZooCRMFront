@@ -446,7 +446,7 @@ export default {
           status: Status[value.toUpperCase()],
         }
 
-        switch (Status[value]) {
+        switch (Status[value.toUpperCase()]) {
           case Status.INVITATION_TO_ENTRANCE_EXAMINATIONS:
             params.examination_date = this.prepareDateTime(
               this.examinations.date,
