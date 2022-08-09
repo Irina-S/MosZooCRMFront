@@ -53,6 +53,7 @@
           :items="sections"
           :autofocus="true"
           item-text="name"
+          clearable
           label="Тип кружка"
           :attach="true"
           multiple
@@ -117,6 +118,7 @@
           :attach="true"
           :menu-props="{ bottom: true, offsetY: true }"
           item-text="name"
+          clearable
           multiple
           small-chips
           solo

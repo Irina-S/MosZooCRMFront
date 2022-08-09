@@ -4,7 +4,7 @@
     :size="$vuetify.breakpoint.xs ? 'fullscreen' : 'normal'"
     v-on="$listeners"
   >
-    <template>
+    <template #default>
       <div class="modal-header align-self-stretch mb-6">
         <h2 class="modal-title text--normal">Фильтры</h2>
       </div>
@@ -34,6 +34,7 @@
             :items="options.statuses"
             item-text="name"
             placeholder="Выберите"
+            clearable
             persistent-placeholder
             multiple
             small-chips
@@ -92,6 +93,7 @@ import CustomChip from '@/components/FormElements/CustomChip'
 
 export default {
   name: 'ModalFilters',
+  components: { CustomChip },
   props: {
     filters: {
       type: Object,
@@ -102,13 +104,16 @@ export default {
       required: true,
     },
   },
-  components: { CustomChip },
   data() {
     return {
       StatusColor,
       statusFilter: [],
       typeFilter: [],
     }
+  },
+  mounted() {
+    this.statusFilter = this.filters.statusFilter
+    this.typeFilter = this.filters.typeFilter
   },
   methods: {
     clear() {

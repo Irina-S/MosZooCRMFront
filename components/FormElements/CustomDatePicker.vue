@@ -60,7 +60,6 @@ export default {
   },
   watch: {
     value() {
-      console.log('value', this.value)
       this.parseValue()
     },
   },
@@ -95,24 +94,18 @@ export default {
       this.open = !this.open
     },
     onDateFormattedInput(value) {
-      console.log('date formated input')
       const fullDatePattern = /^\d{2}\.\d{2}\.\d{4}$/
       if (!value) {
-        console.log('emit null')
         this.$emit('input', null)
       }
       if (fullDatePattern.test(value)) {
-        console.log(value)
         const [day, month, year] = value.split('.')
         const tmpDate = [year, month, day].join('-')
-        console.log(tmpDate)
         const datePrepared = this.$dayjs(tmpDate).format('YYYY-MM-DD')
-        console.log('emit', datePrepared)
+        // для некорректной работы dayjs в safari
         const result = datePrepared !== 'Invalid Date' ? datePrepared : tmpDate
-        console.log('emit', result)
         this.$emit('input', result)
       }
-      console.log('no emit')
     },
   },
 }
