@@ -8,10 +8,12 @@
       <div class="modal-header align-self-stretch mb-6">
         <h2 class="modal-title text--normal">Фильтры</h2>
       </div>
-      <div class="modal-content flex-grow-1 align-self-stretch">
+      <div
+        class="modal-content flex-grow-1 align-self-stretch pr-2 scroll-container"
+      >
         <div class="mb-4">
           <div class="text--small mb-1">Тип кружка</div>
-          <div>
+          <div class="d-flex flex-column align-start">
             <v-checkbox
               v-for="type in options.types"
               :key="type.id"
@@ -27,11 +29,12 @@
             </v-checkbox>
           </div>
         </div>
-        <div>
+        <div v-scroll-to-top-on-focus>
           <div class="text--small mb-1">Статус</div>
           <v-combobox
             v-model="statusFilter"
             :items="options.statuses"
+            attach="#status-filter-menu"
             item-text="name"
             placeholder="Выберите"
             clearable
@@ -49,7 +52,7 @@
                 small
               >
                 <span class="mr-2">{{ item.name }}</span>
-                <v-icon small @click="parent.selectItem(item)"
+                <v-icon small @click.stop="parent.selectItem(item)"
                   >mdi-close</v-icon
                 >
               </CustomChip>
@@ -70,6 +73,7 @@
               </v-icon>
             </template>
           </v-combobox>
+          <div id="status-filter-menu" class="status-filter__menu"></div>
         </div>
       </div>
       <div class="modal-footer align-self-stretch d-flex mt-7">
@@ -94,6 +98,23 @@ import CustomChip from '@/components/FormElements/CustomChip'
 export default {
   name: 'ModalFilters',
   components: { CustomChip },
+  directives: {
+    'scroll-to-top-on-focus': {
+      bind(el) {
+        el.addEventListener('focusin', () => {
+          const scrollContainer = el.closest('.scroll-container')
+          const { y: verticalOffset } = el.getBoundingClientRect()
+          setTimeout(() => {
+            scrollContainer.scrollTo({
+              top: verticalOffset - 90,
+              left: 0,
+              behavior: 'smooth',
+            })
+          }, 0)
+        })
+      },
+    },
+  },
   props: {
     filters: {
       type: Object,
@@ -135,6 +156,19 @@ export default {
 ::v-deep {
   .v-autocomplete:not(.v-input--is-focused).v-select--chips input {
     max-height: unset !important;
+  }
+}
+
+.status-filter {
+  &__menu {
+    ::v-deep {
+      .v-menu__content {
+        position: static !important;
+        max-width: unset !important;
+        min-width: unset !important;
+        width: 100%;
+      }
+    }
   }
 }
 </style>
