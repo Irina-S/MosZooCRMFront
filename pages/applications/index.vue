@@ -12,7 +12,9 @@
     </h1>
     <div v-if="$vuetify.breakpoint.xs" class="d-flex justify-end mb-4">
       <span class="text--small cursor--pointer" @click="openMobileFilters"
-        >Фильтры<v-icon class="text--default ml-1"
+        >Фильтры<v-icon
+          class="text--default ml-1"
+          :class="typeFilter.length || statusFilter.length ? 'error--text' : ''"
           >mdi-filter-variant</v-icon
         ></span
       >
