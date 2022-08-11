@@ -22,7 +22,6 @@
       :headers="applicationTableHeaders"
       :items="applicationTableData"
       :items-per-page="applicationTableOptions.itemsPerPage"
-      :header-props="{ sortIcon: 'mdi-filter-variant' }"
       :must-sort="true"
       :mobile-breakpoint="$vuetify.breakpoint.thresholds.xs"
       :sort-by.sync="applicationTableOptions.sortBy"
@@ -45,7 +44,7 @@
           class="cursor--pointer"
           @click.stop="typeFilterEnabled = !typeFilterEnabled"
           >{{ header.text }}
-          <v-icon class="text--light" small>mdi-filter-outline</v-icon></span
+          <v-icon class="text--light" small>mdi-filter-variant</v-icon></span
         >
         <v-combobox
           v-else
@@ -109,7 +108,7 @@
           class="cursor--pointer"
           @click.stop="statusFilterEnabled = !statusFilterEnabled"
           >{{ header.text }}
-          <v-icon class="text--light" small>mdi-filter-outline</v-icon>
+          <v-icon class="text--light" small>mdi-filter-variant</v-icon>
         </span>
         <v-combobox
           v-else
