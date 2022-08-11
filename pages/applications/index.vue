@@ -44,7 +44,12 @@
           class="cursor--pointer"
           @click.stop="typeFilterEnabled = !typeFilterEnabled"
           >{{ header.text }}
-          <v-icon class="text--light" small>mdi-filter-variant</v-icon></span
+          <v-icon
+            class="text--light"
+            :class="typeFilter.length ? 'error--text' : ''"
+            small
+            >mdi-filter-variant</v-icon
+          ></span
         >
         <v-combobox
           v-else
@@ -108,7 +113,12 @@
           class="cursor--pointer"
           @click.stop="statusFilterEnabled = !statusFilterEnabled"
           >{{ header.text }}
-          <v-icon class="text--light" small>mdi-filter-variant</v-icon>
+          <v-icon
+            class="text--light"
+            :class="statusFilter.length ? 'error--text' : ''"
+            small
+            >mdi-filter-variant</v-icon
+          >
         </span>
         <v-combobox
           v-else
@@ -523,6 +533,11 @@ export default {
       min-height: 400px;
     }
 
+    .v-data-table-header__icon {
+      opacity: 1 !important;
+      margin-left: 4px;
+    }
+
     tr {
       display: grid;
       grid-template-columns: 65px 100px 300px 150px 280px 300px auto;
@@ -547,6 +562,10 @@ export default {
       padding: 7px 12px !important;
       border-bottom: none !important;
 
+      &.sortable.active .v-data-table-header__icon {
+        color: $button-color-error !important;
+      }
+
       > span {
         color: $text-color-light !important;
       }
@@ -558,11 +577,6 @@ export default {
       padding: 3px 20px 3px 12px !important;
       white-space: nowrap !important;
       border-bottom: none !important;
-    }
-
-    .v-data-table-header__icon {
-      opacity: 1 !important;
-      margin-left: 4px;
     }
   }
 }
