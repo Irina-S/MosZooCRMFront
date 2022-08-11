@@ -42,8 +42,10 @@
       <template #[`header.type`]="{ header }">
         <span
           v-if="!typeFilterEnabled"
+          class="cursor--pointer"
           @click.stop="typeFilterEnabled = !typeFilterEnabled"
-          >{{ header.text }}</span
+          >{{ header.text }}
+          <v-icon class="text--light" small>mdi-filter-outline</v-icon></span
         >
         <v-combobox
           v-else
@@ -104,8 +106,10 @@
         <!--        <span @click.stop="statusFilterEnabled = !statusFilterEnabled">-->
         <span
           v-if="!statusFilterEnabled"
+          class="cursor--pointer"
           @click.stop="statusFilterEnabled = !statusFilterEnabled"
           >{{ header.text }}
+          <v-icon class="text--light" small>mdi-filter-outline</v-icon>
         </span>
         <v-combobox
           v-else
