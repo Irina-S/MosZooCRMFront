@@ -39,7 +39,7 @@
             outlined
             persistent-hint
             :hint="
-              codeSeconds
+              isCodeValid
                 ? `Код состоит из ${CODE_LENGTH} цифр и действителен в течении ${codeSeconds} сек`
                 : 'Время для введения кода истекло. Запросите повторную отправку кода'
             "
@@ -107,6 +107,7 @@ export default {
     return {
       CODE_LENGTH,
       canResendCode: false,
+      isCodeValid: false,
       smsIntervalId: null,
       codeIntervalId: null,
       smsSeconds: SMS_SECONDS,
@@ -134,6 +135,7 @@ export default {
         })
         this.form.session_id = data.session_id
         this.canResendCode = false
+        this.isCodeValid = true
         this.smsIntervalId = setInterval(() => {
           this.smsSeconds--
           if (!this.smsSeconds) {
@@ -143,7 +145,8 @@ export default {
         }, SMS_INTERVAL)
         this.codeIntervalId = setInterval(() => {
           this.codeSeconds--
-          if (this.codeSeconds === 0) {
+          if (!this.codeSeconds) {
+            this.isCodeValid = false
             clearInterval(this.codeIntervalId)
           }
         }, SMS_INTERVAL)

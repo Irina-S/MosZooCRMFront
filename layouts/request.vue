@@ -20,9 +20,6 @@
 <script>
 export default {
   name: 'RequestLayout',
-  mounted() {
-    console.log(this.$vuetify)
-  },
 }
 </script>
 
