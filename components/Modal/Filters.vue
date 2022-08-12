@@ -32,6 +32,7 @@
         <div v-scroll-to-top-on-focus>
           <div class="text--small mb-1">Статус</div>
           <v-combobox
+            ref="statusFilter"
             v-model="statusFilter"
             :items="options.statuses"
             attach="#status-filter-menu"
@@ -100,8 +101,8 @@ export default {
   components: { CustomChip },
   directives: {
     'scroll-to-top-on-focus': {
-      bind(el) {
-        el.addEventListener('focusin', () => {
+      inserted(el) {
+        el.querySelector('input').addEventListener('focus', () => {
           const scrollContainer = el.closest('.scroll-container')
           const { y: verticalOffset } = el.getBoundingClientRect()
           setTimeout(() => {
@@ -110,7 +111,7 @@ export default {
               left: 0,
               behavior: 'smooth',
             })
-          }, 0)
+          }, 500)
         })
       },
     },
@@ -147,6 +148,11 @@ export default {
         typeFilter: this.typeFilter,
       })
       this.$refs.wrapper.close()
+    },
+    onAppendClick(evt) {
+      // console.log(evt)
+      this.$refs.statusFilter.$refs.input.blur()
+      // console.log(this.$refs.statusFilter)
     },
   },
 }

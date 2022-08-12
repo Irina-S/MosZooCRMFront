@@ -212,7 +212,7 @@
               (для кюбз)
             </div>
             <div class="font-weight-medium">
-              {{ application.accompanynig_person || '-' }}
+              {{ application.accompanying_person || '-' }}
             </div>
             <div class="text--light">Электронная почта</div>
             <div class="font-weight-medium">{{ application.email }}</div>
