@@ -468,14 +468,12 @@ export default {
           params.responsible_id = this.application.responsible.id
         }
         switch (newStatus) {
-          case Status.DOCUMENTS_REQUEST:
-            params.receipt_documents_at = this.application.receipt_documents_at
-            break
           case Status.INVITATION_TO_ENTRANCE_EXAMINATIONS:
             params.examination_date = this.prepareDateTime(
               this.examinations.date,
               this.examinations.time
             )
+            params.receipt_documents_at = this.application.receipt_documents_at
             params.group_id = this.examinations.group
             break
           case Status.APPROVED_BY_EXAMINATIONS:
@@ -487,6 +485,7 @@ export default {
               this.classes.time
             )
             params.group_id = this.classes.group
+            params.receipt_documents_at = this.application.receipt_documents_at
             break
           default:
             break
