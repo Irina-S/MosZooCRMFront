@@ -97,12 +97,12 @@
             </template>
             <template
               v-if="
-                isAdmin ||
-                (['pony_club'].includes(application.type) &&
-                  application.possible_next_statuses &&
-                  application.possible_next_statuses.includes(
-                    Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
-                  ))
+                canSeeExaminations &&
+                (isAdmin ||
+                  (application.possible_next_statuses &&
+                    application.possible_next_statuses.includes(
+                      Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
+                    )))
               "
             >
               <div class="text--light">Дата и время в/и*</div>
@@ -119,14 +119,11 @@
             </template>
             <template
               v-if="
-                isAdmin ||
-                (['pony_club'].includes(application.type) &&
-                  application.possible_next_statuses &&
-                  (application.possible_next_statuses.includes(
-                    Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
-                  ) ||
+                canSeeExaminations &&
+                (isAdmin ||
+                  (application.possible_next_statuses &&
                     application.possible_next_statuses.includes(
-                      Status.APPROVED_BY_EXAMINATIONS
+                      Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
                     )))
               "
             >
@@ -153,11 +150,13 @@
             <template
               v-if="
                 isAdmin ||
-                (['kubz', 'kraski_mira'].includes(application.type) &&
-                  application.possible_next_statuses &&
-                  application.possible_next_statuses.includes(
+                (application.possible_next_statuses &&
+                  (application.possible_next_statuses.includes(
                     Status.INVITATION_TO_CLASS
-                  ))
+                  ) ||
+                    application.possible_next_statuses.includes(
+                      Status.APPROVED_BY_EXAMINATIONS
+                    )))
               "
             >
               <div class="text--light">Дата и время занятия</div>
@@ -172,11 +171,13 @@
             <template
               v-if="
                 isAdmin ||
-                (['kubz', 'kraski_mira'].includes(application.type) &&
-                  application.possible_next_statuses &&
-                  application.possible_next_statuses.includes(
+                (application.possible_next_statuses &&
+                  (application.possible_next_statuses.includes(
                     Status.INVITATION_TO_CLASS
-                  ))
+                  ) ||
+                    application.possible_next_statuses.includes(
+                      Status.APPROVED_BY_EXAMINATIONS
+                    )))
               "
             >
               <div class="text--light">Группа занятия</div>
@@ -399,11 +400,30 @@ export default {
     }
   },
   computed: {
+    canSeeExaminations() {
+      return this.application.type === 'pony_club'
+    },
     availableStatuses() {
+      const examinationStatuses = [
+        'invitation_to_entrance_examinations',
+        'approved_by_examinations',
+        'rejected_by_examinations',
+        'missing_on_examinations',
+      ]
+      const noExaminationStatuses = ['invitation_to_class']
       if (this.isAdmin) {
-        const keys = Object.keys(this.StatusBtnColor)
-        return this.statuses.filter((status) =>
-          keys.includes(status.id.toUpperCase())
+        const statusKeys = Object.keys(this.StatusBtnColor)
+        if (this.canSeeExaminations) {
+          return this.statuses.filter(
+            (status) =>
+              statusKeys.includes(status.id.toUpperCase()) &&
+              !noExaminationStatuses.includes(status.id)
+          )
+        }
+        return this.statuses.filter(
+          (status) =>
+            statusKeys.includes(status.id.toUpperCase()) &&
+            !examinationStatuses.includes(status.id)
         )
       }
       return this.statuses.filter((status) =>
@@ -473,11 +493,18 @@ export default {
               this.examinations.date,
               this.examinations.time
             )
-            params.receipt_documents_at = this.application.receipt_documents_at
             params.group_id = this.examinations.group
+            if (this.application.receipt_documents_at) {
+              params.receipt_documents_at =
+                this.application.receipt_documents_at
+            }
             break
           case Status.APPROVED_BY_EXAMINATIONS:
-            params.group_id = this.examinations.group
+            params.examination_date = this.prepareDateTime(
+              this.classes.date,
+              this.classes.time
+            )
+            params.group_id = this.classes.group
             break
           case Status.INVITATION_TO_CLASS:
             params.examination_date = this.prepareDateTime(
@@ -485,7 +512,10 @@ export default {
               this.classes.time
             )
             params.group_id = this.classes.group
-            params.receipt_documents_at = this.application.receipt_documents_at
+            if (this.application.receipt_documents_at) {
+              params.receipt_documents_at =
+                this.application.receipt_documents_at
+            }
             break
           default:
             break
