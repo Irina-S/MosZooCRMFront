@@ -117,7 +117,7 @@
                 />
               </div>
             </template>
-            <template
+            <!-- <template
               v-if="
                 canSeeExaminations &&
                 (isAdmin ||
@@ -146,7 +146,7 @@
                   class="group-select"
                 />
               </div>
-            </template>
+            </template> -->
             <template
               v-if="
                 isAdmin ||
@@ -177,13 +177,18 @@
                   ) ||
                     application.possible_next_statuses.includes(
                       Status.APPROVED_BY_EXAMINATIONS
-                    )))
+                    ) ||
+                    [
+                      Status.INVITATION_TO_ENTRANCE_EXAMINATIONS,
+                      Status.APPROVED_BY_EXAMINATIONS,
+                      Status.COMPLETED,
+                    ].includes(application.status.toLowerCase())))
               "
             >
               <div class="text--light">Группа занятия</div>
               <div>
                 <v-select
-                  v-model="classes.group"
+                  v-model="application.child_group_id"
                   :items="groups"
                   :menu-props="{
                     bottom: true,
@@ -385,12 +390,12 @@ export default {
       examinations: {
         date: null,
         time: null,
-        group: null,
+        // group: null,
       },
       classes: {
         date: null,
         time: null,
-        group: null,
+        // group: null,
       },
     }
   },
@@ -452,6 +457,12 @@ export default {
           responsible: null,
           isResponsibleEditing: false,
         }
+        if (data.first_lesson_date) {
+          this.classes.date = this.parseInvertedDateFromExtended(
+            data.first_lesson_date
+          )
+          this.classes.time = this.parseTimeFromExtended(data.first_lesson_date)
+        }
       } catch (err) {
         this.$modal.show('error', { err })
       }
@@ -493,25 +504,25 @@ export default {
               this.examinations.date,
               this.examinations.time
             )
-            params.group_id = this.examinations.group
+            // params.group_id = this.application.child_group_id
             if (this.application.receipt_documents_at) {
               params.receipt_documents_at =
                 this.application.receipt_documents_at
             }
             break
           case Status.APPROVED_BY_EXAMINATIONS:
-            params.examination_date = this.prepareDateTime(
+            params.first_lesson_date = this.prepareDateTime(
               this.classes.date,
               this.classes.time
             )
-            params.group_id = this.classes.group
+            params.group_id = this.application.child_group_id
             break
           case Status.INVITATION_TO_CLASS:
-            params.examination_date = this.prepareDateTime(
+            params.first_lesson_date = this.prepareDateTime(
               this.classes.date,
               this.classes.time
             )
-            params.group_id = this.classes.group
+            params.group_id = this.application.child_group_id
             if (this.application.receipt_documents_at) {
               params.receipt_documents_at =
                 this.application.receipt_documents_at

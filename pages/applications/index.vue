@@ -265,6 +265,13 @@
           {{ item.client_name }}</span
         >
       </template>
+      <template #[`item.child_group_id`]="{ item }">
+        <span class="font-weight-medium">{{
+          item.child_group_id
+            ? groups.find((group) => group.id === item.child_group_id)?.name
+            : '-'
+        }}</span>
+      </template>
       <template #[`item.comment`]="{ item }">
         <v-text-field
           v-if="item.isCommentEditing"
@@ -379,6 +386,12 @@ export default {
           class: 'text-no-wrap',
         },
         {
+          text: 'Группа',
+          value: 'child_group_id',
+          sortable: false,
+          class: 'text-no-wrap',
+        },
+        {
           text: 'Комментарий',
           value: 'comment',
           sortable: false,
@@ -423,6 +436,7 @@ export default {
   mounted() {
     this.getStatuses()
     this.getSections()
+    this.getGroups()
     this.getList()
     if (this.isAdmin) {
       this.getModerators()
@@ -542,7 +556,7 @@ export default {
 
     tr {
       display: grid;
-      grid-template-columns: 65px 100px 300px 150px 280px 300px auto;
+      grid-template-columns: 65px 100px 300px 150px 280px 300px 100px auto;
       align-items: center;
       border-radius: 10px;
       margin-bottom: 10px;
@@ -610,8 +624,8 @@ export default {
       .v-data-table__mobile-table-row {
         display: grid;
         grid-template-columns: 35px auto 120px;
-        grid-template-rows: repeat(3, auto);
-        gap: 10px 0;
+        grid-template-rows: repeat(4, auto);
+        gap: 8px 0;
         padding: 8px 10px;
         margin-bottom: 10px;
         background: $medium-gray !important;
@@ -648,13 +662,20 @@ export default {
         > :nth-child(5) {
           grid-column-start: 1;
           grid-column-end: 4;
-          grid-row-start: 3;
-          grid-row-end: 4;
+          grid-row-start: 4;
+          grid-row-end: 5;
         }
 
         > :nth-child(6),
-        > :nth-child(7) {
+        > :nth-child(8) {
           display: none !important;
+        }
+
+        > :nth-child(7) {
+          grid-column-start: 1;
+          grid-column-end: 4;
+          grid-row-start: 3;
+          grid-row-end: 4;
         }
       }
 
