@@ -213,6 +213,14 @@
             <div class="font-weight-medium">
               {{ application.child_name || '-' }}
             </div>
+            <div class="text--light">Дата рождения ребенка</div>
+            <div class="font-weight-medium">
+              {{
+                application.child_birthday
+                  ? parseDateFromExtended(application.child_birthday)
+                  : '-'
+              }}
+            </div>
             <div class="text--light">
               ФИО сопровождающего<br />
               (для кюбз)
