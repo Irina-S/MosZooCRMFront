@@ -84,17 +84,6 @@
               :hide-details="false"
               is-request
             />
-            <!-- <v-text-field
-              v-model="form.child_birthday"
-              v-mask="'##.##.####'"
-              :error-messages="errors"
-              :dense="$vuetify.breakpoint.xs"
-              placeholder="дд.мм.гггг"
-              prepend-inner-icon="mdi-calendar-month-outline"
-              outlined
-              class="custom-field request-form__date"
-            >
-            </v-text-field> -->
           </validation-provider>
         </div>
         <div v-if="form.type === 'kubz'" class="request-form__group">

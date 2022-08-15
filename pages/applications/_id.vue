@@ -234,17 +234,17 @@
             <div class="font-weight-medium">
               {{ formatPhone(application.phone) }}
             </div>
-            <!-- <div class="text--light">Приложение</div>
-        <div class="d-flex flex-wrap align-start">
-          <v-chip
-            v-for="file in application.files"
-            :key="file.id"
-            to="/"
-            target="_blank"
-            class="mr-2 mb-2"
-            >{{ file.name }}</v-chip
-          >
-        </div> -->
+            <div class="text--light">Приложение</div>
+            <div class="d-flex flex-wrap align-start">
+              <v-chip
+                v-for="(file, idx) in application.files"
+                :key="idx"
+                :href="file"
+                target="_blank"
+                class="mr-2 mb-2"
+                >{{ extractFileName(file) }}</v-chip
+              >
+            </div>
             <div class="application-info__row">
               <v-checkbox
                 v-model="agreement"
@@ -484,6 +484,9 @@ export default {
         3,
         6
       )} ${phone.substring(6, 8)} ${phone.substring(8, 10)}`
+    },
+    extractFileName(fileUrl) {
+      return fileUrl.split(/(\\|\/)/g).pop()
     },
     setResponsible(application, responsible) {
       application.responsible = responsible

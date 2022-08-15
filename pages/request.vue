@@ -54,6 +54,7 @@ export default {
         child_birthday: null,
         email: null,
         accompanynig_person: null,
+        files: [],
         agreement_processing_personal_data: 0,
         have_read_personal_data_processing_policy: 0,
         agree_with_rules: 0,
