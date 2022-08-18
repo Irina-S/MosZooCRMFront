@@ -214,6 +214,10 @@ export default {
           property: '',
           autoFetch: true,
         },
+        cookie: {
+          // (optional) If set, we check this cookie existence for loggedIn check
+          name: 'XSRF-TOKEN',
+        },
         endpoints: {
           login: {
             url: '/api/v1/auth-by-password',
@@ -226,6 +230,10 @@ export default {
           user: {
             url: '/api/v1/user/me',
             method: 'get',
+          },
+          // (optional) If set, we send a get request to this endpoint before login
+          csrf: {
+            url: '/sanctum/csrf-cookie',
           },
         },
       },
