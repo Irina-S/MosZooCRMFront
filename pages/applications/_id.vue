@@ -529,7 +529,7 @@ export default {
             params.group_id = this.application.child_group_id
             break
           case Status.INVITATION_TO_CLASS:
-            params.first_lesson_date = this.prepareDateTime(
+            params.examination_date = this.prepareDateTime(
               this.classes.date,
               this.classes.time
             )
