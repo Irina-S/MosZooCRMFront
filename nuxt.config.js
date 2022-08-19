@@ -17,6 +17,9 @@ const proxy = {
   '/storage': {
     target: API_URI,
   },
+  '/sanctum': {
+    target: API_URI,
+  },
 }
 
 // https://realfavicongenerator.net/
@@ -203,21 +206,22 @@ export default {
       login: '/auth',
       logout: '/auth',
       callback: '/auth',
-      home: false,
+      home: '/',
     },
     strategies: {
       local: {
         token: {
-          maxAge: 31536000, // 1 year
+          maxAge: 31536000, // 1 year,
+          global: true,
         },
         user: {
           property: '',
           autoFetch: true,
         },
-        cookie: {
-          // (optional) If set, we check this cookie existence for loggedIn check
-          name: 'XSRF-TOKEN',
-        },
+        // cookie: {
+        //   // (optional) If set, we check this cookie existence for loggedIn check
+        //   name: 'XSRF-TOKEN',
+        // },
         endpoints: {
           login: {
             url: '/api/v1/auth-by-password',

@@ -106,10 +106,10 @@ export default {
     async onSubmit() {
       try {
         this.loading = true
+        await this.$axios.get('/sanctum/csrf-cookie')
         await this.$auth.loginWith('local', {
           data: this.form,
         })
-        this.$router.push('/')
       } catch (err) {
         if (err.response?.status === 422) {
           this.$refs.form.setErrors(err.response.data.errors)
