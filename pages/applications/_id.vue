@@ -405,10 +405,11 @@ export default {
         this.application.type === 'pony_club' &&
         (this.isAdmin ||
           [
-            Status.DOCUMENTS_REQUEST,
             Status.INVITATION_TO_ENTRANCE_EXAMINATIONS,
             Status.APPROVED_BY_EXAMINATIONS,
             Status.COMPLETED,
+            Status.REJECTED_BY_EXAMINATIONS,
+            Status.MISSING_ON_EXAMINATIONS,
           ].includes(this.application.status.toLowerCase()))
       )
     },
@@ -511,7 +512,7 @@ export default {
               this.examinations.date,
               this.examinations.time
             )
-            params.group_id = this.application.child_group_id
+            // params.group_id = this.application.child_group_id
             if (this.application.receipt_documents_at) {
               params.receipt_documents_at =
                 this.application.receipt_documents_at
