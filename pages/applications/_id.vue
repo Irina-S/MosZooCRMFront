@@ -168,23 +168,7 @@
                 <CustomTimePicker v-model="classes.time" class="flex-grow-1" />
               </div>
             </template>
-            <template
-              v-if="
-                isAdmin ||
-                (application.possible_next_statuses &&
-                  (application.possible_next_statuses.includes(
-                    Status.INVITATION_TO_CLASS
-                  ) ||
-                    application.possible_next_statuses.includes(
-                      Status.APPROVED_BY_EXAMINATIONS
-                    ) ||
-                    [
-                      Status.INVITATION_TO_ENTRANCE_EXAMINATIONS,
-                      Status.APPROVED_BY_EXAMINATIONS,
-                      Status.COMPLETED,
-                    ].includes(application.status.toLowerCase())))
-              "
-            >
+            <template v-if="canSeeGroup">
               <div class="text--light">Группа занятия</div>
               <div>
                 <v-select
@@ -416,6 +400,18 @@ export default {
     canSeeExaminations() {
       return this.application.type === 'pony_club'
     },
+    canSeeGroup() {
+      return (
+        this.application.type === 'pony_club' &&
+        (this.isAdmin ||
+          [
+            Status.DOCUMENTS_REQUEST,
+            Status.INVITATION_TO_ENTRANCE_EXAMINATIONS,
+            Status.APPROVED_BY_EXAMINATIONS,
+            Status.COMPLETED,
+          ].includes(this.application.status.toLowerCase()))
+      )
+    },
     availableStatuses() {
       const examinationStatuses = [
         'invitation_to_entrance_examinations',
@@ -515,7 +511,7 @@ export default {
               this.examinations.date,
               this.examinations.time
             )
-            // params.group_id = this.application.child_group_id
+            params.group_id = this.application.child_group_id
             if (this.application.receipt_documents_at) {
               params.receipt_documents_at =
                 this.application.receipt_documents_at
@@ -533,7 +529,6 @@ export default {
               this.classes.date,
               this.classes.time
             )
-            params.group_id = this.application.child_group_id
             if (this.application.receipt_documents_at) {
               params.receipt_documents_at =
                 this.application.receipt_documents_at
