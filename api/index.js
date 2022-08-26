@@ -4,6 +4,8 @@ import manuals from './modules/manuals'
 import auth from './modules/auth'
 import groups from './modules/groups'
 import settings from './modules/settings'
+import logs from './modules/logs'
+import tools from './modules/tools'
 
 export default ({ $sendRequest, store }, inject) => {
   inject('api', {
@@ -13,5 +15,7 @@ export default ({ $sendRequest, store }, inject) => {
     auth: auth($sendRequest),
     groups: groups($sendRequest),
     settings: settings($sendRequest),
+    logs: logs($sendRequest),
+    tools: tools($sendRequest),
   })
 }

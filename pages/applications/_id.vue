@@ -290,7 +290,11 @@
             <v-btn to="/" small> Закрыть </v-btn>
           </div>
         </v-col>
-        <v-col cols="12" md="5" class="order-first order-md-last">
+        <v-col
+          cols="12"
+          md="5"
+          class="order-first order-md-last d-flex flex-column-reverse d-md-block"
+        >
           <template v-if="$vuetify.breakpoint.mdAndUp">
             <div
               v-if="
@@ -336,6 +340,27 @@
               </template>
             </v-select>
           </template>
+          <div class="rounded-lg bg--gray px-3 mt-md-4 mb-4 mb-md-0">
+            <v-expansion-panels
+              v-model="logsExtensionPanels"
+              accordion
+              flat
+              class="logs"
+            >
+              <v-expansion-panel>
+                <v-expansion-panel-header
+                  >Этапы обработки заявки</v-expansion-panel-header
+                >
+                <v-expansion-panel-content>
+                  <div>Заявка Принята</div>
+                  <div>
+                    Ответственный по заявке назначен - Светлана Петрановская
+                  </div>
+                  <div class="text--light">17.06.2022 09:00:05</div>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </div>
         </v-col>
       </v-row>
     </div>
@@ -373,6 +398,8 @@ export default {
   ],
   data() {
     return {
+      logsExtensionPanels: null,
+      isMdAndDown: false,
       Status,
       StatusColor,
       StatusBtnColor,
@@ -441,7 +468,21 @@ export default {
       )
     },
   },
+  watch: {
+    isMdAndDown(value) {
+      console.log('watch')
+      console.log(value)
+      if (value) {
+        this.logsExtensionPanels = []
+        return
+      }
+      this.logsExtensionPanels = [0]
+    },
+  },
   mounted() {
+    this.onResize()
+    window.addEventListener('resize', this.onResize, { passive: true })
+
     if (this.isAdmin) {
       this.getModerators()
     }
@@ -584,6 +625,17 @@ export default {
         })
       }
     },
+    onResize() {
+      console.log('resize')
+      console.log(this.$vuetify.breakpoint)
+      if (this.$vuetify.breakpoint.mdAndDown) {
+        console.log('in true')
+        this.logsExtensionPanels = null
+        return
+      }
+      console.log('in false')
+      this.logsExtensionPanels = 0
+    },
   },
 }
 </script>
@@ -604,6 +656,24 @@ export default {
       a {
         text-decoration: none;
         color: inherit;
+      }
+    }
+  }
+}
+
+.logs {
+  ::v-deep {
+    .v-expansion-panel {
+      background: transparent !important;
+
+      &-header {
+        min-height: unset !important;
+        padding: 16px 0 !important;
+        font-size: 1rem;
+      }
+
+      &-content__wrap {
+        padding: 0 0 16px !important;
       }
     }
   }

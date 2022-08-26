@@ -10,8 +10,21 @@
     >
       Список заявок
     </h1>
-    <div v-if="$vuetify.breakpoint.xs" class="d-flex justify-end mb-4">
-      <span class="text--small cursor--pointer" @click="openMobileFilters"
+    <div
+      class="d-flex align-center mb-4"
+      :class="$vuetify.breakpoint.xs ? 'justify-space-between' : ''"
+    >
+      <v-btn
+        :loading="exportLoading"
+        :small="$vuetify.breakpoint.xs"
+        @click="exportList"
+      >
+        Выгрузить заявки
+      </v-btn>
+      <span
+        v-if="$vuetify.breakpoint.xs"
+        class="text--small cursor--pointer"
+        @click="openMobileFilters"
         >Фильтры<v-icon
           class="text--default ml-1"
           :class="typeFilter.length || statusFilter.length ? 'error--text' : ''"
@@ -324,6 +337,7 @@
 </template>
 
 <script>
+import { saveAs } from 'file-saver'
 import CustomChip from '@/components/FormElements/CustomChip'
 import CustomSelect from '@/components/FormElements/CustomSelect'
 import { StatusColor } from '@/constants/Status'
@@ -407,6 +421,7 @@ export default {
       loading: false,
       totalItems: 0,
       totalPages: 0,
+      exportLoading: false,
     }
   },
   head() {
@@ -414,26 +429,13 @@ export default {
       title: 'Список заявок',
     }
   },
-  // computed: {
-  // statusNames() {
-  //   return this.statuses.map((status) => ({
-  //     text: status.name,
-  //     value: status.id,
-  //   }))
-  // },
-  // sectionNames() {
-  //   return this.sections.map((section) => ({
-  //     text: section.name,
-  //     value: section.id,
-  //   }))
-  // },
-  // },
   watch: {
     'applicationTableOptions.page'() {
       this.getList()
     },
   },
   mounted() {
+    this.$api.logs.getList()
     this.getStatuses()
     this.getSections()
     this.getGroups()
@@ -443,20 +445,27 @@ export default {
     }
   },
   methods: {
+    prepareListParams(isExport = false) {
+      const params = {
+        sort: `${this.applicationTableOptions.sortDesc ? '-' : ''}${
+          this.applicationTableOptions.sortBy === 'client_name'
+            ? 'users.name'
+            : this.applicationTableOptions.sortBy
+        }`,
+        'filter[status]':
+          this.statusFilter?.map((item) => item.id).join(',') || '',
+        'filter[type]': this.typeFilter?.map((item) => item.id).join(',') || '',
+      }
+      if (!isExport) {
+        params.page = this.applicationTableOptions.page
+      }
+      return params
+    },
     async getList() {
       try {
-        const { data } = await this.$api.applications.getList({
-          page: this.applicationTableOptions.page,
-          sort: `${this.applicationTableOptions.sortDesc ? '-' : ''}${
-            this.applicationTableOptions.sortBy === 'client_name'
-              ? 'users.name'
-              : this.applicationTableOptions.sortBy
-          }`,
-          'filter[status]':
-            this.statusFilter?.map((item) => item.id).join(',') || '',
-          'filter[type]':
-            this.typeFilter?.map((item) => item.id).join(',') || '',
-        })
+        const { data } = await this.$api.applications.getList(
+          this.prepareListParams()
+        )
         this.applicationTableData = data.models.map((item) => ({
           ...item,
           status: item.status.toUpperCase(),
@@ -472,6 +481,20 @@ export default {
         this.$modal.show('error', { err })
       }
     },
+    async exportList() {
+      try {
+        this.exportLoading = true
+        const blob = await this.$api.tools.export(this.prepareListParams(true))
+        saveAs(
+          blob,
+          `Выгрузка заявок ${this.$dayjs().format('DD.MM.YYYY')}.xlsx`
+        )
+      } catch (err) {
+        this.$modal.show('error', { err })
+      } finally {
+        this.exportLoading = false
+      }
+    },
     editComment(application) {
       application.commentEditing = application.comment
       application.isCommentEditing = true
@@ -483,16 +506,6 @@ export default {
       await this.updateResponsible(application, responsible)
       this.getList()
     },
-    // removeItemFromTypeFilter(name) {
-    //   this.typeFilter = this.typeFilter.filter((type) => type.item !== name)
-    //   this.getList()
-    // },
-    // removeItemFromStatusFilter(name) {
-    //   this.statusFilter = this.statusFilter.filter(
-    //     (status) => status.item !== name
-    //   )
-    //   this.getList()
-    // },
     selectAllStatuses() {
       if ((this.statusFilter?.length || 0) < this.statuses?.length) {
         this.statusFilter = [...this.statuses]
