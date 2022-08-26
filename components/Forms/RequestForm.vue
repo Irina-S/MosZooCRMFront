@@ -148,10 +148,20 @@
           <div class="request-form__label mb-2">Загрузка файлов</div>
 
           <div class="request-form__file-hint text--light mb-3">
-            Загрузите заполненные бланки <a href="#">Согласие на съемку</a> и
-            <a href="#">Заявление стр.1 и стр.2</a> в формате
-            PNG/JPG/JPEG/BMP/PDF (размер не более 10 Мб). Образец заполнения
-            бланка Заявления стр.1 и стр.2 смотрите <a href="#">тут</a>.
+            Загрузите заполненные бланки
+            <a target="_blank" :href="documents.photoAgreement"
+              >Согласие на съемку</a
+            >
+            и
+            <!-- <a href="#"> -->
+            Заявление стр.1 и стр.2
+            <!-- </a>  -->
+            в формате PNG/JPG/JPEG/BMP/PDF (размер не более 10 Мб). Образец
+            заполнения бланка Заявления стр.1 и стр.2 смотрите
+            <!-- <a href="#"> -->
+            тут
+            <!-- </a> -->
+            .
           </div>
           <validation-provider rules="min_file_count:1">
             <CustomFileInput
@@ -177,10 +187,11 @@
                     :class="!$vuetify.breakpoint.xs ? 'text--small' : ''"
                   >
                     Я даю
-                    <a href="#" target="_blank" @click.stop
-                      >Согласие на обработку и распространение персональных
-                      данных</a
-                    >
+                    <!-- <a href="#" target="_blank" @click.stop
+                      >-->
+                    Согласие на обработку и распространение персональных данных
+                    <!-- </a
+                    > -->
                   </div>
                 </template>
               </v-checkbox>
@@ -202,7 +213,11 @@
                     :class="!$vuetify.breakpoint.xs ? 'text--small' : ''"
                   >
                     Я ознакомлен с
-                    <a href="#" target="_blank" @click.stop>
+                    <a
+                      :href="documents.personalDataPolicy"
+                      target="_blank"
+                      @click.stop
+                    >
                       Политикой обработки персональных данных</a
                     >
                   </div>
@@ -226,9 +241,14 @@
                     :class="!$vuetify.breakpoint.xs ? 'text--small' : ''"
                   >
                     {{ checkbox.label }}
-                    <a href="#" target="_blank" @click.stop>{{
-                      checkbox.linkTitle
-                    }}</a>
+                    <template v-if="checkbox.link">
+                      <a :href="checkbox.link" target="_blank" @click.stop>{{
+                        checkbox.linkTitle
+                      }}</a>
+                    </template>
+                    <template v-else>
+                      {{ checkbox.linkTitle }}
+                    </template>
                   </div>
                 </template>
               </v-checkbox>
@@ -302,6 +322,10 @@ export default {
   data() {
     return {
       sections: [],
+      documents: {
+        photoAgreement: require('@/assets/documents/common/photo_agreement.pdf'),
+        personalDataPolicy: require('@/assets/documents/common/personal_data_policy.pdf'),
+      },
     }
   },
   computed: {

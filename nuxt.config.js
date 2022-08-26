@@ -259,6 +259,14 @@ export default {
     extractCSS: process.env.NODE_ENV !== 'dev',
     extend(config) {
       config.performance.maxAssetSize = 512000 // дефолтный бандл vue превышает 244 кб
+      // поддержка работы с pdf
+      // Find the rule which contains a assets file extension
+      const assetsLoader = config.module.rules.find((rule) =>
+        rule.test.test('.png')
+      )
+      // Overwrite the test regex and add `pdf`
+      assetsLoader.test = /\.(png|jpe?g|gif|webp|pdf)$/i
+      return config
     },
     loaders: {
       scss: {
@@ -266,6 +274,7 @@ export default {
           quietDeps: true, // убирает варнинги с math.div
         },
       },
+      // file: { test: /\.pdf$/i, loader: 'file-loader' },
     },
   },
 }
