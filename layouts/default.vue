@@ -15,9 +15,6 @@
           RoleTitle[role.toUpperCase()]
         }}</span>
       </div>
-      <!-- <nuxt-link v-if="isAdmin" to="/settings" class="mr-6 ml-auto">
-        <img src="@/assets/images/setting-icon.svg" alt="настройки" />
-      </nuxt-link> -->
       <v-menu :offset-y="true" bottom left content-class="user-menu">
         <template #activator="{ attrs, on }">
           <v-avatar
@@ -39,6 +36,19 @@
               <v-list-item-title>Настройки</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <v-list-item
+            v-if="$route.name === 'applications'"
+            @click="triggerListExport"
+          >
+            <v-list-item-icon class="mr-2">
+              <v-icon class="logout-icon text--default"
+                >mdi-microsoft-excel</v-icon
+              >
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Экспорт</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
           <v-list-item @click="logout">
             <v-list-item-icon class="mr-2"
               ><v-icon class="logout-icon text--default"
@@ -53,7 +63,7 @@
       </v-menu>
     </v-app-bar>
     <div class="flex-grow-1 px-3 px-sm-10">
-      <Nuxt />
+      <Nuxt ref="page" />
     </div>
     <Modal></Modal>
   </v-app>
@@ -75,9 +85,15 @@ export default {
   computed: {
     ...mapGetters('user', ['name', 'role']),
   },
+  mounted() {
+    console.log(this.$refs)
+  },
   methods: {
     logout() {
       this.$auth.logout()
+    },
+    triggerListExport() {
+      this.$refs.page.$children[0].exportList()
     },
   },
 }

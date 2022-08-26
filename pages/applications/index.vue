@@ -11,20 +11,10 @@
       Список заявок
     </h1>
     <div
-      class="d-flex align-center mb-4"
-      :class="$vuetify.breakpoint.xs ? 'justify-space-between' : ''"
+      v-if="$vuetify.breakpoint.xs"
+      class="d-flex align-center justify-end mb-4"
     >
-      <v-btn
-        :loading="exportLoading"
-        :small="$vuetify.breakpoint.xs"
-        @click="exportList"
-      >
-        Выгрузить заявки
-      </v-btn>
-      <span
-        v-if="$vuetify.breakpoint.xs"
-        class="text--small cursor--pointer"
-        @click="openMobileFilters"
+      <span class="text--small cursor--pointer" @click="openMobileFilters"
         >Фильтры<v-icon
           class="text--default ml-1"
           :class="typeFilter.length || statusFilter.length ? 'error--text' : ''"
@@ -122,7 +112,6 @@
         </v-combobox>
       </template>
       <template #[`header.status`]="{ header }">
-        <!--        <span @click.stop="statusFilterEnabled = !statusFilterEnabled">-->
         <span
           v-if="!statusFilterEnabled"
           class="cursor--pointer"
@@ -196,7 +185,6 @@
             </CustomChip>
           </template>
         </v-combobox>
-        <!--        </span>-->
       </template>
       <template #[`item.id`]="{ item }">
         <span
@@ -421,7 +409,6 @@ export default {
       loading: false,
       totalItems: 0,
       totalPages: 0,
-      exportLoading: false,
     }
   },
   head() {
@@ -491,8 +478,6 @@ export default {
         )
       } catch (err) {
         this.$modal.show('error', { err })
-      } finally {
-        this.exportLoading = false
       }
     },
     editComment(application) {
