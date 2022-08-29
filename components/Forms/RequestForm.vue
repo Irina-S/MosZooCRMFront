@@ -153,14 +153,10 @@
               >Согласие на съемку</a
             >
             и
-            <!-- <a href="#"> -->
-            Заявление стр.1 и стр.2
-            <!-- </a>  -->
+            <a :href="documents.statement" target="_blank"> Заявление </a>
             в формате PNG/JPG/JPEG/BMP/PDF (размер не более 10 Мб). Образец
-            заполнения бланка Заявления стр.1 и стр.2 смотрите
-            <!-- <a href="#"> -->
-            тут
-            <!-- </a> -->
+            заполнения бланка Заявления смотрите
+            <a :href="documents.statementExample" target="_blank"> тут </a>
             .
           </div>
           <validation-provider rules="min_file_count:1">
@@ -186,12 +182,8 @@
                     class="ml-sm-2"
                     :class="!$vuetify.breakpoint.xs ? 'text--small' : ''"
                   >
-                    Я даю
-                    <!-- <a href="#" target="_blank" @click.stop
-                      >-->
-                    Согласие на обработку и распространение персональных данных
-                    <!-- </a
-                    > -->
+                    Я даю Согласие на обработку и распространение персональных
+                    данных
                   </div>
                 </template>
               </v-checkbox>
@@ -323,6 +315,8 @@ export default {
     return {
       sections: [],
       documents: {
+        statement: require('@/assets/documents/common/statement.pdf'),
+        statementExample: require('@/assets/documents/common/statement_example.pdf'),
         photoAgreement: require('@/assets/documents/common/photo_agreement.pdf'),
         personalDataPolicy: require('@/assets/documents/common/personal_data_policy.pdf'),
       },
@@ -370,8 +364,12 @@ export default {
           ...this.form,
           phone: this.preparePhone(this.form.phone),
         }
-        if (this.form.type === 'pony_club') {
+        if (['kubz', 'kraski_mira'].includes(this.form.type)) {
+          delete params.agree_with_entrance_tests_kfd
+        }
+        if (['pony_club'].includes(this.form.type)) {
           delete params.have_read_charter_of_kfd
+          delete params.agree_with_rules
         }
         await this.$api.applications.validate(params)
         this.$emit('validated')

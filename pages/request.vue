@@ -89,8 +89,12 @@ export default {
           ...this.form,
           phone: this.preparePhone(this.form.phone),
         }
-        if (this.form.type === 'pony_club') {
+        if (['kubz', 'kraski_mira'].includes(this.form.type)) {
+          delete params.agree_with_entrance_tests_kfd
+        }
+        if (['pony_club'].includes(this.form.type)) {
           delete params.have_read_charter_of_kfd
+          delete params.agree_with_rules
         }
         await this.$api.applications.create(params)
         this.switchStep(this.$options.steps.completed)
