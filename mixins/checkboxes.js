@@ -4,11 +4,6 @@ export default {
       checkboxes: {
         kubz: [
           {
-            model: 'agree_with_rules',
-            label: `Я ознакомлен и согласен с`,
-            linkTitle: 'Правилами и положениями КДФ "КЮБЗ"',
-          },
-          {
             model: 'have_read_regulations_on_kfd',
             label: `Я ознакомлен с`,
             linkTitle:

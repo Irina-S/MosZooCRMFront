@@ -94,6 +94,8 @@ export default {
         }
         if (['pony_club'].includes(this.form.type)) {
           delete params.have_read_charter_of_kfd
+        }
+        if (['kubz', 'pony_club'].includes(this.form.type)) {
           delete params.agree_with_rules
         }
         await this.$api.applications.create(params)
