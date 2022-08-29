@@ -422,7 +422,6 @@ export default {
     },
   },
   mounted() {
-    this.$api.logs.getList()
     this.getStatuses()
     this.getSections()
     this.getGroups()
