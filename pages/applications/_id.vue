@@ -352,11 +352,33 @@
                   >Этапы обработки заявки</v-expansion-panel-header
                 >
                 <v-expansion-panel-content>
-                  <div>Заявка Принята</div>
-                  <div>
-                    Ответственный по заявке назначен - Светлана Петрановская
+                  <div
+                    v-for="(evt, idx) in logs"
+                    :key="`evt-${idx}`"
+                    class="mb-4"
+                  >
+                    <div class="font-weight-bold">
+                      {{ evt.event_name_as_string }}
+                      {{
+                        evt.event_name === LogType.STATUS_UPDATE
+                          ? `- ${evt.status_as_string}`
+                          : ''
+                      }}
+                    </div>
+                    <div>
+                      <template v-if="evt.event_name === LogType.CREATE">
+                        Клиент - {{ evt.client_name }}.
+                      </template>
+                      <template
+                        v-else-if="
+                          evt.event_name === LogType.RESP_ADDED ||
+                          evt.responsible_name
+                        "
+                      >
+                        Ответственный - {{ evt.responsible_name }}.
+                      </template>
+                    </div>
                   </div>
-                  <div class="text--light">17.06.2022 09:00:05</div>
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
@@ -378,6 +400,7 @@ import {
   StatusBtnColor,
   StatusBtnText,
 } from '@/constants/Status'
+import { LogType } from '@/constants/Logs'
 import roles from '@/mixins/roles'
 import manuals from '@/mixins/manuals'
 import checkboxes from '@/mixins/checkboxes'
@@ -399,22 +422,21 @@ export default {
   data() {
     return {
       logsExtensionPanels: null,
-      isMdAndDown: false,
       Status,
       StatusColor,
       StatusBtnColor,
       StatusBtnText,
+      LogType,
       agreement: true,
       application: null,
+      logs: [],
       examinations: {
         date: null,
         time: null,
-        // group: null,
       },
       classes: {
         date: null,
         time: null,
-        // group: null,
       },
     }
   },
@@ -468,27 +490,17 @@ export default {
       )
     },
   },
-  watch: {
-    isMdAndDown(value) {
-      console.log('watch')
-      console.log(value)
-      if (value) {
-        this.logsExtensionPanels = []
-        return
-      }
-      this.logsExtensionPanels = [0]
-    },
-  },
   mounted() {
-    this.onResize()
-    window.addEventListener('resize', this.onResize, { passive: true })
-
     if (this.isAdmin) {
       this.getModerators()
     }
     this.getStatuses()
     this.getGroups()
+    this.getLogs()
     this.getApplication()
+
+    this.onResize()
+    window.addEventListener('resize', this.onResize, { passive: true })
   },
   methods: {
     async getApplication() {
@@ -509,6 +521,14 @@ export default {
           )
           this.classes.time = this.parseTimeFromExtended(data.first_lesson_date)
         }
+      } catch (err) {
+        this.$modal.show('error', { err })
+      }
+    },
+    async getLogs() {
+      try {
+        const { data } = await this.$api.logs.get(this.$route.params.id)
+        this.logs = data.models
       } catch (err) {
         this.$modal.show('error', { err })
       }
@@ -626,14 +646,10 @@ export default {
       }
     },
     onResize() {
-      console.log('resize')
-      console.log(this.$vuetify.breakpoint)
       if (this.$vuetify.breakpoint.mdAndDown) {
-        console.log('in true')
         this.logsExtensionPanels = null
         return
       }
-      console.log('in false')
       this.logsExtensionPanels = 0
     },
   },
@@ -668,7 +684,7 @@ export default {
 
       &-header {
         min-height: unset !important;
-        padding: 16px 0 !important;
+        padding: 20px 0 !important;
         font-size: 1rem;
       }
 
