@@ -153,7 +153,12 @@
               >Согласие на съемку</a
             >
             и
-            <a :href="documents.statement" target="_blank"> Заявление </a>
+            <template v-if="documents.statement[form.type]">
+              <a :href="documents.statement[form.type]" target="_blank">
+                Заявление
+              </a>
+            </template>
+            <template v-else> Заявление </template>
             в формате PNG/JPG/JPEG/BMP/PDF (размер не более 10 Мб). Образец
             заполнения бланка Заявления смотрите
             <a :href="documents.statementExample" target="_blank"> тут </a>
@@ -315,7 +320,10 @@ export default {
     return {
       sections: [],
       documents: {
-        statement: require('@/assets/documents/common/statement.pdf'),
+        statement: {
+          kubz: require('@/assets/documents/kubz/statement.pdf'),
+          pony_club: require('@/assets/documents/pony_club/statement.pdf'),
+        },
         statementExample: require('@/assets/documents/common/statement_example.pdf'),
         photoAgreement: require('@/assets/documents/common/photo_agreement.pdf'),
         personalDataPolicy: require('@/assets/documents/common/personal_data_policy.pdf'),
