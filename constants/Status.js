@@ -1,6 +1,7 @@
 export const Status = {
   INIT: 'init',
   ACCEPTED: 'accepted',
+  DUPLICATE: 'duplicate',
   DOCUMENTS_REQUEST: 'documents_request',
   REJECTED_BY_COUNT: 'rejected_by_count',
   CANCELED: 'canceled',
@@ -11,9 +12,26 @@ export const Status = {
   MISSING_ON_EXAMINATIONS: 'missing_on_examinations',
   APPROVED_BY_EXAMINATIONS: 'approved_by_examinations',
   REJECTED_BY_EXAMINATIONS: 'rejected_by_examinations',
-  DUPLICATE: 'duplicate',
   INVITATION_TO_CLASS: 'invitation_to_class',
   COMPLETED: 'completed',
+}
+
+export const StatusText = {
+  INIT: 'Создана',
+  ACCEPTED: 'Принята',
+  DOCUMENTS_REQUEST: 'Запрос документов',
+  REJECTED_BY_COUNT: 'Отклонена (гр. укомплектована)',
+  CANCELED: 'Аннулирована',
+  CANCELED_AGE: 'Аннулирована (по возрасту)',
+  REJECTED_BY_INCOMPLETE_DOCUMENTS: 'Отклонена (неполные документы)',
+  REJECTED_BY_MISSING_DOCUMENTS: 'Отклонена (отсутствуют док.)',
+  INVITATION_TO_ENTRANCE_EXAMINATIONS: 'Приглашение на в/и',
+  INVITATION_TO_CLASS: 'Приглашение на занятие',
+  MISSING_ON_EXAMINATIONS: 'Неявка на в/и',
+  APPROVED_BY_EXAMINATIONS: 'Одобрена (по итогам в/и)',
+  REJECTED_BY_EXAMINATIONS: 'Отклонена (по итогам в/и)',
+  DUPLICATE: 'Дубликат',
+  COMPLETED: 'Отработана',
 }
 
 export const StatusColor = {

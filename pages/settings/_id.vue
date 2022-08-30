@@ -80,127 +80,31 @@
           </v-row>
         </v-col>
       </v-row>
-      <div class="mb-6">Текст шаблонов писем для рассылки Клиенту</div>
+      <div class="mb-6">
+        <div>Текст шаблонов писем для рассылки Клиенту</div>
+        <!-- <div v-if="vars">
+          <span class="d-block mb-1"
+            >Доступные для использования в шаблонах переменные:</span
+          >
+          <span
+            v-for="(value, key, idx) in vars"
+            :key="`var-${idx}`"
+            class="d-block"
+          >
+            {{ key }} - {{ value }}
+          </span>
+          <span class="d-block mt-1">
+            (*) означает, что переменная может быть не использована
+          </span>
+        </div> -->
+      </div>
       <div>
-        <div class="mb-4">
-          <div class="font-weight-bold mb-1">Уведомление</div>
-          <v-textarea
-            rows="5"
-            outlined
-            no-resize
-            hide-details
-            class="settings-textarea"
-          />
-        </div>
-        <div class="mb-4">
-          <div class="font-weight-bold text--small mb-1">Статус Принята</div>
-          <v-textarea
-            rows="5"
-            outlined
-            no-resize
-            hide-details
-            class="settings-textarea"
-          />
-        </div>
-        <div class="mb-4">
-          <div class="font-weight-bold text--small mb-1">
-            Статус Аннулирована
+        <div v-for="tmp in availableTemplates" :key="tmp.template" class="mb-4">
+          <div class="font-weight-bold mb-1">
+            {{ tmp.text ? `Статус ${tmp.text}` : 'Уведомление' }}
           </div>
           <v-textarea
-            rows="5"
-            outlined
-            no-resize
-            hide-details
-            class="settings-textarea"
-          />
-        </div>
-        <div class="mb-4">
-          <div class="font-weight-bold text--small mb-1">Статус Дубликат</div>
-          <v-textarea
-            rows="5"
-            outlined
-            no-resize
-            hide-details
-            class="settings-textarea"
-          />
-        </div>
-        <div class="mb-4">
-          <div class="font-weight-bold text--small mb-1">
-            Статус Отклонена (группа укомплектована)
-          </div>
-          <v-textarea
-            rows="5"
-            outlined
-            no-resize
-            hide-details
-            class="settings-textarea"
-          />
-        </div>
-        <div class="mb-4">
-          <div class="font-weight-bold text--small mb-1">
-            Статус Запрос документов
-          </div>
-          <v-textarea
-            rows="5"
-            outlined
-            no-resize
-            hide-details
-            class="settings-textarea"
-          />
-        </div>
-        <div class="mb-4">
-          <div class="font-weight-bold text--small mb-1">
-            Статус Отклонена (отсутствуют документы)
-          </div>
-          <v-textarea
-            rows="5"
-            outlined
-            no-resize
-            hide-details
-            class="settings-textarea"
-          />
-        </div>
-        <div class="mb-4">
-          <div class="font-weight-bold text--small mb-1">
-            Статус Приглашение на в/и
-          </div>
-          <v-textarea
-            rows="5"
-            outlined
-            no-resize
-            hide-details
-            class="settings-textarea"
-          />
-        </div>
-        <div class="mb-4">
-          <div class="font-weight-bold text--small mb-1">
-            Статус Неявка на в/и
-          </div>
-          <v-textarea
-            rows="5"
-            outlined
-            no-resize
-            hide-details
-            class="settings-textarea"
-          />
-        </div>
-        <div class="mb-4">
-          <div class="font-weight-bold text--small mb-1">
-            Статус Одобрена (по итогам в/и)
-          </div>
-          <v-textarea
-            rows="5"
-            outlined
-            no-resize
-            hide-details
-            class="settings-textarea"
-          />
-        </div>
-        <div class="mb-4">
-          <div class="font-weight-bold text--small mb-1">
-            Статус Отклонена (по итогам в/и)
-          </div>
-          <v-textarea
+            v-model="templates[tmp.template]"
             rows="5"
             outlined
             no-resize
@@ -231,6 +135,7 @@ import CustomTimePicker from '@/components/FormElements/CustomTimePicker'
 import manuals from '@/mixins/manuals'
 import datetime from '@/mixins/datetime'
 import prepareParams from '@/mixins/prepareParams'
+import { Status, StatusText } from '@/constants/Status'
 
 export default {
   name: 'SectionSettingPage',
@@ -238,12 +143,16 @@ export default {
   mixins: [manuals, datetime, prepareParams],
   data() {
     return {
+      Status,
+      StatusText,
       type: null,
       startDate: null,
       startTime: null,
       endDate: null,
       endTime: null,
       responsibleId: null,
+      vars: null,
+      templates: {},
     }
   },
   head() {
@@ -255,13 +164,43 @@ export default {
         this.sections.find((section) => section.id === this.type)?.name ?? ''
       )
     },
+    availableTemplates() {
+      const examinationStatuses = [
+        'invitation_to_entrance_examinations',
+        'approved_by_examinations',
+        'rejected_by_examinations',
+        'missing_on_examinations',
+      ]
+      const noExaminationStatuses = ['invitation_to_class']
+      const curSectionStatuses = Object.values(Status).filter((status) => {
+        if (['pony_club'].includes(this.type)) {
+          return !noExaminationStatuses.includes(status)
+        }
+        return !examinationStatuses.includes(status)
+      })
+      const templates = curSectionStatuses.map((status) => ({
+        status,
+        template: `${status}_${this.type}`,
+        text: StatusText[status.toUpperCase()] || '',
+      }))
+      return templates
+    },
   },
   mounted() {
     this.getModerators()
     this.getSections()
     this.getSetting()
+    // this.getAvailableVars()
   },
   methods: {
+    async getAvailableVars() {
+      try {
+        const data = await this.$api.templates.getVars()
+        this.vars = data
+      } catch (err) {
+        this.$modal.show('error', { err })
+      }
+    },
     async getSetting() {
       try {
         const data = await this.$api.settings.get(this.$route.params.id)
