@@ -117,36 +117,6 @@
                 />
               </div>
             </template>
-            <!-- <template
-              v-if="
-                canSeeExaminations &&
-                (isAdmin ||
-                  (application.possible_next_statuses &&
-                    application.possible_next_statuses.includes(
-                      Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
-                    )))
-              "
-            >
-              <div class="text--light">Группа в/и*</div>
-              <div>
-                <v-select
-                  v-model="examinations.group"
-                  :items="groups"
-                  :menu-props="{
-                    bottom: true,
-                    offsetY: true,
-                    class: 'group-select__menu',
-                  }"
-                  item-text="name"
-                  item-value="id"
-                  placeholder="Выберите"
-                  outlined
-                  dense
-                  hide-details
-                  class="group-select"
-                />
-              </div>
-            </template> -->
             <template
               v-if="
                 isAdmin ||
@@ -305,7 +275,6 @@
             >
               <div class="mb-4">Выберите вариант решения по заявке</div>
               <div class="d-flex align-start flex-wrap">
-                <!-- <template v-if="isAdmin"> -->
                 <v-btn
                   v-for="status in availableStatuses"
                   v-show="status.id.toUpperCase() !== application.status"
@@ -574,7 +543,9 @@ export default {
               this.examinations.date,
               this.examinations.time
             )
-            params.group_id = this.application.child_group_id
+            if (this.application.child_group_id) {
+              params.group_id = this.application.child_group_id
+            }
             if (this.application.receipt_documents_at) {
               params.receipt_documents_at =
                 this.application.receipt_documents_at
