@@ -38,11 +38,6 @@ export default {
   components: { RequestForm, TelConfirm, TelConfirmed },
   mixins: [prepareParams, checkboxes],
   layout: 'request',
-  head() {
-    return {
-      title: 'Подать заявку',
-    }
-  },
   data() {
     return {
       step: 'form',
@@ -57,13 +52,17 @@ export default {
         files: [],
         agreement_processing_personal_data: 0,
         have_read_personal_data_processing_policy: 0,
-        agree_with_rules: 0,
         have_read_regulations_on_kfd: 0,
         agree_with_internal_regulatoions: 0,
         agree_with_safety_regulations: 0,
         agree_with_entrance_tests_kfd: 0,
         have_read_charter_of_kfd: 0,
       },
+    }
+  },
+  head() {
+    return {
+      title: 'Подать заявку',
     }
   },
   steps: {
@@ -95,8 +94,9 @@ export default {
         if (['pony_club'].includes(this.form.type)) {
           delete params.have_read_charter_of_kfd
         }
-        if (['kubz', 'pony_club'].includes(this.form.type)) {
-          delete params.agree_with_rules
+        if (['kraski_mira'].includes(this.form.type)) {
+          delete params.agree_with_safety_regulations
+          delete params.have_read_charter_of_kfd
         }
         await this.$api.applications.create(params)
         this.switchStep(this.$options.steps.completed)

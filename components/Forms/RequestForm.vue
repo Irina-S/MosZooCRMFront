@@ -328,10 +328,12 @@ export default {
         statement: {
           kubz: require('@/assets/documents/kubz/statement.pdf'),
           pony_club: require('@/assets/documents/pony_club/statement.pdf'),
+          kraski_mira: require('@/assets/documents/kraski_mira/statement.pdf'),
         },
         statementExample: {
           kubz: require('@/assets/documents/kubz/statement_example.pdf'),
           pony_club: require('@/assets/documents/pony_club/statement_example.pdf'),
+          kraski_mira: require('@/assets/documents/kraski_mira/statement_example.pdf'),
         },
         photoAgreement: require('@/assets/documents/common/photo_agreement.pdf'),
         personalDataPolicy: require('@/assets/documents/common/personal_data_policy.pdf'),
@@ -386,8 +388,9 @@ export default {
         if (['pony_club'].includes(this.form.type)) {
           delete params.have_read_charter_of_kfd
         }
-        if (['kubz', 'pony_club'].includes(this.form.type)) {
-          delete params.agree_with_rules
+        if (['kraski_mira'].includes(this.form.type)) {
+          delete params.agree_with_safety_regulations
+          delete params.have_read_charter_of_kfd
         }
         await this.$api.applications.validate(params)
         this.$emit('validated')

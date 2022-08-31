@@ -59,36 +59,17 @@ export default {
         ],
         kraski_mira: [
           {
-            model: 'agree_with_rules',
-            label: `Я ознакомлен и согласен с`,
-            linkTitle: 'Правилами и положениями КДФ "Краски мира"',
-          },
-          {
             model: 'have_read_regulations_on_kfd',
             label: `Я ознакомлен с`,
             linkTitle:
-              'Положением о культурно-досуговом формировании КДФ «Краски мира»',
+              'Положением о культурно-досуговом формировании КДФ «Зоокружок»',
+            link: require('@/assets/documents/kraski_mira/regulations_of_kdf.pdf'),
           },
           {
             model: 'agree_with_internal_regulatoions',
             label: `Я ознакомлен и согласен с`,
-            linkTitle: 'Правилами внутреннего распорядка КДФ «Краски мира»',
-          },
-          {
-            model: 'agree_with_safety_regulations',
-            label: `Я ознакомлен и согласен с`,
-            linkTitle:
-              'Правилами техники безопасности участника КДФ «Краски мира»',
-          },
-          // {
-          //   model: 'agree_with_entrance_tests_kfd',
-          //   label: `Я ознакомлен и согласен с`,
-          //   linkTitle: 'Вступительными испытаниями КДФ «Краски мира»',
-          // },
-          {
-            model: 'have_read_charter_of_kfd',
-            label: `Я ознакомлен и согласен с`,
-            linkTitle: 'Уставом КДФ «Краски мира»',
+            linkTitle: 'Правилами внутреннего распорядка КДФ «Зоокружок»',
+            link: require('@/assets/documents/kraski_mira/internal_requlations.pdf'),
           },
         ],
       },
