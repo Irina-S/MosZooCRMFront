@@ -349,7 +349,19 @@ export default {
         sortDesc: true,
         multiSort: false,
       },
-      applicationTableHeaders: [
+      applicationTableData: [],
+      statusFilter: [],
+      statusFilterEnabled: false,
+      typeFilter: [],
+      typeFilterEnabled: false,
+      loading: false,
+      totalItems: 0,
+      totalPages: 0,
+    }
+  },
+  computed: {
+    applicationTableHeaders() {
+      const headers = [
         {
           text: 'Номер',
           value: 'id',
@@ -374,13 +386,17 @@ export default {
           sortable: true,
           class: 'text-no-wrap',
         },
-        {
+      ]
+      if (this.isAdmin) {
+        headers.push({
           text: 'Ответственный',
           value: 'responsible_name',
           class: 'text-no-wrap',
           cellClass: 'position--relative',
           sortable: false,
-        },
+        })
+      }
+      headers.push(
         {
           text: 'ФИО заявителя',
           value: 'client_name',
@@ -399,17 +415,10 @@ export default {
           sortable: false,
           class: 'text-no-wrap',
           cellClass: 'd-flex',
-        },
-      ],
-      applicationTableData: [],
-      statusFilter: [],
-      statusFilterEnabled: false,
-      typeFilter: [],
-      typeFilterEnabled: false,
-      loading: false,
-      totalItems: 0,
-      totalPages: 0,
-    }
+        }
+      )
+      return headers
+    },
   },
   head() {
     return {
