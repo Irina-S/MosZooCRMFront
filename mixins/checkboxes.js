@@ -14,7 +14,7 @@ export default {
             model: 'agree_with_internal_regulatoions',
             label: `Я ознакомлен и согласен с`,
             linkTitle: 'Правилами внутреннего распорядка КДФ «КЮБЗ»',
-            link: require('@/assets/documents/kubz/inner_regulations.pdf'),
+            link: require('@/assets/documents/kubz/internal_regulations.pdf'),
           },
           {
             model: 'agree_with_safety_regulations',
