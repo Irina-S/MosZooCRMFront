@@ -218,10 +218,6 @@ export default {
           property: '',
           autoFetch: true,
         },
-        // cookie: {
-        //   // (optional) If set, we check this cookie existence for loggedIn check
-        //   name: 'XSRF-TOKEN',
-        // },
         endpoints: {
           login: {
             url: '/api/v1/auth-by-password',
@@ -234,10 +230,6 @@ export default {
           user: {
             url: '/api/v1/user/me',
             method: 'get',
-          },
-          // (optional) If set, we send a get request to this endpoint before login
-          csrf: {
-            url: '/sanctum/csrf-cookie',
           },
         },
       },
@@ -260,11 +252,9 @@ export default {
     extend(config) {
       config.performance.maxAssetSize = 512000 // дефолтный бандл vue превышает 244 кб
       // поддержка работы с pdf
-      // Find the rule which contains a assets file extension
       const assetsLoader = config.module.rules.find((rule) =>
         rule.test.test('.png')
       )
-      // Overwrite the test regex and add `pdf`
       assetsLoader.test = /\.(png|jpe?g|gif|webp|pdf)$/i
       return config
     },
@@ -274,7 +264,6 @@ export default {
           quietDeps: true, // убирает варнинги с math.div
         },
       },
-      // file: { test: /\.pdf$/i, loader: 'file-loader' },
     },
   },
 }

@@ -9,16 +9,20 @@ export default ($sendRequest) => {
     return $sendRequest('get', `/api/v1/templates/show/${id}`)
   }
 
-  request.update = (id) => {
-    return $sendRequest('put', `/api/v1/templates/edit/${id}`)
+  request.update = (id, params) => {
+    return $sendRequest('put', `/api/v1/templates/edit/${id}`, params)
   }
 
   request.getStatus = (id) => {
-    return $sendRequest('get', `/api/v1/templates/${id}/is_active`)
+    return $sendRequest('get', `/api/v1/templates/show/${id}/is_active`)
   }
 
-  request.updateStatus = (id) => {
-    return $sendRequest('put', `/api/v1/templates/${id}/set_active`)
+  request.updateStatus = (id, params) => {
+    return $sendRequest(
+      'put',
+      `/api/v1/templates/show/${id}/set_active`,
+      params
+    )
   }
 
   return request
