@@ -58,6 +58,11 @@ export default {
       this.time = this.value
     },
   },
+  mounted() {
+    if (this.value) {
+      this.time = this.value
+    }
+  },
   methods: {
     toggleDatePicker() {
       const menuWidth = 290
