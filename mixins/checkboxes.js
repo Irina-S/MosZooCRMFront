@@ -62,13 +62,13 @@ export default {
             model: 'have_read_regulations_on_kfd',
             label: `Я ознакомлен с`,
             linkTitle:
-              'Положением о культурно-досуговом формировании КДФ «Зоокружок»',
+              'Положением о культурно-досуговом формировании КДФ «Зоостудия»',
             link: require('@/assets/documents/kraski_mira/regulations_of_kdf.pdf'),
           },
           {
             model: 'agree_with_internal_regulatoions',
             label: `Я ознакомлен и согласен с`,
-            linkTitle: 'Правилами внутреннего распорядка КДФ «Зоокружок»',
+            linkTitle: 'Правилами внутреннего распорядка КДФ «Зоостудия»',
             link: require('@/assets/documents/kraski_mira/internal_requlations.pdf'),
           },
         ],
