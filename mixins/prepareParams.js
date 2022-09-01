@@ -13,7 +13,11 @@ export default {
       if (!(date && time)) {
         return null
       }
-      return `${date} ${time}:00`
+      const locaDateTime = `${date} ${time}:00`
+      const mskDateTime = this.$dayjs(locaDateTime)
+        .tz('Europe/Moscow')
+        .format('YYYY-MM-DD HH:mm:ss')
+      return mskDateTime
     },
   },
 }

@@ -97,12 +97,7 @@
             </template>
             <template
               v-if="
-                canSeeExaminations &&
-                (isAdmin ||
-                  (application.possible_next_statuses &&
-                    application.possible_next_statuses.includes(
-                      Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
-                    )))
+                canSeeExaminations && (isAdmin || canModeratorSeeExaminations)
               "
             >
               <div class="text--light">Дата и время в/и*</div>
@@ -117,18 +112,7 @@
                 />
               </div>
             </template>
-            <template
-              v-if="
-                isAdmin ||
-                (application.possible_next_statuses &&
-                  (application.possible_next_statuses.includes(
-                    Status.INVITATION_TO_CLASS
-                  ) ||
-                    application.possible_next_statuses.includes(
-                      Status.APPROVED_BY_EXAMINATIONS
-                    )))
-              "
-            >
+            <template v-if="isAdmin || canModeratorSeeClasses">
               <div class="text--light">Дата и время занятия</div>
               <div class="d-flex justify-space-between">
                 <CustomDatePicker
@@ -418,6 +402,27 @@ export default {
     canSeeExaminations() {
       return this.application.type === 'pony_club'
     },
+    canModeratorSeeExaminations() {
+      return (
+        (this.application.possible_next_statuses &&
+          this.application.possible_next_statuses.includes(
+            Status.INVITATION_TO_ENTRANCE_EXAMINATIONS
+          )) ||
+        this.hasExaminationDate
+      )
+    },
+    canModeratorSeeClasses() {
+      return (
+        (this.application.possible_next_statuses &&
+          (this.application.possible_next_statuses.includes(
+            Status.INVITATION_TO_CLASS
+          ) ||
+            this.application.possible_next_statuses.includes(
+              Status.APPROVED_BY_EXAMINATIONS
+            ))) ||
+        this.hasClassesDate
+      )
+    },
     canSeeGroup() {
       return (
         this.application.type === 'pony_club' &&
@@ -459,6 +464,12 @@ export default {
         this.application.possible_next_statuses.includes(status.id)
       )
     },
+    hasExaminationDate() {
+      return this.examinations.date && this.examinations.time
+    },
+    hasClassesDate() {
+      return this.classes.date && this.classes.time
+    },
   },
   mounted() {
     if (this.isAdmin) {
@@ -485,12 +496,30 @@ export default {
           responsible: null,
           isResponsibleEditing: false,
         }
-        if (data.first_lesson_date) {
+        if (data.type === 'pony_club') {
+          this.examinations.date = this.parseInvertedDateFromExtended(
+            data.examination_date
+          )
+          this.examinations.time = this.parseTimeFromExtended(
+            data.examination_date,
+            false
+          )
           this.classes.date = this.parseInvertedDateFromExtended(
             data.first_lesson_date
           )
-          this.classes.time = this.parseTimeFromExtended(data.first_lesson_date)
+          this.classes.time = this.parseTimeFromExtended(
+            data.first_lesson_date,
+            false
+          )
+          return
         }
+        this.classes.date = this.parseInvertedDateFromExtended(
+          data.examination_date
+        )
+        this.classes.time = this.parseTimeFromExtended(
+          data.examination_date,
+          false
+        )
       } catch (err) {
         this.$modal.show('error', { err })
       }
@@ -601,7 +630,8 @@ export default {
           params.responsible_id = this.application.responsible.id
         }
         if (
-          this.application.status === Status.DOCUMENTS_REQUEST.toUpperCase()
+          this.application.status === Status.DOCUMENTS_REQUEST.toUpperCase() &&
+          this.application.receipt_documents_at
         ) {
           params.receipt_documents_at = this.application.receipt_documents_at
         }
