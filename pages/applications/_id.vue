@@ -612,7 +612,6 @@ export default {
         this.$modal.show('success', {
           title: 'Изменения по заявке были сохранены!',
         })
-        this.$router.push('/')
       } catch (err) {
         this.$modal.show('error', {
           title: 'Произошла ошибка!',
@@ -639,7 +638,6 @@ export default {
         this.$modal.show('success', {
           title: 'Изменения по заявке были сохранены!',
         })
-        this.$router.push('/')
       } catch (err) {
         this.$modal.show('error', {
           title: 'Произошла ошибка!',
