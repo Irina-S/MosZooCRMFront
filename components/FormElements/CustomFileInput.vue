@@ -1,31 +1,32 @@
 <template>
-  <!-- <validation-provider v-slot="{ errors }" rules="size:2048"> -->
-  <v-file-input
-    ref="file-input"
-    :value="files"
-    :clearable="false"
-    :accept="accept"
-    small-chips
-    multiple
-    outlined
-    single-line
-    placeholder="Выберите файлы или перетащите файлы сюда"
-    class="custom-file-input"
-    :success="!$attrs['error-messages']"
-    :error-messages="$attrs['error-messages']"
-    @change="onChange"
-  >
-    <template #selection="{ index, text }">
-      <v-chip :label="false" small class="custom-file-input__chip ml-0">
-        <span class="pr-2">
-          {{ text }}
-        </span>
-        <v-icon small class="text--default" @click.stop="onFileDelete(index)">
-          $delete
-        </v-icon>
-      </v-chip>
-    </template>
-  </v-file-input>
+  <div v-cloak @drop.prevent="addDropFile" @dragover.prevent>
+    <v-file-input
+      ref="file-input"
+      :value="files"
+      :clearable="false"
+      :accept="accept"
+      small-chips
+      multiple
+      outlined
+      single-line
+      placeholder="Выберите файлы или перетащите файлы сюда"
+      class="custom-file-input"
+      :success="!$attrs['error-messages']"
+      :error-messages="$attrs['error-messages']"
+      @change="onChange"
+    >
+      <template #selection="{ index, text }">
+        <v-chip :label="false" small class="custom-file-input__chip ml-0">
+          <span class="pr-2">
+            {{ text }}
+          </span>
+          <v-icon small class="text--default" @click.stop="onFileDelete(index)">
+            $delete
+          </v-icon>
+        </v-chip>
+      </template>
+    </v-file-input>
+  </div>
 </template>
 
 <script>
@@ -55,6 +56,9 @@ export default {
         }
       })
       this.$emit('input', this.files)
+    },
+    addDropFile(evt) {
+      this.onChange([...evt.dataTransfer.files])
     },
   },
 }
