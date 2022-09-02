@@ -394,6 +394,9 @@ export default {
           delete params.agree_with_safety_regulations
           delete params.have_read_charter_of_kfd
         }
+        if (!['kubz'].includes(this.form.type)) {
+          delete params.agree_expedition_rules
+        }
         await this.$api.applications.validate(params)
         this.$emit('validated')
       } catch (err) {

@@ -57,6 +57,7 @@ export default {
         agree_with_safety_regulations: 0,
         agree_with_entrance_tests_kfd: 0,
         have_read_charter_of_kfd: 0,
+        agree_expedition_rules: 0,
       },
     }
   },
@@ -97,6 +98,9 @@ export default {
         if (['kraski_mira'].includes(this.form.type)) {
           delete params.agree_with_safety_regulations
           delete params.have_read_charter_of_kfd
+        }
+        if (!['kubz'].includes(this.form.type)) {
+          delete params.agree_expedition_rules
         }
         await this.$api.applications.create(params)
         this.switchStep(this.$options.steps.completed)

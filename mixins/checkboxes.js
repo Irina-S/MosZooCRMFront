@@ -23,6 +23,13 @@ export default {
             link: require('@/assets/documents/kubz/safety_rules.pdf'),
           },
           {
+            model: 'agree_expedition_rules',
+            label: `Я ознакомлен и согласен с`,
+            linkTitle:
+              'Правилами поведения в экспедициях и полевых условиях участника КДФ "КЮБЗ"',
+            link: require('@/assets/documents/kubz/expedition_rules.pdf'),
+          },
+          {
             model: 'have_read_charter_of_kfd',
             label: `Я ознакомлен с`,
             linkTitle: 'Уставом КДФ «КЮБЗ»',
