@@ -218,6 +218,11 @@
           parseTimeFromExtended(item.created_at)
         }}</span>
       </template>
+      <template #[`item.receipt_documents_at`]="{ item }">
+        <span class="font-weight-medium mr-1">{{
+          parseDateFromExtended(item.receipt_documents_at) || '—'
+        }}</span>
+      </template>
       <template #[`item.responsible_name`]="{ item }">
         <template v-if="isAdmin">
           <CustomSelect
@@ -270,7 +275,7 @@
         <span class="font-weight-medium">{{
           item.child_group_id
             ? groups.find((group) => group.id === item.child_group_id)?.name
-            : '-'
+            : '—'
         }}</span>
       </template>
       <template #[`item.comment`]="{ item }">
@@ -384,6 +389,12 @@ export default {
           text: 'Дата',
           value: 'created_at',
           sortable: true,
+          class: 'text-no-wrap',
+        },
+        {
+          text: 'Прием документов',
+          value: 'receipt_documents_at',
+          sortable: false,
           class: 'text-no-wrap',
         },
       ]
@@ -562,7 +573,7 @@ export default {
 
     tr {
       display: grid;
-      grid-template-columns: 65px 100px 300px 150px 280px 300px 100px auto;
+      grid-template-columns: 65px 100px 300px 150px 150px 280px 300px 100px auto;
       align-items: center;
       border-radius: 10px;
       margin-bottom: 10px;
@@ -668,20 +679,27 @@ export default {
         > :nth-child(5) {
           grid-column-start: 1;
           grid-column-end: 4;
-          grid-row-start: 4;
-          grid-row-end: 5;
+          grid-row-start: 3;
+          grid-row-end: 4;
         }
 
-        > :nth-child(6),
-        > :nth-child(8) {
+        > :nth-child(6) {
+          grid-column-start: 1;
+          grid-column-end: 4;
+          grid-row-start: 5;
+          grid-row-end: 6;
+        }
+
+        > :nth-child(7),
+        > :nth-child(9) {
           display: none !important;
         }
 
-        > :nth-child(7) {
+        > :nth-child(8) {
           grid-column-start: 1;
           grid-column-end: 4;
-          grid-row-start: 3;
-          grid-row-end: 4;
+          grid-row-start: 4;
+          grid-row-end: 5;
         }
       }
 
