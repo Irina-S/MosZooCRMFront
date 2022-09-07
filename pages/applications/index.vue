@@ -415,6 +415,13 @@ export default {
           class: 'text-no-wrap',
         },
         {
+          text: 'ФИО ребенка',
+          value: 'child_name',
+          sortable: false,
+          class: 'text-no-wrap',
+          cellClass: 'font-weight-medium',
+        },
+        {
           text: 'Группа',
           value: 'child_group_id',
           sortable: false,
@@ -573,7 +580,7 @@ export default {
 
     tr {
       display: grid;
-      grid-template-columns: 65px 100px 300px 150px 150px 280px 300px 100px auto;
+      grid-template-columns: 65px 100px 300px 150px 150px 280px 300px 300px 100px auto;
       align-items: center;
       border-radius: 10px;
       margin-bottom: 10px;
@@ -691,11 +698,12 @@ export default {
         }
 
         > :nth-child(7),
-        > :nth-child(9) {
+        > :nth-child(8),
+        > :nth-child(10) {
           display: none !important;
         }
 
-        > :nth-child(8) {
+        > :nth-child(9) {
           grid-column-start: 1;
           grid-column-end: 4;
           grid-row-start: 4;
