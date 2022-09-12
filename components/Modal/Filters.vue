@@ -15,16 +15,16 @@
           <div class="text--small mb-1">Тип кружка</div>
           <div class="d-flex flex-column align-start">
             <v-checkbox
-              v-for="type in options.types"
-              :key="type.id"
-              v-model="typeFilter"
-              :label="type.name"
-              :value="type"
+              v-for="t in options.types"
+              :key="t.id"
+              v-model="type"
+              :label="t.name"
+              :value="t"
               hide-details
               class="mt-0"
             >
               <template #label>
-                <span class="text--small text--default">{{ type.name }}</span>
+                <span class="text--small text--default">{{ t.name }}</span>
               </template>
             </v-checkbox>
           </div>
@@ -33,7 +33,7 @@
           <div class="text--small mb-1">Статус</div>
           <v-combobox
             ref="statusFilter"
-            v-model="statusFilter"
+            v-model="status"
             :items="options.statuses"
             attach="#status-filter-menu"
             item-text="name"
@@ -117,7 +117,7 @@ export default {
     },
   },
   props: {
-    filters: {
+    filter: {
       type: Object,
       required: true,
     },
@@ -134,25 +134,23 @@ export default {
     }
   },
   mounted() {
-    this.statusFilter = this.filters.statusFilter
-    this.typeFilter = this.filters.typeFilter
+    this.status = this.filter.status
+    this.type = this.filter.type
   },
   methods: {
     clear() {
-      this.statusFilter = []
-      this.typeFilter = []
+      this.status = []
+      this.type = []
     },
     save() {
       this.$attrs.resolve({
-        statusFilter: this.statusFilter,
-        typeFilter: this.typeFilter,
+        status: this.status,
+        type: this.type,
       })
       this.$refs.wrapper.close()
     },
     onAppendClick(evt) {
-      // console.log(evt)
       this.$refs.statusFilter.$refs.input.blur()
-      // console.log(this.$refs.statusFilter)
     },
   },
 }

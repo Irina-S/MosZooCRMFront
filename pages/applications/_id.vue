@@ -331,6 +331,15 @@
                         Ответственный - {{ evt.responsible_name }}.
                       </template>
                     </div>
+                    <div class="text--light">
+                      <span>{{ parseDateFromExtended(evt.time) }}</span>
+                      <span class="ml-2">{{
+                        parseTimeFromExtended(evt.time)
+                      }}</span>
+                    </div>
+                    <div v-if="evt.changed_by" class="text--light">
+                      {{ evt.changed_by }}
+                    </div>
                   </div>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -609,6 +618,7 @@ export default {
           )
         }
         this.getApplication()
+        this.getLogs()
         this.$modal.show('success', {
           title: 'Изменения по заявке были сохранены!',
         })
@@ -635,6 +645,8 @@ export default {
           params.receipt_documents_at = this.application.receipt_documents_at
         }
         await this.$api.applications.update(this.$route.params.id, params)
+        this.getApplication()
+        this.getLogs()
         this.$modal.show('success', {
           title: 'Изменения по заявке были сохранены!',
         })
