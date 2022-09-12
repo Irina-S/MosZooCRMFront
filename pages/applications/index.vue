@@ -17,7 +17,9 @@
       <span class="text--small cursor--pointer" @click="openMobileFilters"
         >Фильтры<v-icon
           class="text--default ml-1"
-          :class="typeFilter.length || statusFilter.length ? 'error--text' : ''"
+          :class="
+            filter.type.length || filter.status.length ? 'error--text' : ''
+          "
           >mdi-filter-variant</v-icon
         ></span
       >
@@ -51,7 +53,7 @@
           >{{ header.text }}
           <v-icon
             class="text--light"
-            :class="typeFilter.length ? 'error--text' : ''"
+            :class="filter.type && filter.type.length ? 'error--text' : ''"
             small
             >mdi-filter-variant</v-icon
           ></span
@@ -59,7 +61,7 @@
         <v-combobox
           v-else
           ref="typeSelect"
-          v-model="typeFilter"
+          v-model="filter.type"
           class="table-select"
           :items="sections"
           :autofocus="true"
@@ -79,7 +81,7 @@
             <v-list-item @mousedown.prevent @click="selectAllSections">
               <v-icon class="mr-1">
                 {{
-                  typeFilter && typeFilter.length === sections.length
+                  filter.type && filter.type.length === sections.length
                     ? 'mdi-checkbox-outline'
                     : 'mdi-checkbox-blank-outline'
                 }}
@@ -100,7 +102,7 @@
           <template #item="{ item }">
             <v-icon class="mr-0">
               {{
-                typeFilter && typeFilter.find((type) => type.id === item.id)
+                filter.type && filter.type.find((type) => type.id === item.id)
                   ? 'mdi-checkbox-outline'
                   : 'mdi-checkbox-blank-outline'
               }}
@@ -119,7 +121,7 @@
           >{{ header.text }}
           <v-icon
             class="text--light"
-            :class="statusFilter.length ? 'error--text' : ''"
+            :class="filter.status && filter.status.length ? 'error--text' : ''"
             small
             >mdi-filter-variant</v-icon
           >
@@ -127,7 +129,7 @@
         <v-combobox
           v-else
           ref="statusSelect"
-          v-model="statusFilter"
+          v-model="filter.status"
           class="table-select"
           :items="statuses"
           :autofocus="true"
@@ -150,7 +152,7 @@
             <v-list-item @mousedown.prevent @click="selectAllStatuses">
               <v-icon class="mr-1">
                 {{
-                  statusFilter && statusFilter.length === statuses.length
+                  filter.status && filter.status.length === statuses.length
                     ? 'mdi-checkbox-outline'
                     : 'mdi-checkbox-blank-outline'
                 }}
@@ -171,8 +173,8 @@
           <template #item="{ item }">
             <v-icon class="mr-0">
               {{
-                statusFilter &&
-                statusFilter.find((status) => status.id === item.id)
+                filter.status &&
+                filter.status.find((status) => status.id === item.id)
                   ? 'mdi-checkbox-outline'
                   : 'mdi-checkbox-blank-outline'
               }}
@@ -330,6 +332,7 @@
 </template>
 
 <script>
+import { cloneDeep } from 'lodash-es'
 import { saveAs } from 'file-saver'
 import CustomChip from '@/components/FormElements/CustomChip'
 import CustomSelect from '@/components/FormElements/CustomSelect'
@@ -338,6 +341,12 @@ import roles from '@/mixins/roles'
 import manuals from '@/mixins/manuals'
 import datetime from '@/mixins/datetime'
 import updateApplication from '@/mixins/updateApplication'
+
+const filtersLocalStorageKey = 'filtersParams.v1.'
+const defaultFilters = {
+  status: [],
+  type: [],
+}
 
 export default {
   name: 'ApplicationList',
@@ -355,9 +364,8 @@ export default {
         multiSort: false,
       },
       applicationTableData: [],
-      statusFilter: [],
+      filter: cloneDeep(defaultFilters),
       statusFilterEnabled: false,
-      typeFilter: [],
       typeFilterEnabled: false,
       loading: false,
       totalItems: 0,
@@ -447,8 +455,18 @@ export default {
     'applicationTableOptions.page'() {
       this.getList()
     },
+    filter: {
+      handler(val) {
+        localStorage.setItem(
+          filtersLocalStorageKey + this.$auth.user.id,
+          JSON.stringify(val)
+        )
+      },
+      deep: true,
+    },
   },
   mounted() {
+    this.parseFilters()
     this.getStatuses()
     this.getSections()
     this.getGroups()
@@ -466,8 +484,9 @@ export default {
             : this.applicationTableOptions.sortBy
         }`,
         'filter[status]':
-          this.statusFilter?.map((item) => item.id).join(',') || '',
-        'filter[type]': this.typeFilter?.map((item) => item.id).join(',') || '',
+          this.filter.status?.map((item) => item.id).join(',') || '',
+        'filter[type]':
+          this.filter.type?.map((item) => item.id).join(',') || '',
       }
       if (!isExport) {
         params.page = this.applicationTableOptions.page
@@ -518,33 +537,36 @@ export default {
       this.getList()
     },
     selectAllStatuses() {
-      if ((this.statusFilter?.length || 0) < this.statuses?.length) {
-        this.statusFilter = [...this.statuses]
+      if ((this.filter.status?.length || 0) < this.statuses?.length) {
+        this.filter.status = [...this.statuses]
       } else {
-        this.statusFilter = []
+        this.filter.status = []
       }
       this.getList()
     },
     selectAllSections() {
-      if ((this.typeFilter?.length || 0) < this.sections?.length) {
-        this.typeFilter = [...this.sections]
+      if ((this.filter.type?.length || 0) < this.sections?.length) {
+        this.filter.type = [...this.sections]
       } else {
-        this.typeFilter = []
+        this.filter.type = []
       }
       this.getList()
     },
     async openMobileFilters() {
-      const filters = await this.$modal.show('filters', {
-        filters: {
-          typeFilter: this.typeFilter,
-          statusFilter: this.statusFilter,
-        },
+      const filter = await this.$modal.show('filters', {
+        filter: this.filter,
         options: { types: this.sections, statuses: this.statuses },
       })
-      if (filters) {
-        this.typeFilter = filters.typeFilter
-        this.statusFilter = filters.statusFilter
+      if (filter) {
+        this.filter = filter
         this.getList()
+      }
+    },
+    parseFilters() {
+      if (localStorage.getItem(filtersLocalStorageKey + this.$auth.user.id)) {
+        this.filter = JSON.parse(
+          localStorage.getItem(filtersLocalStorageKey + this.$auth.user.id)
+        )
       }
     },
   },
