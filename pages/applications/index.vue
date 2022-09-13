@@ -303,8 +303,7 @@
         ></v-progress-circular>
         <div
           v-else
-          class="d-flex align-center full-width font-weight-medium"
-          style="min-height: 26px"
+          class="application-table__comment full-width font-weight-medium text-truncate"
           @click.stop="editComment(item)"
         >
           {{ item.comment }}
@@ -590,6 +589,12 @@ export default {
 }
 
 .application-table {
+  &__comment {
+    width: 300px;
+    min-height: 25px;
+    line-height: 26px;
+  }
+
   ::v-deep {
     .v-data-table__wrapper {
       min-height: 400px;

@@ -167,7 +167,6 @@ a {
 
 // требует явно заданного width
 .truncate-text {
-  width: 350px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
