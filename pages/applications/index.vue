@@ -36,11 +36,11 @@
       :server-items-length="totalItems"
       hide-default-footer
       class="mb-6"
-      :class="
-        $vuetify.breakpoint.xs
-          ? 'application-table--mobile'
-          : 'application-table'
-      "
+      :class="{
+        'application-table': !$vuetify.breakpoint.xs,
+        'application-table-mobile': $vuetify.breakpoint.xs,
+        'application-table--moderator': this.isModerator,
+      }"
       @update:sort-by="getList"
       @update:sort-desc="getList"
       @click:row="openApplication"
@@ -665,6 +665,16 @@ export default {
       border-bottom: none !important;
     }
   }
+
+  /* stylelint-disable */
+  &.application-table--moderator {
+    ::v-deep {
+      tr {
+        grid-template-columns: 65px 100px 300px 150px 150px 300px 300px 100px auto;
+      }
+    }
+  }
+  /* stylelint-enable */
 }
 
 .pg-btn {
@@ -676,7 +686,7 @@ export default {
 }
 
 @media (max-width: map-get($grid-breakpoints, 'sm')) {
-  .application-table--mobile {
+  .application-table-mobile {
     ::v-deep {
       .v-data-table-header__icon {
         opacity: 1 !important;
@@ -773,6 +783,72 @@ export default {
         text-align: left !important;
       }
     }
+
+    /* stylelint-disable */
+    &.application-table--moderator {
+      ::v-deep {
+        .v-data-table__mobile-table-row {
+          grid-template-rows: repeat(4, auto);
+
+          > :nth-child(1) {
+            grid-column-start: 1;
+            grid-column-end: 2;
+            grid-row-start: 1;
+            grid-row-end: 2;
+          }
+
+          > :nth-child(2) {
+            grid-column-start: 2;
+            grid-column-end: 3;
+            grid-row-start: 1;
+            grid-row-end: 2;
+          }
+
+          > :nth-child(3) {
+            grid-column-start: 1;
+            grid-column-end: 4;
+            grid-row-start: 2;
+            grid-row-end: 3;
+          }
+
+          > :nth-child(4) {
+            grid-column-start: 3;
+            grid-column-end: 4;
+            grid-row-start: 1;
+            grid-row-end: 2;
+          }
+
+          > :nth-child(5) {
+            grid-column-start: 1;
+            grid-column-end: 4;
+            grid-row-start: 3;
+            grid-row-end: 4;
+          }
+
+          > :nth-child(6) {
+            grid-column-start: 1;
+            grid-column-end: 4;
+            grid-row-start: 5;
+            grid-row-end: 6;
+          }
+
+          > :nth-child(6),
+          > :nth-child(7),
+          > :nth-child(9) {
+            display: none !important;
+          }
+
+          > :nth-child(8) {
+            display: flex !important;
+            grid-column-start: 1;
+            grid-column-end: 4;
+            grid-row-start: 4;
+            grid-row-end: 5;
+          }
+        }
+      }
+    }
+    /* stylelint-enable */
   }
 
   .pg-btn {
