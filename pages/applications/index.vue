@@ -38,7 +38,7 @@
       class="mb-6"
       :class="{
         'application-table': !$vuetify.breakpoint.xs,
-        'application-table-mobile': $vuetify.breakpoint.xs,
+        'application-table--mobile': $vuetify.breakpoint.xs,
         'application-table--moderator': this.isModerator,
       }"
       @update:sort-by="getList"
@@ -686,7 +686,7 @@ export default {
 }
 
 @media (max-width: map-get($grid-breakpoints, 'sm')) {
-  .application-table-mobile {
+  .application-table--mobile {
     ::v-deep {
       .v-data-table-header__icon {
         opacity: 1 !important;
