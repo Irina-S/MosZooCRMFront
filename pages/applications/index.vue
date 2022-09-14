@@ -341,6 +341,7 @@ import manuals from '@/mixins/manuals'
 import datetime from '@/mixins/datetime'
 import updateApplication from '@/mixins/updateApplication'
 
+const lastRememberedPageLocalStorageKey = 'lastPage.v1.'
 const filtersLocalStorageKey = 'filtersParams.v1.'
 const defaultFilters = {
   status: [],
@@ -452,6 +453,10 @@ export default {
   },
   watch: {
     'applicationTableOptions.page'() {
+      localStorage.setItem(
+        lastRememberedPageLocalStorageKey + this.$auth.user.id,
+        JSON.stringify(this.applicationTableOptions.page)
+      )
       this.getList()
     },
     filter: {
@@ -466,6 +471,7 @@ export default {
   },
   mounted() {
     this.parseFilters()
+    this.parsePage()
     this.getStatuses()
     this.getSections()
     this.getGroups()
@@ -565,6 +571,19 @@ export default {
       if (localStorage.getItem(filtersLocalStorageKey + this.$auth.user.id)) {
         this.filter = JSON.parse(
           localStorage.getItem(filtersLocalStorageKey + this.$auth.user.id)
+        )
+      }
+    },
+    parsePage() {
+      if (
+        localStorage.getItem(
+          lastRememberedPageLocalStorageKey + this.$auth.user.id
+        )
+      ) {
+        this.applicationTableOptions.page = JSON.parse(
+          localStorage.getItem(
+            lastRememberedPageLocalStorageKey + this.$auth.user.id
+          )
         )
       }
     },
