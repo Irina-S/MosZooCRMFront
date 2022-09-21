@@ -9,13 +9,6 @@ Vue.component('ValidationObserver', ValidationObserver)
 extend('required', { ...required, message: ' ' })
 extend('length', { ...length, message: ' ' })
 
-extend('min_file_count', {
-  params: ['number'],
-  validate(value, { number }) {
-    return value.length >= number
-  },
-})
-
 extend('is_truthy', {
   validate(value) {
     return !!value

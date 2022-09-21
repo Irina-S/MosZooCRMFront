@@ -169,9 +169,14 @@
             <template v-else> тут </template>
             .
           </div>
-          <validation-provider rules="min_file_count:1">
+          <validation-provider
+            v-slot="{ errors }"
+            rules="required"
+            name="files"
+          >
             <CustomFileInput
               v-model="form.files"
+              :error-messages="errors"
               accept="image/png,image/jpeg,image/bmp,application/pdf"
             />
           </validation-provider>
