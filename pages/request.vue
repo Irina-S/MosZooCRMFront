@@ -20,17 +20,36 @@
     <TelConfirmed
       v-else-if="step === $options.steps.completed"
       class="mt-sm-n15"
-      @close="switchStep($options.steps.form)"
+      @close="reset"
     />
   </div>
 </template>
 
 <script>
+import { cloneDeep } from 'lodash-es'
 import RequestForm from '@/components/Forms/RequestForm'
 import TelConfirm from '@/components/Forms/TelConfirm'
 import TelConfirmed from '@/components/TelConfirmed'
 import prepareParams from '@/mixins/prepareParams'
 import checkboxes from '@/mixins/checkboxes'
+
+const defaultForm = {
+  type: 'kubz',
+  applicant_name: null,
+  child_name: null,
+  child_birthday: null,
+  email: null,
+  accompanynig_person: null,
+  files: [],
+  agreement_processing_personal_data: 0,
+  have_read_personal_data_processing_policy: 0,
+  have_read_regulations_on_kfd: 0,
+  agree_with_internal_regulatoions: 0,
+  agree_with_safety_regulations: 0,
+  agree_with_entrance_tests_kfd: 0,
+  have_read_charter_of_kfd: 0,
+  agree_expedition_rules: 0,
+}
 
 export default {
   name: 'RequestPage',
@@ -42,23 +61,7 @@ export default {
     return {
       step: 'form',
       changePhone: false,
-      form: {
-        type: 'kubz',
-        applicant_name: null,
-        child_name: null,
-        child_birthday: null,
-        email: null,
-        accompanynig_person: null,
-        files: [],
-        agreement_processing_personal_data: 0,
-        have_read_personal_data_processing_policy: 0,
-        have_read_regulations_on_kfd: 0,
-        agree_with_internal_regulatoions: 0,
-        agree_with_safety_regulations: 0,
-        agree_with_entrance_tests_kfd: 0,
-        have_read_charter_of_kfd: 0,
-        agree_expedition_rules: 0,
-      },
+      form: cloneDeep(defaultForm),
     }
   },
   head() {
@@ -107,6 +110,10 @@ export default {
       } catch (err) {
         this.$modal.show('error', { err })
       }
+    },
+    reset() {
+      this.form = cloneDeep(defaultForm)
+      this.switchStep(this.$options.steps.form)
     },
   },
 }
