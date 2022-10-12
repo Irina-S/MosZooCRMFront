@@ -82,7 +82,7 @@
       </v-row>
       <div class="mb-6">
         <div>Текст шаблонов писем для рассылки Клиенту</div>
-        <!-- <div v-if="vars">
+        <div v-if="vars">
           <span class="d-block mb-1"
             >Доступные для использования в шаблонах переменные:</span
           >
@@ -96,22 +96,47 @@
           <span class="d-block mt-1">
             (*) означает, что переменная может быть не использована
           </span>
-        </div> -->
+        </div>
       </div>
       <div>
-        <div v-for="tmp in availableTemplates" :key="tmp.template" class="mb-4">
-          <div class="font-weight-bold mb-1">
-            {{ tmp.text ? `Статус ${tmp.text}` : 'Уведомление' }}
+        <template v-if="templates">
+          <div v-for="tmp in templates" :key="tmp.name" class="mb-6">
+            <div class="d-flex align-center font-weight-bold mb-1">
+              {{ tmp.title ? `Статус ${tmp.title}` : 'Уведомление' }}
+              <v-checkbox
+                v-model="tmp.active"
+                hide-details
+                label="Активен"
+                class="font-weight-regular d-inline-block ml-3 mt-0 mb-1"
+              />
+            </div>
+            <v-text-field
+              v-model="tmp.value.greeting"
+              placeholder="Заголовок"
+              dense
+              outlined
+              hide-details
+              class="settings-textarea mb-2"
+            />
+            <VueEditor
+              v-model="tmp.value.text"
+              :editorToolbar="$options.editorToolbarOptions"
+              class="mb-2"
+            />
           </div>
-          <v-textarea
-            v-model="templates[tmp.template]"
-            rows="5"
-            outlined
-            no-resize
-            hide-details
-            class="settings-textarea"
-          />
-        </div>
+        </template>
+        <template v-else>
+          <div class="d-flex flex-column justify-center align-center py-10">
+            <v-progress-circular
+              :size="70"
+              :width="5"
+              color="primary"
+              indeterminate
+              class="mb-3"
+            ></v-progress-circular>
+            <span>Шаблоны писем загружаются...</span>
+          </div>
+        </template>
       </div>
       <div class="d-flex">
         <v-btn to="/settings" class="flex-grow-1 flex-sm-grow-0">
@@ -120,7 +145,7 @@
         <v-btn
           color="primary"
           class="flex-grow-1 flex-sm-grow-0 ml-3 ml-sm-7"
-          @click="updateSetting"
+          @click="saveAll"
         >
           Сохранить
         </v-btn>
@@ -130,6 +155,7 @@
 </template>
 
 <script>
+import { VueEditor } from 'vue2-editor'
 import CustomDatePicker from '@/components/FormElements/CustomDatePicker'
 import CustomTimePicker from '@/components/FormElements/CustomTimePicker'
 import manuals from '@/mixins/manuals'
@@ -139,8 +165,14 @@ import { Status, StatusText } from '@/constants/Status'
 
 export default {
   name: 'SectionSettingPage',
-  components: { CustomDatePicker, CustomTimePicker },
+  components: { VueEditor, CustomDatePicker, CustomTimePicker },
   mixins: [manuals, datetime, prepareParams],
+  editorToolbarOptions: [
+    ['bold', 'italic', 'underline'], // toggled buttons
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    [{ align: [] }],
+    ['clean'],
+  ],
   data() {
     return {
       Status,
@@ -152,7 +184,8 @@ export default {
       endTime: null,
       responsibleId: null,
       vars: null,
-      templates: {},
+      templates: null,
+      templateStatuses: null,
     }
   },
   head() {
@@ -164,7 +197,7 @@ export default {
         this.sections.find((section) => section.id === this.type)?.name ?? ''
       )
     },
-    availableTemplates() {
+    defaultTemplates() {
       const examinationStatuses = [
         'invitation_to_entrance_examinations',
         'approved_by_examinations',
@@ -180,17 +213,18 @@ export default {
       })
       const templates = curSectionStatuses.map((status) => ({
         status,
-        template: `${status}_${this.type}`,
-        text: StatusText[status.toUpperCase()] || '',
+        name: `${status}_${this.type}`,
+        title: StatusText[status.toUpperCase()] || '',
       }))
       return templates
     },
   },
-  mounted() {
+  async mounted() {
     this.getModerators()
     this.getSections()
-    this.getSetting()
-    // this.getAvailableVars()
+    this.getAvailableVars()
+    await this.getSetting()
+    this.getTemplates()
   },
   methods: {
     async getAvailableVars() {
@@ -215,12 +249,51 @@ export default {
       }
     },
     async updateSetting() {
+      await this.$api.settings.update(this.$route.params.id, {
+        start_at: this.prepareDateTime(this.startDate, this.startTime),
+        finish_at: this.prepareDateTime(this.endDate, this.endTime),
+        default_responsible_id: this.responsibleId,
+      })
+    },
+    async getTemplates() {
       try {
-        await this.$api.settings.update(this.$route.params.id, {
-          start_at: this.prepareDateTime(this.startDate, this.startTime),
-          finish_at: this.prepareDateTime(this.endDate, this.endTime),
-          default_responsible_id: this.responsibleId,
+        const templateResults = await Promise.all(
+          this.defaultTemplates.map((tmp) => this.$api.templates.get(tmp.name))
+        )
+        const statusResults = await Promise.all(
+          this.defaultTemplates.map((tmp) =>
+            this.$api.templates.getStatus(tmp.name)
+          )
+        )
+        const availableTemplates = []
+        this.defaultTemplates.forEach((tmp, idx) => {
+          availableTemplates.push({
+            ...tmp,
+            value: templateResults[idx],
+            active: statusResults[idx].active,
+          })
         })
+        this.templates = availableTemplates
+      } catch (err) {
+        this.$modal.show('error', { err })
+      }
+    },
+    async updateTemplates() {
+      await Promise.all(
+        this.templates
+          .filter((tmp) => tmp.value.greeting && tmp.value.text)
+          .map((tmp) => this.$api.templates.update(tmp.name, tmp.value))
+      )
+      await Promise.all(
+        this.templates.map((tmp) =>
+          this.$api.templates.updateStatus(tmp.name, { active: tmp.active })
+        )
+      )
+    },
+    async saveAll() {
+      try {
+        await this.updateTemplates()
+        await this.updateSetting()
         this.$modal.show('success', {
           title: 'Изменения успешно сохранены!',
         })
