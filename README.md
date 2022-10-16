@@ -1,4 +1,4 @@
-# atom7-front
+# MosZooCRMFront - CRM для Московского зоопарка
 
 ## Build Setup
 
