@@ -69,23 +69,49 @@ export default {
        */
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-
-      /*
+      // { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '16x16',
+        href: '/admin-favicon16x16.png',
+      },
+      {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '32x32',
+        href: '/admin-favicon32x32.png',
+      },
+      {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '48x48',
+        href: '/admin-favicon48x48.png',
+      },
+      {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '96x96',
+        href: '/admin-favicon96x96.png',
+      },
       {
         rel: 'apple-touch-icon',
-        sizes: '180x180',
-        href: '/apple-touch-icon.png',
+        type: 'image/png',
+        sizes: '120x120',
+        href: '/admin-favicon120x120.png',
       },
-      { rel: 'icon', sizes: '32x32', href: '/favicon-32x32.png' },
-      { rel: 'icon', sizes: '16x16', href: '/favicon-16x16.png' },
-      { rel: 'manifest', href: '/site.webmanifest' },
       {
-        rel: 'manifest',
-        href: '/safari-pinned-tab.svg',
-        color: config.safariPinnedTab,
+        rel: 'apple-touch-icon',
+        type: 'image/png',
+        sizes: '144x144',
+        href: '/admin-favicon144x144.png',
       },
-       */
+      {
+        rel: 'apple-touch-icon',
+        type: 'image/png',
+        sizes: '180x180',
+        href: '/admin-favicon180x180.png',
+      },
     ],
   },
 

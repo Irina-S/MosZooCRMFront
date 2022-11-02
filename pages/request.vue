@@ -67,6 +67,51 @@ export default {
   head() {
     return {
       title: 'Подать заявку',
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '16x16',
+          href: '/zoo-favicon16x16.png',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '32x32',
+          href: '/zoo-favicon32x32.png',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '48x48',
+          href: '/zoo-favicon48x48.png',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '96x96',
+          href: '/zoo-favicon96x96.png',
+        },
+        {
+          rel: 'apple-touch-icon',
+          type: 'image/png',
+          sizes: '120x120',
+          href: '/zoo-favicon120x120.png',
+        },
+        {
+          rel: 'apple-touch-icon',
+          type: 'image/png',
+          sizes: '144x144',
+          href: '/zoo-favicon144x144.png',
+        },
+        {
+          rel: 'apple-touch-icon',
+          type: 'image/png',
+          sizes: '180x180',
+          href: '/zoo-favicon180x180.png',
+        },
+      ],
     }
   },
   steps: {
